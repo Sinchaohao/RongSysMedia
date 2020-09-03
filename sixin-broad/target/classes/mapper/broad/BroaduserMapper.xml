@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.BroaduserMapper">
+
+    <resultMap type="com.sixin.broad.domain.Broaduser" id="BroaduserResult">
+        <result property="userid"    column="userid"    />
+        <result property="sysuserId"    column="sysuserId"    />
+        <result property="username"    column="username"    />
+        <result property="uname"    column="uname"    />
+        <result property="userlevel"    column="userlevel"    />
+        <result property="uphone"    column="uphone"    />
+        <result property="uaddress"    column="uaddress"    />
+        <result property="isuse"    column="isuse"    />
+        <result property="lastdate"    column="lastdate"    />
+        <result property="aname"    column="aname"    />
+    </resultMap>
+
+    <sql id="selectBroaduserVo">
+        SELECT u.userid as userid,
+				uname,
+				userlevel,
+				us.rid as rid,
+				uphone,
+				uaddress,
+				isuse,
+				lastdate,
+				aname,
+                u.aid
+		from ((userinfo u
+		LEFT JOIN broaduserset us on u.userid = us.userid))
+		LEFT JOIN area a on u.aid = a.aid
+    </sql>
+
+    <select id="selectBroaduserList" parameterType="com.sixin.broad.domain.Broaduser" resultMap="BroaduserResult">
+        <include refid="selectBroaduserVo"/>
+        <where>
+            <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%') </if>
+            <if test="userlevel != null  and userlevel != '' ">and userlevel LIKE CONCAT(CONCAT('%', #{userlevel}),'%')</if>
+            <if test="uphone != null  and uphone != '' "> and uphone LIKE CONCAT(CONCAT('%', #{uphone}),'%')</if>
+            <if test="uaddress != null  and uaddress != '' "> and uaddress LIKE CONCAT(CONCAT('%', #{uaddress}),'%')</if>
+            <if test="isuse != null  and isuse != '' "> and isuse LIKE CONCAT(CONCAT('%', #{isuse}),'%')</if>
+            <if test="lastdate != null  and lastdate != '' "> and lastdate LIKE CONCAT(CONCAT('%', #{lastdate}),'%')</if>
+            <if test="aname != null  and aname != '' "> and aname LIKE CONCAT(CONCAT('%', #{aname}),'%')</if>
+            <if test="aid != null  and aid != '' "> and u.aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+        </where>
+        ORDER BY lastdate DESC
+    </select>
+
+    <select id="selectBroaduserById" parameterType="String" resultMap="BroaduserResult">
+        SELECT userid,uname,uphone,uaddress from userinfo
+        where userid = #{userid}
+    </select>
+
+    <select id="selectBroaduserByIds" parameterType="java.util.List" resultMap="BroaduserResult">
+        SELECT u.userid as userid,
+        uname,
+        userlevel,
+        us.rid as rid,
+        uphone,
+        uaddress,
+        isuse,
+        lastdate,
+        aname
+        from ((userinfo u
+        LEFT JOIN broaduserset us on u.userid = us.userid))
+        LEFT JOIN area a on u.aid = a.aid
+        where u.userid in
+        <foreach collection="list" item="sfids" open="(" close=")" separator=",">
+            #{sfids}
+        </foreach>
+
+    </select>
+
+
+    <update id="updateBroaduser" parameterType="com.sixin.broad.domain.Broaduser">
+        update userinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="uphone != null  and uphone != ''  ">uphone = #{uphone},</if>
+            <if test="uaddress != null  and uaddress != ''  ">uaddress = #{uaddress},</if>
+        </trim>
+        where userid = #{userid}
+    </update>
+
+    <delete id="deleteBroaduserById" parameterType="String">
+        delete from userinfo where userid = #{userid}
+    </delete>
+
+    <delete id="deleteBroaduserByIds" parameterType="String">
+        delete from userinfo where userid in
+        <foreach item="userid" collection="array" open="(" separator="," close=")">
+            #{userid}
+        </foreach>
+    </delete>
+
+    <!-- 新增终端用户信息 -->
+    <!--<insert id="insertBroaduser" parameterType="String" >
+        insert into userinfo (
+        userid,
+        username,
+        uname,
+        uphone,
+        aid
+        ) values (
+        "11",#{username},#{uname},#{uphone},#{aid}
+        )
+    </insert>-->
+    <insert id="insertBroaduser" parameterType="com.sixin.broad.domain.Broaduser">
+       insert into userinfo (
+        userid,
+        user_id,
+        username,
+        uname,
+        uphone,
+        aid
+        ) values (
+        REPLACE(UUID(),"-",""),#{sysuserId},#{username},#{uname},#{uphone},#{aid}
+        )
+
+    </insert>
+</mapper>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.PartyscoreMapper">
+    
+    <resultMap type="com.sixin.village.domain.Partyscore" id="PartyscoreResult">
+        <result property="sfid"    column="sfid"    />
+        <result property="pid"    column="pid"    />
+        <result property="pname"    column="pname"    />
+        <result property="sex"    column="sex"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="partyjoindate"    column="partyjoindate"    />
+        <result property="excellent"    column="excellent"    />
+        <result property="fine"    column="fine"    />
+        <result property="qualified"    column="qualified"    />
+        <result property="unqualified"    column="unqualified"    />
+        <result property="note"    column="note"    />
+        <result property="adddate"    column="adddate"    />
+        <result property="no"    column="no"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="aid"    column="aid"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectPartyscoreVo">
+        select pid,pname,sex,birthday,partyjoindate,
+		sum(excellent) as excellent,
+		sum(fine) as fine,
+		sum(qualified) as qualified,
+		sum(unqualified) as unqualified,
+		note,adddate,no,remark
+		from tb_partyscore
+      group by pid,pname,sex,birthday,partyjoindate,note
+    </sql>
+	
+    <select id="selectPartyscoreList" parameterType="com.sixin.village.domain.Partyscore" resultMap="PartyscoreResult">
+        select pid,pname,sex,birthday,partyjoindate,
+        sum(excellent) as excellent,
+        sum(fine) as fine,
+        sum(qualified) as qualified,
+        sum(unqualified) as unqualified,
+        note,adddate,no,remark
+        from tb_partyscore
+        <where>  
+            <if test="sfid != null "> and sfid = #{sfid}</if>
+             <if test="pid != null "> and pid  LIKE CONCAT(CONCAT('%', #{pid}),'%')</if>
+             <if test="pname != null  and pname != '' "> and pname  LIKE CONCAT(CONCAT('%', #{pname}),'%')</if>
+             <if test="sex != null  and sex != '' "> and sex  LIKE CONCAT(CONCAT('%', #{sex}),'%')</if>
+             <if test="birthday != null  and birthday != '' "> and birthday LIKE CONCAT(CONCAT('%', #{birthday}),'%')</if>
+             <if test="partyjoindate != null  and partyjoindate != '' "> and partyjoindate  LIKE CONCAT(CONCAT('%', #{partyjoindate}),'%')</if>
+             <if test="excellent != null "> and excellent  LIKE CONCAT(CONCAT('%', #{excellent}),'%')</if>
+             <if test="fine != null "> and fine  LIKE CONCAT(CONCAT('%', #{fine}),'%')</if>
+             <if test="qualified != null "> and qualified  LIKE CONCAT(CONCAT('%', #{qualified}),'%')</if>
+             <if test="unqualified != null "> and unqualified  LIKE CONCAT(CONCAT('%', #{unqualified}),'%')</if>
+             <if test="note != null  and note != '' "> and note  LIKE CONCAT(CONCAT('%', #{note}),'%')</if>
+             <if test="adddate != null  and adddate != '' "> and adddate  LIKE CONCAT(CONCAT('%', #{adddate}),'%')</if>
+             <if test="no != null "> and no  LIKE CONCAT(CONCAT('%', #{no}),'%')</if>
+             <if test="uid != null "> and uid  LIKE CONCAT(CONCAT('%', #{uid}),'%')</if>
+             <if test="uname != null  and uname != '' "> and uname  LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+             <if test="aid != null  and aid != '' "> and aid  LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="remark != null  and remark != '' "> and remark  LIKE CONCAT(CONCAT('%', #{remark}),'%')</if>
+         </where>
+        group by pid,pname,sex,birthday,partyjoindate,note
+    </select>
+    
+    <select id="selectPartyscoreById" parameterType="Integer" resultMap="PartyscoreResult">
+         select pid,pname,sex,birthday,partyjoindate,
+		sum(excellent) as excellent,
+		sum(fine) as fine,
+		sum(qualified) as qualified,
+		sum(unqualified) as unqualified,
+		note,adddate,no,remark
+		from tb_partyscore
+        where sfid = #{sfid}
+        group by pid,pname,sex,birthday,partyjoindate,note
+    </select>
+        
+    <insert id="insertPartyscore" parameterType="com.sixin.village.domain.Partyscore">
+        insert into tb_partyscore
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sfid != null  ">sfid,</if>
+			<if test="pid != null  ">pid,</if>
+			<if test="pname != null  and pname != ''  ">pname,</if>
+			<if test="sex != null  and sex != ''  ">sex,</if>
+			<if test="birthday != null  and birthday != ''  ">birthday,</if>
+			<if test="partyjoindate != null  and partyjoindate != ''  ">partyjoindate,</if>
+			<if test="excellent != null  ">excellent,</if>
+			<if test="fine != null  ">fine,</if>
+			<if test="qualified != null  ">qualified,</if>
+			<if test="unqualified != null  ">unqualified,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+			<if test="adddate != null  and adddate != ''  ">adddate,</if>
+			<if test="no != null  ">no,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sfid != null  ">#{sfid},</if>
+			<if test="pid != null  ">#{pid},</if>
+			<if test="pname != null  and pname != ''  ">#{pname},</if>
+			<if test="sex != null  and sex != ''  ">#{sex},</if>
+			<if test="birthday != null  and birthday != ''  ">#{birthday},</if>
+			<if test="partyjoindate != null  and partyjoindate != ''  ">#{partyjoindate},</if>
+			<if test="excellent != null  ">#{excellent},</if>
+			<if test="fine != null  ">#{fine},</if>
+			<if test="qualified != null  ">#{qualified},</if>
+			<if test="unqualified != null  ">#{unqualified},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+			<if test="adddate != null  and adddate != ''  ">#{adddate},</if>
+			<if test="no != null  ">#{no},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePartyscore" parameterType="com.sixin.village.domain.Partyscore">
+        update tb_partyscore
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pid != null  ">pid = #{pid},</if>
+            <if test="pname != null  and pname != ''  ">pname = #{pname},</if>
+            <if test="sex != null  and sex != ''  ">sex = #{sex},</if>
+            <if test="birthday != null  and birthday != ''  ">birthday = #{birthday},</if>
+            <if test="partyjoindate != null  and partyjoindate != ''  ">partyjoindate = #{partyjoindate},</if>
+            <if test="excellent != null  ">excellent = #{excellent},</if>
+            <if test="fine != null  ">fine = #{fine},</if>
+            <if test="qualified != null  ">qualified = #{qualified},</if>
+            <if test="unqualified != null  ">unqualified = #{unqualified},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="adddate != null  and adddate != ''  ">adddate = #{adddate},</if>
+            <if test="no != null  ">no = #{no},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where sfid = #{sfid}
+    </update>
+
+	<delete id="deletePartyscoreById" parameterType="Integer">
+        delete from tb_partyscore where sfid = #{sfid}
+    </delete>
+	
+    <delete id="deletePartyscoreByIds" parameterType="String">
+        delete from tb_partyscore where sfid in 
+        <foreach item="sfid" collection="array" open="(" separator="," close=")">
+            #{sfid}
+        </foreach>
+    </delete>
+    
+</mapper>

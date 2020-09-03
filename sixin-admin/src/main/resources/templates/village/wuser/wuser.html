@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								用户名称：<input type="text" name="uname"/>
+							</li>
+
+							<li>
+								用户小组：<input type="text" name="wgroup"/>
+							</li>
+
+							<!--<li>-->
+								<!--用户头像：<input type="text" name="headimg"/>-->
+							<!--</li>-->
+
+							<li>
+								手机号码：<input type="text" name="phone"/>
+							</li>
+
+							<!--<li>
+								电子邮件：<input type="text" name="uemail"/>
+							</li>-->
+
+							<li>
+								身份证号：<input type="text" name="idcard"/>
+							</li>
+
+							<!--<li>
+								住址：<input type="text" name="address"/>
+							</li>-->
+
+							<!--<li>
+								性别：<input type="text" name="usex"/>
+							</li>-->
+
+							<!--<li>
+								微信号：<input type="text" name="wcid"/>
+							</li>-->
+
+							<li>
+								微信昵称：<input type="text" name="wcname"/>
+							</li>
+
+							<!--<li>
+								注册时间：<input type="text" name="regdate"/>
+							</li>-->
+
+							<li>
+								是否可用：<input type="text" name="isuse"/>
+							</li>
+
+							<li>
+								是否党员：<input type="text" name="isparty"/>
+							</li>
+
+							<!--<li>
+								是否有效：<input type="text" name="remark"/>
+							</li>-->
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:wuser:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="village:wuser:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:wuser:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="village:wuser:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('village:wuser:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('village:wuser:remove')}]];
+        var prefix = ctx + "village/wuser";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "用户基本",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'uid', 
+					title : '用户编号',
+					visible: false
+				},
+				{
+					field : 'uname', 
+					title : '微信名',
+					sortable: true
+				},
+				{
+					field : 'wgroup', 
+					title : '用户所在小组',
+					sortable: true
+				},
+				{
+					field : 'rid', 
+					title : '用户类型编号',
+					sortable: true
+				},
+				{
+					field : 'utypes', 
+					title : '用户类型',
+					sortable: true
+				},
+				{
+					field : 'headimg', 
+					title : '用户头像',
+					sortable: true
+				},
+				{
+					field : 'phone', 
+					title : '手机号码',
+					sortable: true
+				},
+				{
+					field : 'uemail', 
+					title : '电子邮件',
+					sortable: true
+				},
+				{
+					field : 'idcard', 
+					title : '身份证号',
+					sortable: true
+				},
+				{
+					field : 'address', 
+					title : '住址',
+					sortable: true
+				},
+				{
+					field : 'usex', 
+					title : '性别',
+					sortable: true
+				},
+				{
+					field : 'wcid', 
+					title : '微信号',
+					sortable: true
+				},
+				{
+					field : 'wcname', 
+					title : '微信昵称',
+					sortable: true
+				},
+				{
+					field : 'regdate', 
+					title : '注册时间',
+					sortable: true
+				},
+				{
+					field : 'lastdate', 
+					title : '最后登陆时间',
+					sortable: true
+				},
+				{
+					field : 'isuse', 
+					title : '是否可用',
+					sortable: true
+				},
+				{
+					field : 'isparty', 
+					title : '是否党员',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '是否有效',
+					sortable: true
+				},
+				{
+					field : 'type', 
+					title : '是否管理员',
+					sortable: true
+				}/*,
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.uid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.uid + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }*/]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

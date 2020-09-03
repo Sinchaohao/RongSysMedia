@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.TrafficMapper">
+
+    <resultMap type="com.sixin.broad.domain.Traffic" id="TrafficResult">
+        <result property="ttid"    column="ttid"    />
+        <result property="tid"    column="tid"    />
+        <result property="usetraffic"    column="usetraffic"    />
+        <result property="trafficlimit"    column="trafficlimit"    />
+        <result property="lasttime"    column="lasttime"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+
+    <!--<sql id="selectTrafficVo">
+            select ttid, t.tid as tid, usetraffic,a.trafficlimit as trafficlimit, lasttime, remark from (terminal_traffic t left join terminals a on t.tid = a.tid)
+        </sql>-->
+    <sql id="selectTrafficVo">
+        select
+        ttid,
+        tt.tid as tid,
+        usetraffic,
+        tt.lasttime as lasttime,
+        tt.remark,
+        tname,
+        trafficlimit,
+        t.aid as aid,
+        aname,
+        ui.userid as userid,
+        t.isuse as isuse,
+        sd,
+        sdf,
+        uname
+        from
+        ((terminal_traffic tt  JOIN terminals t on tt.tid=t.tid)
+        left join area a on t.aid = a.aid)
+        left join userinfo ui on ui.userid = t.userid
+    </sql>
+
+    <select id="selectTrafficList" parameterType="com.sixin.broad.domain.Traffic" resultMap="TrafficResult">
+        SELECT
+            temp.*,
+            broad.area.aname as uname
+        FROM(
+        SELECT
+            broad.terminals.trafficlimit,
+            broad.terminals.tname,
+            broad.ter_conditions.sd,
+            broad.ter_conditions.sdf,
+            broad.terminal_traffic.*,
+            broad.terminals.IsUse,
+            broad.terminals.aid,
+            ry.sys_user.user_name,
+            broad.area.aname,
+            broad.area.parentaid AS parentaid1
+        FROM
+            broad.terminal_traffic,
+            broad.area,
+            broad.ter_conditions,
+            broad.terminals,
+            ry.sys_user
+        WHERE
+        broad.terminal_traffic.tid = broad.terminals.tid
+        AND broad.terminals.tid = broad.ter_conditions.tid
+        AND broad.terminals.userid = ry.sys_user.user_id
+        AND broad.terminals.aid = broad.area.aid
+        <if test="tid != null  and tid != '' "> and broad.terminals.tid like '%${tid}%'</if>
+        <if test="aid != null  and aid != ''  ">and broad.terminals.aid = #{aid}</if>
+        <if test="usetraffic != null "> and broad.terminal_traffic.usetraffic like '%${usetraffic}%'</if>
+        <if test="trafficlimit != null  and trafficlimit != '' "> and broad.terminals.trafficlimit like '%${trafficlimit}%'</if>
+        <if test="tname != null  and tname != '' "> and broad.terminals.tname like '%${tname}%'</if>
+        <if test="aname != null  and aname != '' "> and broad.area.aname like '%${aname}%'</if>
+        <if test="minNum != null  and minNum != ''  ">and broad.terminal_traffic.usetraffic >= #{minNum}</if>
+        <if test="maxNum != null  and maxNum != ''  ">and broad.terminal_traffic.usetraffic &lt;=#{maxNum}</if>
+        ) temp,broad.area
+        WHERE temp.parentaid1=broad.area.aid
+        ORDER BY lasttime DESC
+    </select>
+
+    <select id="selectTrafficById" parameterType="Integer" resultMap="TrafficResult">
+        <include refid="selectTrafficVo"/>
+        where ttid = #{ttid}
+    </select>
+
+    <insert id="insertTraffic" parameterType="com.sixin.broad.domain.Traffic">
+        insert into terminal_traffic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ttid != null  ">ttid,</if>
+            <if test="tid != null  and tid != ''  ">tid,</if>
+            <if test="usetraffic != null  ">usetraffic,</if>
+            <if test="lasttime != null  and lasttime != ''  ">lasttime,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ttid != null  ">#{ttid},</if>
+            <if test="tid != null  and tid != ''  ">#{tid},</if>
+            <if test="usetraffic != null  ">#{usetraffic},</if>
+            <if test="lasttime != null  and lasttime != ''  ">#{lasttime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTraffic" parameterType="com.sixin.broad.domain.Traffic">
+        update terminal_traffic
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">tid = #{tid},</if>
+            <if test="usetraffic != null  ">usetraffic = #{usetraffic},</if>
+            <if test="lasttime != null  and lasttime != ''  ">lasttime = #{lasttime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where ttid = #{ttid}
+    </update>
+
+    <update id="updateTrafficSet" parameterType="com.sixin.broad.domain.Traffic">
+        update terminals
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trafficlimit != null  and trafficlimit != ''  ">trafficlimit = #{trafficlimit},</if>
+        </trim>
+        where tid = #{tid}
+    </update>
+
+    <delete id="deleteTrafficById" parameterType="Integer">
+        delete from terminal_traffic where ttid = #{ttid}
+    </delete>
+
+    <delete id="deleteTrafficByIds" parameterType="String">
+        delete from terminal_traffic where ttid in
+        <foreach item="ttid" collection="array" open="(" separator="," close=")">
+            #{ttid}
+        </foreach>
+    </delete>
+
+    <update id="updateRdsByIds" >
+        update  terminals set trafficlimit = #{number} where tid in
+        <foreach item="tid" collection="ids" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </update>
+
+    <update id="updateFmfrequencyByIds" >
+        update  terminals set isuse = 1 where tid in
+        <foreach item="tid" collection="ids" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </update>
+</mapper>

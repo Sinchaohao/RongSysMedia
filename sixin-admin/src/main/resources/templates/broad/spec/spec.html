@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="user-form">
+                <input type="hidden" id="Aid" name="aid">
+                <input type="hidden" id="Parentaid" name="parentaid">
+                <div class="select-list">
+                    <ul>
+                        <li>节目ID：<input type="text" name="fid"/></li>
+
+                        <li>节目名称：<input type="text" name="fname"/></li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="ibox-content">
+            <audio class="recPlay" style="width:100%"></audio>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+
+    var prefix = ctx + "broad/spec";
+
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+    });
+
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/list",
+            modalName: "特种节目",
+            search: false,
+            showExport: true,
+            columns: [
+                {
+                    field : 'fid',
+                    title : '节目ID',
+                    sortable: true
+                },
+                {
+                    field : 'fname',
+                    title : '节目名称',
+                    sortable: true
+                },
+                {
+                    field : 'filename',
+                    title : '保存名称',
+                    sortable: true
+                },
+                {
+                    field : 'flenth',
+                    title : '时长',
+                    sortable: true
+                },
+                {
+                    field : 'fsize',
+                    title : '文件大小',
+                    sortable: true
+                },
+                {
+                    field : 'uname',
+                    title : '上传者',
+                    sortable: true
+                },
+                {
+                    field : 'createdtime',
+                    title : '创建时间',
+                    sortable: true
+                },
+                {
+                    title : '操作',
+                    sortable: false,
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-xs btn-success" href="#" onclick="dospeclist(\'' + row.fid+'\,'+row.flenth + '\')"><i class="fa fa-edit"></i>编辑</a>');
+                        return actions;
+                    }
+                },
+                {
+                    field: 'urls',
+                    title: '试听',
+                    align: 'center',
+                    visible: true,
+                    formatter: function(value, row, index) {
+                        var actions = '<a class=\"btn btn-xs btn-success\"  onclick=func(\'' + value + '\')>试听</a>';
+                        return actions;
+                    }
+                }]
+        };
+        $.table.init(options);
+    }
+
+    function func(value) {
+        value = "../"+value;
+        var audio=$(".recPlay")[0];
+        audio.controls=true;
+        if(!(audio.ended || audio.paused)){
+            audio.pause();
+        };
+        audio.src=value;
+        audio.play();
+    }
+
+    function dospeclist(rowid) {
+        let rowid1 = rowid.split(",")[0];
+        let flenth = rowid.split(",")[1];
+        layer.open({
+            type: 2,
+            maxmin: true,
+            shade: 0.3,
+            title: '替换节目',
+            fix: false,
+            area: ["1200" + 'px', ($(window).height() - 50) + 'px'],
+            content: "/broad/spec/speclist",
+            shadeClose: true,
+            btn: ['<i class="fa fa-chat"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+            success:function(layero, index){
+                $(layero).find("iframe")[0].contentWindow.$('.oldtimespec')[0].value=flenth
+            },
+            yes: function (index, layero) {
+                let selecteddata = $(layero).find("iframe")[0].contentWindow.$('#bootstrap-table').bootstrapTable('getSelections')[0];
+                selecteddata.oldfid = rowid1
+
+                layer.close(index);
+                $.post("/broad/spec/changespec",selecteddata);
+                $.table.refresh();
+            },
+            cancel: function () {
+                return true;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

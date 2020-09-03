@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg "onload="secLoad();$.table.search()">
+<div class="ui-layout-west">
+    <div class="box box-main" style="width: 3000px">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa icon-grid"></i> 安防分布
+            </div>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;">
+                    <i class="fa fa-chevron-up"></i></button>
+                <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠">
+                    <i class="fa fa-chevron-down"></i></button>
+                <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新">
+                    <i class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="ui-layout-content">
+            <div id="tree" class="ztree" style="overflow: auto"></div>
+        </div>
+    </div>
+</div>
+<div class="container-div ui-layout-center">
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>按安装时间统计安防数据</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="echarts" id="installbytime"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>按到期时间统计安防数据</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="echarts" id="endbytime"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>安防终端状态统计</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="echarts" id="isdelflag"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <input type="hidden" id="deptId" name="deptId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            安装人员：<input type="text"  name="installer"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="system:fireinfo:import">
+                <i class="fa fa-upload"></i> 导入
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="iot:broadinfo:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+            </a>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    // var editFlag = [[${@permission.hasPermi('iot:broadinfo:edit')}]];
+    // var removeFlag = [[${@permission.hasPermi('iot:broadinfo:remove')}]];
+    // var datas = [[${@dict.getType('sys_normal_disable')}]];
+    var prefix = ctx + "iot/secpannel";
+    var aid1 = "";
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            //exportBySingleUrl: prefix + "/exportbysingle",
+            sortName: "id",
+            modalName: "安防数据",
+            search: false,
+            showExport: true,
+            columns: [
+                {
+                    checkbox: true
+                },
+                {
+                    field: 'id',
+                    title: '序号',
+                },
+                {
+                    field: 'stype',
+                    title: '安防类型',
+                    sortable: true
+                },
+                {
+                    field: 'deptName',
+                    title: '存放地址',
+                    sortable: true
+                },
+                {
+                    field: 'sno',
+                    title: '设备编号',
+                    sortable: true
+                },
+                {
+                    field: 'sname',
+                    title: '设备名称',
+                    sortable: true
+                },
+                {
+                    field: 'producer',
+                    title: '生产公司',
+                    sortable: true
+                },
+                {
+                    field: 'prodtime',
+                    title: '出厂日期',
+                    sortable: true
+                },
+                {
+                    field: 'price',
+                    title: '采购价格',
+                    sortable: true
+                },
+                {
+                    field: 'endtime',
+                    title: '有效日期',
+                    sortable:false
+                },
+                {
+                    field: 'installtime',
+                    title: '安装时间',
+                    sortable: true
+                },
+                {
+                    field: 'installer',
+                    title: '安装人员',
+                    sortable: true
+                },
+                {
+                    field: 'demo',
+                    title: '备注',
+                    sortable: false
+                },
+                {
+                    field: 'delflag',
+                    title: '是否有效',
+                    sortable: false
+                },
+            ]//警报类型的字段类型之前是text，不匹配，修改为varchar
+        };
+        $.table.init(options);
+    };
+    function queryAreaTree(){
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#deptId").val(treeNode.id);
+            $("#parentId").val(treeNode.pId);
+            $.table.search();
+            onClick :installbytime();
+            endbytime();
+            is_delflag();
+        }
+        $.tree.init(options);
+    }
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function() {
+        queryAreaTree();
+    });
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<script>
+    laydate({
+        elem:"#runtime",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#secpannel",
+            type: 'time',
+        });
+    });
+</script>
+<script>
+    function secLoad() {
+        installbytime();
+        endbytime();
+        is_delflag();
+    }
+    function installbytime() {
+        var installbytime = echarts.init(document.getElementById('installbytime'));
+        var deptId=$("#deptId").val();
+        $.ajax({
+            url: "/api/sec/installbytime",
+            data :{"deptId":$("#deptId").val()},
+            type: "POST",
+            datatype: "JSON",
+            success: function (data) {
+                var install_data = data.data;
+                var x_data = new Array();
+                var y_data = new Array();
+                for (var i = 0; i < install_data.length; i++) {
+                    if (install_data[i].scount == 0) {
+                        x_data.push('未知');
+                    } else {
+                        y_data.push(parseInt(install_data[i].scount));
+                        x_data.push(install_data[i].installtime);
+                    }
+                }
+                option = {
+                    color: ['#06edfc'],
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: {show: true, type: ['line', 'bar']},
+                        }
+                    },
+                    calculable: true,
+                    grid: {
+                        left: '3%',
+                        right: '3%',
+                        top: '5%',
+                        bottom: '0%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: x_data,
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        }
+                    ],
+                    series: [
+                        {
+                            type: 'line',
+                            data: y_data,
+                            markLine: {
+                                data: [
+                                    {type: 'average', name: '平均值'}
+                                ]
+                            }
+                        },
+                    ]
+                };
+                installbytime.setOption(option);
+            }
+        });
+    }
+    function endbytime() {
+        var endbytime = echarts.init(document.getElementById('endbytime'));
+        var deptId=$("#deptId").val();
+        $.ajax({
+            url: "/api/sec/endbytime",
+            data :{"deptId":$("#deptId").val()},
+            type: "POST",
+            datatype: "JSON",
+            success: function (data) {
+                var endtime_data = data.data;
+                var x_data = new Array();
+                var y_data = new Array();
+                for (var i = 0; i < endtime_data.length; i++) {
+                    if (endtime_data[i].scount == 0) {
+                        x_data.push('未知');
+                    } else {
+                        y_data.push(parseInt(endtime_data[i].scount));
+                        x_data.push(endtime_data[i].endtime);
+                    }
+                }
+                option = {
+                    color: ['#06edfc'],
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            magicType: {show: true, type: ['line', 'bar']},
+                        }
+                    },
+                    calculable: true,
+                    grid: {
+                        left: '3%',
+                        right: '3%',
+                        top: '5%',
+                        bottom: '0%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: x_data,
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            axisLabel: {
+                                formatter: '{value}'
+                            }
+                        }
+                    ],
+                    series: [
+                        {
+                            type: 'line',
+                            data: y_data,
+                            markLine: {
+                                data: [
+                                    {type: 'average', name: '平均值'}
+                                ]
+                            }
+                        },
+                    ]
+                };
+                endbytime.setOption(option);
+            }
+        });
+    }
+    function is_delflag() {
+        var isdelflag = echarts.init(document.getElementById('isdelflag'));
+        var deptId=$("#deptId").val();
+        $.ajax({
+            url: "/api/sec/isdelflag",
+            data :{"deptId":$("#deptId").val()},
+            type : "POST",
+            datatype: "JSON",
+            success: function (data) {
+                var delflag_data = data.data;
+                var x_data = new Array();
+                var y_data = new Array();
+                x_data.push(delflag_data[0].id);
+                y_data.push(delflag_data[0].scount);
+                status_option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: ['终端运行数', '终端离线数']
+                    },
+                    calculable: true,
+                    series: [
+                        {
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: [
+                                {value: x_data, name: '终端运行数'},
+                                {value: y_data, name: '终端离线数'}
+                            ]
+                        }
+                    ]
+                };
+
+                isdelflag.setOption(status_option);
+            }
+
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.OrganizationMapper">
+
+    <resultMap type="com.sixin.broad.domain.Organization" id="OrganizationResult">
+        <result property="tid"    column="tid"    />
+        <result property="tname"    column="tname"    />
+        <result property="uname"    column="uname"    />
+        <result property="aname"    column="aname"    />
+        <result property="lastaccesstime"    column="lastaccesstime"    />
+        <result property="intertime"    column="intertime"    />
+        <result property="terminaltype"    column="terminaltype"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="basestation"    column="basestation"    />
+        <result property="phone"    column="phone"    />
+        <result property="maintenanceFunds"    column="maintenanceFunds"    />
+        <result property="powerconsumption"    column="powerconsumption"    />
+        <result property="usetraffic"    column="usetraffic"    />
+        <result property="onlinestate"    column="onlinestate"    />
+        <result property="dcs"    column="dcs"    />
+        <result property="rds"    column="rds"    />
+        <result property="transmitpower"    column="transmitpower"    />
+        <result property="reflectedpower"    column="reflectedpower"    />
+        <result property="workvoltage"    column="workvoltage"    />
+        <result property="batteryvoltage"    column="batteryvoltage"    />
+        <result property="loadcurrent"    column="loadcurrent"    />
+        <result property="pdmode"    column="pdmode"    />
+        <result property="chargecurrent"    column="chargecurrent"    />
+        <result property="fmfrequency"    column="fmfrequency"    />
+        <result property="manager"    column="manager"    />
+        <result property="managertel"    column="managertel"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="isuse"    column="isuse"    />
+        <result property="address"    column="address"    />
+        <result property="aid"    column="aid"    />
+        <result property="facid"    column="facid"    />
+        <result property="atphone"    column="atphone"    />
+        <result property="aid"    column="aid"    />
+        <result property="brfrequency"    column="brfrequency"    />
+        <result property="nettype"    column="nettype"    />
+        <result property="facid"    column="facid"    />
+        <result property="mflowusing"    column="mflowusing"    />
+        <result property="eovolume"    column="eovolume"    />
+        <result property="poscene"    column="poscene"    />
+        <result property="parentaid"    column="parentaid"    />
+        <result property="hbtime"    column="hbtime"    />
+        <result property="transmitfrequency"    column="transmitfrequency"    />
+        <result property="tel"    column="tel"    />
+    </resultMap>
+    <!--村务宝典查询结果 -->
+    <resultMap type="com.sixin.broad.domain.Organization" id="OrganizationResult1">
+        <result property="userid"    column="userid"    />
+        <result property="aid"    column="aid"    />
+        <result property="aname"    column="aname"    />
+        <result property="tid"    column="tid"    />
+        <result property="tname"    column="tname"    />
+        <result property="uname"    column="uname"    />
+        <result property="lastaccesstime"    column="lastaccesstime"    />
+        <result property="facid"    column="facid"    />
+        <result property="address"    column="address"    />
+        <result property="note"    column="note"    />
+        <result property="comstand"    column="comstand"    />
+        <result property="broadtel"    column="broadtel"    />
+        <result property="manager"    column="manager"    />
+        <result property="managertel"    column="managertel"    />
+        <result property="intertime"    column="intertime"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="isuse"    column="isuse"    />
+        <result property="phone"    column="phone"    />
+        <result property="rds"    column="rds"    />
+        <result property="fmfrequency"    column="fmfrequency"    />
+        <result property="trafficlimit"    column="trafficlimi"    />
+        <result property="terminaltype"    column="terminaltype"    />
+        <result property="dcs"    column="dcs"    />
+        <result property="batteryvoltage"    column="batteryvoltage"    />
+        <result property="loadcurrent"    column="loadcurrent"    />
+        <result property="pdmode"    column="pdmode"    />
+        <result property="chargecurrent"    column="chargecurrent"    />
+        <result property="reflectedpower"    column="reflectedpower"    />
+        <result property="workvoltage"    column="workvoltage"    />
+        <result property="transmitpower"    column="transmitpower"    />
+        <result property="irfrequency"    column="irfrequency"    />
+        <result property="powerconsumption"    column="powerconsumption"    />
+        <result property="onlinestate"    column="onlinestate"    />
+        <result property="transmitfrequency"    column="transmitfrequency"    />
+        <result property="mflowusing"    column="mflowusing"    />
+        <result property="brfrequency"    column="brfrequency"    />
+        <result property="atphone"    column="atphone"    />
+        <result property="eovolume"    column="eovolume"    />
+        <result property="poscene"    column="poscene"    />
+        <result property="hbtime"    column="hbtime"    />
+        <result property="maintenanceFunds"    column="maintenanceFunds"    />
+        <result property="longitudelatitude"    column="longitudelatitude"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.Area" id="AreatreeResult">
+        <result property="aid"    column="aid"    />
+        <result property="parentaid"    column="parentaid"    />
+        <result property="aname"    column="aname"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.TerminalTels" id="TerminaltelsResult">
+        <result property="telid"    column="telid"    />
+        <result property="tid"    column="tid"    />
+        <result property="tel"    column="tel"    />
+        <result property="telperson"    column="telperson"    />
+        <result property="isuse"    column="isuse"    />
+    </resultMap>
+    <!--表名 -->
+    <sql id="tableName">
+        terminals
+    </sql>
+    <sql id="areatableName">
+        area
+    </sql>
+    <sql id="teltableName">
+        terminaltels
+    </sql>
+    <sql id="usertable">
+        userinfo
+    </sql>
+    <sql id="terreceivestable">
+        terminal_receives
+    </sql>
+    <sql id="termanagetable">
+        terminal_management
+    </sql>
+    <sql id="termanagepictable">
+        terminals_pic
+    </sql>
+
+    <sql id="selectOrganizationVo">
+        SELECT
+            t.tid,
+            t.tname,
+            userinfo.uname,
+            area.aname,
+            t.lastaccesstime,
+            t.mflowusing,
+            t.irfrequency,
+            t.intertime,
+            t.terminaltype,
+            terminal_management.longitude,
+            terminal_management.latitude,
+            ter_conditions.basestation,
+            t.phone,
+            terminal_management.maintenanceFunds,
+            t.powerconsumption,
+            terminal_traffic.usetraffic,
+            t.onlinestate,
+            t.dcs,
+            t.rds,
+            t.pdmode,
+            t.chargecurrent,
+            t.brfrequency,
+            t.transmitpower,
+            t.reflectedpower,
+            t.workvoltage,
+            t.batteryvoltage,
+            t.loadcurrent,
+            t.fmfrequency,
+            t.manager,
+            t.managertel,
+            t.createtime,
+            t.isuse,
+            t.address,
+            t.aid,
+            ter_conditions.nettype,
+            t.note,
+            t.atphone,
+            t.facid,
+            t.mflowusing,
+            t.eovolume,
+            t.poscene,
+            t.hbtime,
+            area.parentaid,
+            t.transmitfrequency
+        from
+            terminals t
+            left join userinfo on t.userid = userinfo.userid
+            left join area on t.aid = area.aid
+            left join terminal_management on t.tid = terminal_management.tid
+            left join ter_conditions on t.tid = ter_conditions.tid
+            left join terminal_traffic on t.tid = terminal_traffic.tid
+
+    </sql>
+    <!--    查询-->
+    <select id="selectOrganizationList" parameterType="com.sixin.broad.domain.Organization" resultMap="OrganizationResult">
+        SELECT
+        `ry`.`sys_user`.`user_name` as uname,
+        `broad`.`terminal_management`.`longitude`,
+        `broad`.`terminal_management`.`latitude`,
+        `broad`.`terminal_management`.`maintenanceFunds`,
+        `broad`.`terminal_management`.`PowerConsumption` as powerconsumption,
+        `broad`.`ter_conditions`.`nettype`,
+        `broad`.`ter_conditions`.`basestation`,
+        `broad`.`ter_conditions`.`lastaccesstime` as lastaccesstime,
+        `broad`.`ter_conditions`.`transmitpower`,
+        `broad`.`ter_conditions`.`createtime`,
+        `broad`.`ter_conditions`.`rds`,
+        `broad`.`ter_conditions`.`reflectedpower`,
+        `broad`.`ter_conditions`.`workvoltage`,
+        `broad`.`area`.`parentaid`,
+        `broad`.`area`.`aname`,
+        `broad`.`terminals`.*
+        FROM
+        `broad`.`terminals`,
+        `ry`.`sys_user`,
+        `broad`.`area`,
+        `broad`.`terminal_management`,
+        `broad`.`ter_conditions`
+        WHERE
+        `broad`.`terminals`.`userid` = `ry`.`sys_user`.`user_id`
+        AND
+        `broad`.`terminals`.`aid` = `broad`.`area`.`aid`
+        AND
+        `broad`.`terminals`.`tid` = `broad`.`terminal_management`.`tid`
+        AND
+        `broad`.`terminals`.`tid` = `broad`.`ter_conditions`.`tid`
+        <if test="userid != null  and userid != '' "> and `broad`.`terminals`.userid = #{userid}</if>
+        <if test="tid != null  and tid != '' "> and `broad`.`terminals`.tid = #{tid}</if>
+        <if test="tname != null  and tname != '' "> and `broad`.`terminals`.tname = #{tname}</if>
+        <if test="uname != null  and uname != '' "> and `ry`.`sys_user`.`uname` = #{uname}</if>
+        <if test="aname != null  and aname != '' "> and `broad`.`area`.aname = #{aname}</if>
+        <if test="lastaccesstime != null  and lastaccesstime != '' ">
+            <choose>
+                <when test="lastaccesstime == '-1'.toString()">
+                    AND `broad`.`terminals`.lastaccesstime <![CDATA[ > ]]> DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                </when>
+                <when test="lastaccesstime == '0'.toString()">
+                    AND `broad`.`terminals`.lastaccesstime <![CDATA[ < ]]> DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                </when>
+                <when test="lastaccesstime == '1'.toString()">
+                    AND `broad`.`terminals`.lastaccesstime <![CDATA[ > ]]> DATE_SUB(CURDATE(), INTERVAL 2 DAY) and `broad`.`terminals`.lastaccesstime <![CDATA[ < ]]> DATE_SUB(CURDATE(), INTERVAL 0 DAY)
+                </when>
+                <when test="lastaccesstime == '2'.toString()">
+                    AND `broad`.`terminals`.lastaccesstime <![CDATA[ > ]]> DATE_SUB(CURDATE(), INTERVAL 3 DAY) and `broad`.`terminals`.lastaccesstime <![CDATA[ < ]]> DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                </when>
+            </choose>
+        </if>
+        <if test="intertime != null  and intertime != '' "> and `broad`.`terminals`.intertime = #{intertime}</if>
+        <if test="terminaltype != null  and terminaltype != '' "> and `broad`.`terminals`.terminaltype = #{terminaltype}</if>
+        <if test="longitude != null  and longitude != '' "> and `broad`.`terminal_management`.longitude = #{longitude}</if>
+        <if test="latitude != null  and latitude != '' "> and `broad`.`terminal_management`.latitude = #{latitude}</if>
+        <if test="maintenanceFunds != null  and maintenanceFunds != '' "> and `broad`.`terminal_management`.maintenanceFunds = #{maintenanceFunds}</if>
+        <if test="basestation != null  and basestation != '' "> and `broad`.`ter_conditions`.basestation = #{basestation}</if>
+        <if test="phone != null  and phone != '' "> and `broad`.`terminals`.phone = #{phone}</if>
+        <if test="powerconsumption != null  and powerconsumption != '' "> and `broad`.`terminals`.powerconsumption = #{powerconsumption}</if>
+        <if test="onlinestate != null  and onlinestate != '' "> and `broad`.`terminals`.onlinestate = #{onlinestate}</if>
+        <if test="dcs != null  and dcs != '' "> and `broad`.`terminals`.dcs = #{dcs}</if>
+        <if test="transmitpower != null  and transmitpower != '' "> and `broad`.`terminals`.transmitpower = #{transmitpower}</if>
+        <if test="reflectedpower != null  and reflectedpower != '' "> and `broad`.`terminals`.reflectedpower = #{reflectedpower}</if>
+        <if test="workvoltage != null  and workvoltage != '' "> and `broad`.`terminals`.workvoltage = #{workvoltage}</if>
+        <if test="batteryvoltage != null  and batteryvoltage != '' "> and `broad`.`terminals`.batteryvoltage = #{batteryvoltage}</if>
+        <if test="loadcurrent != null  and loadcurrent != '' "> and `broad`.`terminals`.loadcurrent = #{loadcurrent}</if>
+        <if test="pdmode != null  and pdmode != '' "> and `broad`.`terminals`.pdmode = #{pdmode}</if>
+        <if test="chargecurrent != null and chargecurrent != '' "> and `broad`.`terminals`.chargecurrent = #{chargecurrent}</if>
+        <if test="fmfrequency != null and fmfrequency != '' "> and `broad`.`terminals`.fmfrequency = #{fmfrequency}</if>
+        <if test="manager != null and manager != '' "> and `broad`.`terminals`.manager = #{manager}</if>
+        <if test="managertel != null and managertel != '' "> and `broad`.`terminals`.managertel = #{managertel}</if>
+        <if test="createtime != null and createtime != '' "> and `broad`.`terminals`.createtime = #{createtime}</if>
+        <if test="isuse != null and isuse != '' "> and `broad`.`terminals`.isuse = #{isuse}</if>
+        <if test="address != null and address != '' "> and `broad`.`terminals`.address = #{address}</if>
+        <if test="aid != null and aid != '' "> and `broad`.`terminals`.aid like CONCAT(#{aid},'%')</if>
+        <if test="mflowusing != null and mflowusing != '' "> and `broad`.`terminals`.mflowusing = #{mflowusing}</if>
+        <if test="irfrequency != null and irfrequency != '' "> and `broad`.`terminals`.irfrequency = #{irfrequency}</if>
+        <if test="brfrequency != null and brfrequency != '' "> and `broad`.`terminals`.brfrequency = #{brfrequency}</if>
+        <if test="eovolume != null and eovolume != '' "> and `broad`.`terminals`.eovolume = #{eovolume}</if>
+        <if test="poscene != null and poscene != '' "> and `broad`.`terminals`.poscene = #{poscene}</if>
+        <if test="parentaid != null and parentaid != '' "> and `broad`.`area`.parentaid = #{parentaid}</if>
+        <if test="hbtime != null and hbtime != '' "> and `broad`.`terminals`.hbtime = #{hbtime}</if>
+        ORDER BY createtime DESC
+    </select>
+    <!--    批量删除-->
+    <delete id="deleteOrganizationByIds" parameterType="String">
+        delete from terminal_management where tid in
+        <foreach item="tid" collection="array" open="(" index=""                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             separator="," close=")">
+            #{tid}
+        </foreach>;
+        delete from terminals where tid in
+        <foreach item="tid" collection="array" open="(" index=""                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             separator="," close=")">
+            #{tid}
+        </foreach>;
+        delete from ter_conditions where tid in
+        <foreach item="tid" collection="array" open="(" index=""                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             separator="," close=")">
+            #{tid}
+        </foreach>;
+    </delete>
+    <!--    新增-->
+    <insert id="insertOrganization" parameterType="com.sixin.broad.domain.Organization">
+        insert into terminals
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid !=''">tid,</if>
+            <if test="aid != null and aid !=''">aid,</if>
+            <if test="userid != null and userid !=''">userid,</if>
+            <if test="tname != null and tname !=''">tname,</if>
+            <if test="intertime != null and intertime != '' ">intertime,</if>
+            <if test="facid != null and facid != '' ">facid,</if>
+            <if test="address != null and address != '' ">address,</if>
+            <if test="comstand != null and comstand != '' ">comstand,</if>
+            <if test="broadtel != null and broadtel != '' ">broadtel,</if>
+            <if test="manager != null and manager != '' ">manager,</if>
+            <if test="managertel != null and managertel != '' ">managertel,</if>
+            <if test="isuse != null and isuse != '' ">isuse,</if>
+            <if test="phone != null and phone != '' ">phone,</if>
+            <if test="trafficlimit != null and trafficlimit != '' ">trafficlimit,</if>
+            <if test="terminaltype != null and terminaltype != '' ">terminaltype,</if>
+            <if test="poscene != null and poscene != '' ">poscene,</if>
+            <if test="onlinestate != null and onlinestate != '' ">onlinestate,</if>
+            <if test="dcs != null and dcs != '' ">dcs,</if>
+            <if test="pdmode != null and pdmode != '' ">pdmode,</if>
+            <if test="chargecurrent != null and chargecurrent != '' ">chargecurrent,</if>
+            <if test="irfrequency != null and irfrequency != '' ">irfrequency,</if>
+            <if test="transmitfrequency != null and transmitfrequency != '' ">transmitfrequency,</if>
+            <if test="mflowusing != null and mflowusing != '' ">mflowusing,</if>
+            <if test="brfrequency != null and brfrequency != '' ">brfrequency,</if>
+            <if test="atphone != null and atphone != '' ">atphone,</if>
+            <if test="eovolume != null and eovolume != '' ">eovolume,</if>
+            <if test="batteryvoltage != null and batteryvoltage != '' ">batteryvoltage,</if>
+            <if test="loadcurrent != null and loadcurrent != '' ">loadcurrent,</if>
+            <if test="hbtime != null and hbtime != '' ">hbtime</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid !=''">#{tid},</if>
+            <if test="aid != null and aid !=''">#{aid},</if>
+            <if test="userid != null and userid !=''">#{userid},</if>
+            <if test="tname != null and tname !=''">#{tname},</if>
+            <if test="intertime != null and intertime != '' ">#{intertime},</if>
+            <if test="facid != null and facid != '' ">#{facid},</if>
+            <if test="address != null and address != '' ">#{address},</if>
+            <if test="comstand != null and comstand != '' ">#{comstand},</if>
+            <if test="broadtel != null and broadtel != '' ">#{broadtel},</if>
+            <if test="manager != null and manager != '' ">#{manager},</if>
+            <if test="managertel != null and managertel != '' ">#{managertel},</if>
+            <if test="isuse != null and isuse != '' ">#{isuse},</if>
+            <if test="phone != null and phone != '' ">#{phone},</if>
+            <if test="trafficlimit != null and trafficlimit != '' ">#{trafficlimit},</if>
+            <if test="terminaltype != null and terminaltype != '' ">#{terminaltype},</if>
+            <if test="poscene != null and poscene != '' ">#{poscene},</if>
+            <if test="onlinestate != null and onlinestate != '' ">#{onlinestate},</if>
+            <if test="dcs != null and dcs != '' ">#{dcs},</if>
+            <if test="pdmode != null and pdmode != '' ">#{pdmode},</if>
+            <if test="chargecurrent != null and chargecurrent != '' ">#{chargecurrent},</if>
+            <if test="irfrequency != null and irfrequency != '' ">#{irfrequency},</if>
+            <if test="transmitfrequency != null and transmitfrequency != '' ">#{transmitfrequency},</if>
+            <if test="mflowusing != null and mflowusing != '' ">#{mflowusing},</if>
+            <if test="brfrequency != null and brfrequency != '' ">#{brfrequency},</if>
+            <if test="atphone != null and atphone != '' ">#{atphone},</if>
+            <if test="eovolume != null and eovolume != '' ">#{eovolume},</if>
+            <if test="batteryvoltage != null and batteryvoltage != '' ">#{batteryvoltage},</if>
+            <if test="loadcurrent != null and loadcurrent != '' ">#{loadcurrent},</if>
+            <if test="hbtime != null and hbtime != '' ">#{hbtime}</if>
+        </trim>;
+        insert into ter_conditions
+        <trim  prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid !=''">tid,</if>
+            <if test="hversion != null and hversion !=''">hversion,</if>
+            <if test="sversion != null and sversion !=''">sversion,</if>
+            <if test="temp != null and temp !=''">temp,</if>
+            <if test="nettype != null and nettype !=''">nettype,</if>
+            <if test="qsignal != null and qsignal !=''">qsignal,</if>
+            <if test="sd != null and sd !=''">sd,</if>
+            <if test="mp3 != null and mp3 !=''">mp3,</if>
+            <if test="fm != null and fm !=''">fm,</if>
+            <if test="gsm != null and gsm !=''">gsm,</if>
+            <if test="nullv != null and nullv !=''">nullv,</if>
+            <if test="basestation != null and basestation !=''">basestation,</if>
+            createtime,
+            <if test="remark != null and remark !=''">remark,</if>
+            <if test="transmitpower != null and transmitpower !=''">transmitpower,</if>
+            <if test="reflectedpower != null and reflectedpower !=''">reflectedpower,</if>
+            <if test="workvoltage != null and workvoltage !=''">workvoltage,</if>
+            <if test="rds != null and rds !=''">rds,</if>
+            <if test="fmfrequency != null and fmfrequency !=''">fmfrequency,</if>
+            <if test="updatatime != null and updatatime !=''">updatatime,</if>
+            <if test="lastaccesstime != null and lastaccesstime !=''">lastaccesstime,</if>
+            <if test="sdf != null and sdf !=''">sdf</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid !=''">#{tid},</if>
+            <if test="hversion != null and hversion !=''">#{hversion},</if>
+            <if test="sversion != null and sversion !=''">#{sversion},</if>
+            <if test="temp != null and temp !=''">#{temp},</if>
+            <if test="nettype != null and nettype !=''">#{nettype},</if>
+            <if test="qsignal != null and qsignal !=''">#{qsignal},</if>
+            <if test="sd != null and sd !=''">#{sd},</if>
+            <if test="mp3 != null and mp3 !=''">#{mp3},</if>
+            <if test="fm != null and fm !=''">#{fm},</if>
+            <if test="gsm != null and gsm !=''">#{gsm},</if>
+            <if test="nullv != null and nullv !=''">#{nullv},</if>
+            <if test="basestation != null and basestation !=''">#{basestation},</if>
+            now(),
+            <if test="remark != null and remark !=''">#{remark},</if>
+            <if test="transmitpower != null and transmitpower !=''">#{transmitpower},</if>
+            <if test="reflectedpower != null and reflectedpower !=''">#{reflectedpower},</if>
+            <if test="workvoltage != null and workvoltage !=''">#{workvoltage},</if>
+            <if test="rds != null and rds !=''">#{rds},</if>
+            <if test="fmfrequency != null and fmfrequency !=''">#{fmfrequency},</if>
+            <if test="updatatime != null and updatatime !=''">#{updatatime},</if>
+            <if test="lastaccesstime != null and lastaccesstime !=''">#{lastaccesstime},</if>
+            <if test="sdf != null and sdf !=''">#{sdf}</if>
+        </trim>;
+        insert into terminal_management
+        <trim  prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid !=''">tid,</if>
+            <if test="supervisionUnit != null and supervisionUnit !=''">supervisionUnit,</if>
+            <if test="accountabilityUnit != null and accountabilityUnit !=''">accountabilityUnit,</if>
+            <if test="longitude != null and longitude !=''">longitude,</if>
+            <if test="latitude != null and latitude !=''">latitude,</if>
+            <if test="families != null and families !=''">families,</if>
+            <if test="population != null and population !=''">population,</if>
+            <if test="powerConsumption != null and powerConsumption !=''">powerConsumption,</if>
+            <if test="maintenanceFunds != null and maintenanceFunds !=''">maintenanceFunds,</if>
+            <if test="remark != null and remark !=''">remark,</if>
+            <if test="backupBatteryVoltage != null and backupBatteryVoltage !=''">backupBatteryVoltage</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid !=''">#{tid},</if>
+            <if test="supervisionUnit != null and supervisionUnit !=''">#{supervisionUnit},</if>
+            <if test="accountabilityUnit != null and accountabilityUnit !=''">#{accountabilityUnit},</if>
+            <if test="longitude != null and longitude !=''">#{longitude},</if>
+            <if test="latitude != null and latitude !=''">#{latitude},</if>
+            <if test="families != null and families !=''">#{families},</if>
+            <if test="population != null and population !=''">#{population},</if>
+            <if test="powerConsumption != null and powerConsumption !=''">#{powerConsumption},</if>
+            <if test="maintenanceFunds != null and maintenanceFunds !=''">#{maintenanceFunds},</if>
+            <if test="remark != null and remark !=''">#{remark},</if>
+            <if test="backupBatteryVoltage != null and backupBatteryVoltage !=''">#{backupBatteryVoltage}</if>
+        </trim>;
+    </insert>
+    <!--    更新-->
+    <update id="updateOrganization" parameterType="com.sixin.broad.domain.Organization">
+        update terminals set
+        <trim suffixOverrides=",">
+            <if test="tid != null and tid !=''">tid = #{tid},</if>
+            <if test="aid != null and aid !=''">aid = #{aid},</if>
+            <if test="userid != null and userid !=''">userid = #{userid},</if>
+            <if test="tname != null and tname !=''">tname = #{tname},</if>
+            <if test="intertime != null and intertime != '' ">intertime = #{intertime},</if>
+            <if test="facid != null and facid != '' ">facid = #{facid},</if>
+            <if test="address != null and address != '' ">address = #{address},</if>
+            <if test="comstand != null and comstand != '' ">comstand = #{comstand},</if>
+            <if test="broadtel != null and broadtel != '' ">broadtel = {broadtel},</if>
+            <if test="manager != null and manager != '' ">manager = #{manager},</if>
+            <if test="managertel != null and managertel != '' ">managertel = #{managertel},</if>
+            <if test="isuse != null and isuse != '' ">isuse = #{isuse},</if>
+            <if test="phone != null and phone != '' ">phone = #{phone},</if>
+            <if test="trafficlimit != null and trafficlimit != '' ">trafficlimit = #{trafficlimit},</if>
+            <if test="terminaltype != null and terminaltype != '' ">terminaltype = #{terminaltype},</if>
+            <if test="poscene != null and poscene != '' ">poscene = #{poscene},</if>
+            <if test="onlinestate != null and onlinestate != '' ">onlinestate = #{onlinestate},</if>
+            <if test="dcs != null and dcs != '' ">dcs = #{dcs},</if>
+            <if test="pdmode != null and pdmode != '' ">pdmode = #{pdmode},</if>
+            <if test="chargecurrent != null and chargecurrent != '' ">chargecurrent = #{chargecurrent},</if>
+            <if test="irfrequency != null and irfrequency != '' ">irfrequency = #{irfrequency},</if>
+            <if test="transmitfrequency != null and transmitfrequency != '' ">transmitfrequency = #{transmitfrequency},</if>
+            <if test="mflowusing != null and mflowusing != '' ">mflowusing = #{mflowusing},</if>
+            <if test="brfrequency != null and brfrequency != '' ">brfrequency = #{brfrequency},</if>
+            <if test="atphone != null and atphone != '' ">atphone = #{atphone},</if>
+            <if test="eovolume != null and eovolume != '' ">eovolume = #{eovolume},</if>
+            <if test="batteryvoltage != null and batteryvoltage != '' ">batteryvoltage = #{batteryvoltage},</if>
+            <if test="loadcurrent != null and loadcurrent != '' ">loadcurrent = #{loadcurrent},</if>
+            <if test="hbtime != null and hbtime != '' ">hbtime = #{hbtime}</if>
+        </trim> where tid=#{tid};
+        update ter_conditions set
+        <trim suffixOverrides=",">
+            <if test="hversion != null and hversion !=''">hversion = #{hversion},</if>
+            <if test="sversion != null and sversion !=''">sversion = #{sversion},</if>
+            <if test="temp != null and temp !=''">temp = #{temp},</if>
+            <if test="nettype != null and nettype !=''">nettype = #{nettype},</if>
+            <if test="qsignal != null and qsignal !=''">qsignal = #{qsignal},</if>
+            <if test="sd != null and sd !=''">sd = #{sd},</if>
+            <if test="mp3 != null and mp3 !=''">mp3 = #{mp3},</if>
+            <if test="fm != null and fm !=''">fm = {fm},</if>
+            <if test="gsm != null and gsm !=''">gsm = #{gsm},</if>
+            <if test="nullv != null and nullv !=''">nullv = #{nullv},</if>
+            <if test="basestation != null and basestation !=''">basestation = #{basestation},</if>
+            <if test="remark != null and remark !=''">remark = {remark},</if>
+            <if test="transmitpower != null and transmitpower !=''">transmitpower = #{transmitpower},</if>
+            <if test="reflectedpower != null and reflectedpower !=''">reflectedpower = #{reflectedpower},</if>
+            <if test="workvoltage != null and workvoltage !=''">workvoltage = #{workvoltage},</if>
+            <if test="rds != null and rds !=''">rds = #{rds},</if>
+            <if test="fmfrequency != null and fmfrequency !=''">fmfrequency = #{fmfrequency},</if>
+            updatatime = now(),
+            <if test="lastaccesstime != null and lastaccesstime !=''">lastaccesstime = #{lastaccesstime},</if>
+            <if test="sdf != null and sdf !=''">sdf = #{sdf}</if>
+        </trim>
+        where tid=#{tid};
+        update terminal_management set
+        <trim suffixOverrides=",">
+            <if test="supervisionUnit != null and supervisionUnit !=''">supervisionUnit = #{supervisionUnit},</if>
+            <if test="accountabilityUnit != null and accountabilityUnit !=''">accountabilityUnit = #{accountabilityUnit},</if>
+            <if test="longitude != null and longitude !=''">longitude = #{longitude},</if>
+            <if test="latitude != null and latitude !=''">latitude = #{latitude},</if>
+            <if test="families != null and families !=''">families = #{families},</if>
+            <if test="population != null and population !=''">population = #{population},</if>
+            <if test="powerConsumption != null and powerConsumption !=''">powerConsumption = #{powerConsumption},</if>
+            <if test="maintenanceFunds != null and maintenanceFunds !=''">maintenanceFunds = #{maintenanceFunds},</if>
+            <if test="backupBatteryVoltage != null and backupBatteryVoltage !=''">backupBatteryVoltage = #{backupBatteryVoltage}</if>
+        </trim>
+        where tid=#{tid};
+    </update>
+    <!--    根据ids批量查询数据，主要用于导出-->
+    <select id="selectOrganizationListByTids" resultMap="OrganizationResult">
+        SELECT
+        `ry`.`sys_user`.`user_name` as uname,
+        `broad`.`terminal_management`.`longitude`,
+        `broad`.`terminal_management`.`latitude`,
+        `broad`.`terminal_management`.`maintenanceFunds`,
+        `broad`.`terminal_management`.`PowerConsumption` as powerconsumption,
+        `broad`.`ter_conditions`.`nettype`,
+        `broad`.`ter_conditions`.`basestation`,
+        `broad`.`ter_conditions`.`lastaccesstime` as lastaccesstime,
+        `broad`.`ter_conditions`.`transmitpower`,
+        `broad`.`ter_conditions`.`createtime`,
+        `broad`.`ter_conditions`.`rds`,
+        `broad`.`ter_conditions`.`reflectedpower`,
+        `broad`.`ter_conditions`.`workvoltage`,
+        `broad`.`area`.`parentaid`,
+        `broad`.`area`.`aname`,
+        `broad`.`terminals`.*
+        FROM
+        `broad`.`terminals`,
+        `ry`.`sys_user`,
+        `broad`.`area`,
+        `broad`.`terminal_management`,
+        `broad`.`ter_conditions`
+        WHERE
+        `broad`.`terminals`.`userid` = `ry`.`sys_user`.`user_id`
+        AND
+        `broad`.`terminals`.`aid` = `broad`.`area`.`aid`
+        AND
+        `broad`.`terminals`.`tid` = `broad`.`terminal_management`.`tid`
+        AND
+        `broad`.`terminals`.`tid` = `broad`.`ter_conditions`.`tid`
+        AND `broad`.`terminals`.`tid` in
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
+    <select id="selectOrganizationByTid" parameterType="String" resultMap="OrganizationResult">
+        <include refid="selectOrganizationVo"/>
+        where t.tid = #{tid}
+    </select>
+
+    <select id="listNextAid" parameterType="String" resultType="String">
+        SELECT t.aid
+        FROM area as t
+        WHERE t.parentaid = #{aid}
+        GROUP BY aid
+    </select>
+
+    <select id="listNextAidName" parameterType="String" resultType="com.sixin.broad.domain.Area">
+        SELECT t.aid,t.parentaid,t.aname
+        FROM area as t
+        WHERE aid = #{aid} or t.parentaid = #{aid}
+        GROUP BY aid
+    </select>
+
+    <select id="selectRdsByTid" parameterType="String" resultType="com.sixin.broad.domain.Organization">
+        SELECT rds,fmfrequency
+        FROM terminals
+        WHERE tid = #{tid}
+    </select>
+
+    <insert id="insertOrganizationPic" parameterType="com.sixin.broad.domain.Organization">
+        insert into terminals_pic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">tid,</if>
+            <if test="pic != null  and pic != ''  ">pic,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">#{tid},</if>
+            <if test="pic != null  and pic != ''  ">#{pic},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertTerminalTes" parameterType="com.sixin.broad.domain.Organization">
+        INSERT INTO `broad`.`terminaltels`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid != '' ">tid,</if>
+            <if test="tel != null and tel != '' ">tel,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid != '' ">#{tid},</if>
+            <if test="tel != null and tel != '' ">#{tel},</if>
+        </trim>
+    </insert>
+
+    <select id="exportOrganization" parameterType="com.sixin.broad.domain.Organization" resultMap="OrganizationResult">
+    select terminals.tid,
+           terminals.tname,
+           area.aname,
+		   userinfo.uname,
+		   terminals.facid,
+		   terminals.address,
+		   terminals.Longitude,
+		   terminals.Latitude,
+		   terminals.phone,
+		   terminals.comstand,
+		   terminals.broadtel,
+		   terminals.fmfrequency,
+		   terminals.manager,
+		   terminals.managertel,
+		   terminals.intertime,
+		   terminals.rds,
+		   terminals.trafficlimit,
+		   terminal_management.SupervisionUnit,
+		   terminal_management.AccountabilityUnit,
+		   terminal_management.Families,
+		   terminal_management.Population,
+		   terminal_management.TwoOverlayMode,
+		   terminal_management.TwoOverlayNumber,
+		   terminal_management.TwoOverlayFamiles,
+		   terminal_management.TwoOverlayPopulations,
+		   terminal_management.maintenanceFunds
+       from terminals,terminal_management,area,userinfo
+       where terminals.tid = terminal_management.tid and terminals.aid = area.aid and terminals.userid = userinfo.userid
+    </select>
+
+    <update id="updateUsername" parameterType="com.sixin.broad.domain.Organization">
+        update tb_organization t,userinfo ui
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uname != null  and uname != ''  ">ui.uname = #{uname},</if>
+        </trim>
+        where t.userid = ui.userid and t.tid = #{tid}
+    </update>
+
+    <select id="selectProBroadList" parameterType="com.sixin.broad.domain.Organization" resultMap="OrganizationResult">
+        select
+        tid,
+        tname,
+        aid
+        from
+        <include refid="tableName"></include>
+        <where>
+            <if test="aid != null  and aid != '' "> aid like CONCAT(#{aid},'%')</if>
+        </where>
+    </select>
+
+    <update id="updateRdsByIds" >
+        update  terminals set rds = #{number} where tid in
+        <foreach item="tid" collection="ids" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </update>
+
+    <update id="updateFmfrequencyByIds" >
+        update  terminals set fmfrequency = #{number} where tid in
+        <foreach item="tid" collection="ids" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </update>
+
+    <update id="updateIsuseByTid" parameterType="String">
+        update terminals
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isuse != null  ">isuse = #{isuse},</if>
+
+        </trim>
+        where tid = #{tid}
+    </update>
+
+    <select id="selectTelsByTid" parameterType="String" resultMap="TerminaltelsResult">
+        SELECT telid,tid,tel,telperson,isuse
+        FROM terminaltels
+        WHERE tid = #{tid}
+    </select>
+    <!--根据aid分类的终端信息展示列表-->
+    <select id="selectByaid" parameterType="String" resultMap="OrganizationResult1">
+        SELECT tb_organization.*
+        FROM tb_organization
+        <where>
+            <if test="aid != null "> tb_organization.aid = #{aid}</if>
+        </where>
+    </select>
+
+    <!--流媒体直播 选择直播终端(村务宝典)-->
+    <select id="selecttidBytwo" resultMap="OrganizationResult">
+        SELECT tb_organization.*
+        FROM tb_organization
+        where tb_organization.userid = #{userid} and tid in
+        <foreach item="tid" collection="tids" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </select>
+
+    <!--根据用户id获取LED终端列表-->
+    <select id="selectByLedUserid" parameterType="com.sixin.broad.domain.Organization" resultMap="OrganizationResult">
+        SELECT
+        tb_organization.*,ledshow.*,terminals_ledshow.*,terminal_management.*
+        FROM
+        ((((terminals_ledshow right join ledshow on ledshow.lsid = terminals_ledshow.lsid)
+        left join tb_organization on terminals_ledshow.tid = tb_organization.tid)
+        left join terminal_management on terminals_ledshow.tid = terminal_management.tid)
+        )
+        <where>
+            <if test="userid != null  and userid != '' "> and ledshow.userid = #{userid}</if>
+            <if test="tid != null  and tid != '' "> and tb_organization.tid like CONCAT('%',#{tid},'%')</if>
+            <if test="phone != null  and phone != '' "> and tb_organization.phone like CONCAT('%',#{phone},'%')</if>
+            <if test="longitude != null  and longitude != '' "> and terminal_management.longitude like CONCAT('%',#{longitude},'%')</if>
+            <if test="latitude != null  and latitude != '' "> and terminal_management.latitude like CONCAT('%',#{latitude},'%')</if>
+        </where>
+        ORDER BY createtime desc
+    </select>
+
+    <insert id="addphoneEdit" parameterType="com.sixin.broad.domain.TerminalTels" keyProperty="telid">
+        INSERT INTO `broad`.`terminaltels`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid != '' ">tid,</if>
+            <if test="tel != null and tel != '' ">tel,</if>
+            <if test="telperson != null and telperson != '' ">telperson,</if>
+            <if test="isuse != null and isuse != '' ">isuse,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null and tid != '' ">#{tid},</if>
+            <if test="tel != null and tel != '' ">#{tel},</if>
+            <if test="telperson != null and telperson != '' ">#{telperson},</if>
+            <if test="isuse != null and isuse != '' ">#{isuse},</if>
+        </trim>
+    </insert>
+    <!--    根据telid删除授权号码-->
+    <delete id="deletephoneedit" parameterType="String">
+        delete from `broad`.`terminaltels` where telid = #{telid}
+    </delete>
+
+    <update id="terinfoedittime">
+        update  terminals set intertime = #{param1} where tid  in
+        <foreach collection="arg1" item="arg" open="(" close=")" separator=",">
+            #{arg}
+        </foreach>
+    </update>
+
+    <update id="terinfoeditrds">
+        update  terminals set rds = #{param1} where tid  in
+        <foreach collection="arg1" item="arg" open="(" close=")" separator=",">
+            #{arg}
+        </foreach>
+    </update>
+
+    <update id="terinfoeditfrequency">
+        update  terminals set brfrequency = #{param1} where tid  in
+        <foreach collection="arg1" item="arg" open="(" close=")" separator=",">
+            #{arg}
+        </foreach>
+    </update>
+
+    <insert id="terinfoeditphone">
+        insert into terminaltels (tid, Tel, telperson)
+        VALUES
+        <foreach collection ="list" item="item" separator =",">
+            (#{item.tid}, #{item.atphone}, #{item.manager})
+        </foreach >
+    </insert>
+
+    <update id="terinfoeditphonedelete">
+        delete from terminaltels where Tel = #{param1} and tid  in
+        <foreach collection="arg1" item="arg" open="(" close=")" separator=",">
+            #{arg}
+        </foreach>
+    </update>
+
+
+</mapper>

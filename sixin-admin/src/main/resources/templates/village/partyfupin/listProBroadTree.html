@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <form id="user-form">
+                <input type="hidden" id="deptId" name="deptId">
+            </form>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <a class="btn btn-danger btn-del disabled" onclick="addProIdAll()">
+                工作人员选择
+            </a>
+        </div>
+        <div>
+            <input id="org" name="org"  width="50%" placeholder=""  readonly="true">
+            <input id="tname" type="hidden" name="tname"  width="50%" placeholder="">
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "village/project";
+
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/listProBroad",
+            modalName: "用户管理",
+            search: false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field : 'userId',
+                    title : '用户编号',
+                    visible: false
+                },
+                {
+                    field : 'userName',
+                    title : '用户名称',
+                    sortable: true
+                },
+                {
+                    field : 'phonenumber',
+                    title : '手机号码',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    };
+
+    function queryAreaTree()
+    {
+        var url = ctx + "village/project/listProBroadTree";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#deptId").val(treeNode.id);
+            /*$("#tid").val(treeNode.pId);*/
+            $.table.search();
+        }
+    }
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    // 获取所选择终端IMEI号的方法
+    function addProIdAll() {
+        /*在选择用户前先获取一次文本框的值，为的是可以选择多个部门的用户*/
+        var originalValue = document.getElementById("org").value;
+        var originalName = document.getElementById("tname").value;
+        /*通过选择框去获取终端的IMEI号*/
+        var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+        var rowsName = $.table.selectColumns('userName');
+        var data = { "ids": rows.join() };
+         var dataName = { "idnames": rowsName.join() };
+        var test = data;
+         var testname = dataName;
+        var i,j;
+
+        /*传输的用户id*/
+        var userid ="";
+         var username ="";
+
+        for(i in test){
+            userid = userid + test[i];
+            console.log(userid);
+            console.log("userid:",test[i]);/*这里test[i]是所选择用户的id的字符串ps：111,222*/
+        }
+
+        for(j in testname){
+            username = username + testname[j];
+            console.log(username);
+            console.log("username:",testname[j]);/!*这里testname[i]是所选择用户的名字的字符串ps：111,222*!/
+        }
+
+        /*给文本框赋值*/
+            var selectValue = test[i] + "," + originalValue ;
+        document.getElementById("org").value = selectValue;
+            var selectName = testname[j] + ',' + originalName;
+        document.getElementById("tname").value = selectName;
+
+        console.log("selectValue:" + selectValue);
+
+        //这里在子页面通过调用父页面方法，将子页面的值传给父页面
+        parent.ccc(selectValue,selectName);
+    }
+
+
+</script>
+</body>
+</html>

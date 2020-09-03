@@ -1,0 +1,1851 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 组织机构
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <!--<li>-->
+                        <!--请选择地域编号：<input type="text" name="aid" id="aid" onclick="selectAidTree()"/>-->
+                        <!--</li>-->
+                        <li>
+                            <input type="hidden" name="aid" id="aid" onclick="selectAidTree()"/>
+                        </li>
+
+                        <li class="select-time">
+                            <label>请选择查询时间段： </label>
+                            <input type="text" class="time-input" id="startTime" value="1949-01-01" placeholder="开始时间" name="params[beginTime]"/>
+                            <span>-</span>
+                            <input type="text" class="time-input" id="endTime" value="2020-01-01" placeholder="结束时间" name="params[endTime]"/>
+                        </li>
+
+                        <li>
+                            <input class="laydate-icon  layer-date"
+                                   name="newtime"
+                                   id="newtime"
+                                   value="2019-01-01"
+                                   readonly="readonly"
+                                   style="width:120px;"
+                                   placeholder="选择新增人口日期"
+                                   title="至今日期"/>
+                        </li>
+
+                        <!--<li>
+                            <input class="laydate-icon  layer-date"
+                                   name="begintime"
+                                   id="begintime"
+                                   value=""
+                                   readonly="readonly"
+                                   style="width:120px;"
+                                   placeholder="选择查询人口开始日期"
+                                   title="开始日期"/>
+                            <span>-</span>
+                            <input class="laydate-icon  layer-date"
+                                   name="endtime"
+                                   id="endtime"
+                                   value=""
+                                   readonly="readonly"
+                                   style="width:120px;"
+                                   placeholder="选择查询人口结束日期"
+                                   title="结束日期"/>
+                        </li>-->
+                        <!-- <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" onclick="countsearch()"><i class="fa fa-search"></i>&nbsp;查询性别比例</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" href="#box1" onclick="countsearch1()"><i class="fa fa-search"></i>&nbsp;查询教育水平</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" href="#box2" onclick="countsearch2()"><i class="fa fa-search"></i>&nbsp;查询健康情况</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" href="#box3" onclick="countsearch3()"><i class="fa fa-search"></i>&nbsp;查询婚姻情况</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" href="#box4" onclick="countsearch4()"><i class="fa fa-search"></i>&nbsp;政治面貌统计</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" href="#box5" onclick="countsearch5()"><i class="fa fa-search"></i>&nbsp;查询年龄情况</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-primary btn-rounded btn-sm" href="#box6" onclick="countsearch6()"><i class="fa fa-search"></i>&nbsp;查询居民住房性质</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-info btn-rounded btn-sm" href="#box7" onclick="countsearch7()"><i class="fa fa-search"></i>&nbsp;查询复健军人比例</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-info btn-rounded btn-sm" href="#box8" onclick="countsearch8()"><i class="fa fa-search"></i>&nbsp;查询低保户信息</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-info btn-rounded btn-sm"  href="#box9" onclick="countsearch9()"><i class="fa fa-search"></i>&nbsp;查询家庭基础设施信息</a>
+                         </li>
+                         <li>
+                             <a class="btn btn-info btn-rounded btn-sm" href="#box10" onclick="countsearch10()"><i class="fa fa-search"></i>&nbsp;查询村民就业状态</a>
+                         </li>
+
+                         <li>
+                             <a class="btn btn-info btn-rounded btn-sm" href="#box11" onclick="countsearch11()"><i class="fa fa-search"></i>&nbsp;查询村民职业信息</a>
+                         </li>-->
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped" style="width: 49%; margin-left: 1%">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>性别比例统计</h5>
+                    <div class="ibox-tools">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">-->
+                            <!--<i class="fa fa-superpowers"></i>-->
+                            <!--</a>-->
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a onclick="init_sex_terminalstate()_terminalstate()">原始数据</a>
+                                </li>
+                            </ul>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="sex_terminalstate"></div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-sm-12 select-table table-striped" style="width: 49%; margin-right: 1%">
+             <div class="ibox float-e-margins">
+                 <div class="ibox-title">
+                     <h5>年龄比例统计</h5>
+                     <div class="ibox-tools">
+
+                         <ul class="dropdown-menu dropdown-user">
+                             <li><a onclick="init_age_terminalstate()_terminalstate()">原始数据</a>
+                             </li>
+                         </ul>
+                     </div>
+                 </div>
+                 <div class="ibox-content">
+                     <div class="echarts" id="age_terminalstate"></div>
+                 </div>
+             </div>
+             style="width: 49%; height: 380px; margin-left: 1%;margin-top: 0%"
+         </div>-->
+        <div class="col-sm-12 select-table table-striped" style="width: 49%; margin-right: 1%">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>复原军人比例2018~2019</h5>
+                    <div class="ibox-tools">
+                        <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#">-->
+                        <!--<i class="fa fa-superpowers"></i>-->
+                        <!--</a>-->
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a onclick="init_demob_terminalstate()_terminalstate()">原始数据</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="demob_terminalstate"></div>
+                </div>
+            </div>
+        </div>
+        <!--  <div class="col-sm-12 select-table table-striped" style="width: 49%; height: 380px; margin-right: 1%;margin-top: 0%">
+              <div class="ibox float-e-margins">
+                  <div class="ibox-title">
+                      <h5>低保户比例</h5>
+                      <div class="ibox-tools">
+                          <ul class="dropdown-menu dropdown-user">
+                              <li><a onclick="init_lowincome_terminalstate()_terminalstate()">原始数据</a>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+                  <div class="ibox-content">
+                      <div class="echarts" id="lowincome_terminalstate"></div>
+                  </div>
+              </div>
+          </div>
+        _--->
+
+        <div class="col-sm-12 select-table table-striped" style="width: 98%; height: 380px;margin-top: 0%; margin-left: 1%" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>新增人口</h5>
+
+                    <div class="ibox-tools">
+                        <!--<a class="dropdown-toggle" data-toggle="dropdown" href="#">-->
+                        <!--<i class="fa fa-superpowers"></i>-->
+                        <!--</a>-->
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a onclick="init_newpopu_terminalstate()_terminalstate()">原始数据</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="newpopu_terminalstate"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ibox-title">
+            <a name="box1"></a>
+            <h5><a href="#top">教育水平统计</a></h5>
+        </div>
+
+        <div class="ibox-content">
+            <div class="echarts" id="edu_terminalstate"></div>
+        </div>
+        <div class="ibox-title">
+            <a name="box2"></a>
+            <h5><a href="#top">健康水平统计</a></h5>
+        </div>
+
+        <div class="ibox-content">
+            <div class="echarts" id="health_terminalstate"></div>
+        </div>
+        <div class="ibox-title">
+            <a name="box3"></a>
+            <h5><a href="#top">婚姻状况统计</a></h5>
+        </div>
+
+        <div class="ibox-content">
+            <a name="box4"></a>
+            <div class="echarts" id="wedding_terminalstate"></div>
+        </div>
+
+        <div class="ibox-title">
+            <a name="box5"></a>
+            <h5><a href="#top">政治面貌情况</a></h5>
+        </div>
+
+        <div class="ibox-content">
+            <div class="echarts" id="pol_terminalstate"></div>
+        </div>
+
+        <div class="ibox-title">
+            <a name="box6"></a>
+            <h5><a href="#top">年龄情况统计</a></h5>
+        </div>
+
+        <div class="ibox-content">
+            <div class="echarts" id="age1_terminalstate"></div>
+        </div>
+        <div class="ibox-title">
+            <a name="box7"></a>
+            <h5><a href="#top">居民住房性质统计</a></h5>
+        </div>
+
+        <div class="ibox-content">
+            <div class="echarts" id="house_terminalstate"></div>
+        </div>
+
+        <div class="ibox-title">
+            <a name="box7"></a>
+            <h5><a href="#top">复健军人统计</a></h5>
+        </div>
+        <div class="ibox-content">
+            <div class="echarts" id="isdemob_terminalstate"></div>
+        </div>
+
+        <div class="ibox-title">
+            <a name="box8"></a>
+            <h5><a href="#top">低保户信息统计</a></h5>
+        </div>
+        <div class="ibox-content">
+            <div class="echarts" id="islowincome_terminalstate"></div>
+        </div>
+
+        <div class="ibox-title">
+            <a name="box9"></a>
+            <h5><a href="#top">家庭基础设施信息</a></h5>
+        </div>
+        <div class="ibox-content">
+            <div class="echarts" id="facilities_terminalstate"></div>
+        </div>
+
+        <div class="ibox-title">
+            <a name="box10"></a>
+            <h5><a href="#top">村民就业状态</a></h5>
+        </div>
+        <div class="ibox-content">
+            <div class="echarts" id="jobstate_terminalstate"></div>
+        </div>
+
+        <div class="ibox-title">
+            <a name="box11"></a>
+            <h5><a href="#top">村民职业信息</a></h5>
+        </div>
+        <div class="ibox-content">
+            <div class="echarts" id="job_terminalstate"></div>
+        </div>
+
+    </div>
+    <!--<table id="bootstrap-table" data-mobile-responsive="true"></table>-->
+</div>
+
+
+<div th:include="include :: footer"></div>
+<!--js-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<!--echarts 可视化图形 插件-->
+<script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script>
+    var prefix = ctx + "village/analysis";
+    $(function() {
+        $('body').layout({ west__size: 185});
+        queryDeptTree();
+    });
+    function countsearch()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var grouptype=$("#grouptype").val();
+        var newtime=$("#newtime").val();//startTime,endTime
+        var startTime=$("#startTime").val();
+        var endTime=$("#endTime").val();
+        $.ajax({
+            url:prefix + "/count",
+            data :{"aid":$("#aid").val(),"newtime":$("#newtime").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var fnum=data.split('|')[1];  //男
+                var fmnun=data.split('|')[2]; //女
+                var agenum1=data.split('|')[3];  //年龄大于六十
+                var agenum2=data.split('|')[4];  //年龄小于十
+                var agenum3=data.split('|')[5];   //大于十小于六十
+                var isdemob=data.split('|')[6]; //是复原军人
+                var lowincome=data.split('|')[7]; //是低保
+                var agenum4=data.split('|')[8];// 新增人口
+                var notdemob=count-isdemob;// 不是复员军人
+                var notlowincome=count-lowincome;
+                var notpopu=count-agenum4; //不是新增人口
+                $.modal.closeLoading();
+                init_sex_terminalstate(count,fnum,fmnun);
+                //init_age_terminalstate(count,agenum1,agenum2,agenum3);
+                init_demob_terminalstate(count,isdemob,notdemob);
+                // init_lowincome_terminalstate(count,lowincome,notlowincome);
+                init_newpopu_terminalstate(count,agenum4,notpopu);
+            }
+        })
+
+
+    }
+
+
+    //男女比例样式
+    function init_sex_terminalstate(count,fnum,fmnum) {
+        var bd_terminalstate = echarts.init(document.getElementById('sex_terminalstate'));
+        option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['男性数量', '女性数量']
+            },
+            series: [
+                {
+                    name: '统计数据',
+                    type: 'pie',
+                    radius: '90%',
+                    center: ['50%', '50%'],
+                    data: [
+                        {value: fnum, name: '男性数量'},
+                        {value: fmnum, name: '女性数量'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+    //年龄比例样式
+    function init_age_terminalstate(count,agenum1,agenum2,agenum3) {
+        var bd_terminalstate = echarts.init(document.getElementById('age_terminalstate'));
+        option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['年龄大于60', '年龄小于10','其他']
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '90%',
+                    center: ['50%', '50%'],
+                    data: [
+                        {value: agenum1, name: '年龄大于60'},
+                        {value: agenum2, name: '年龄小于10'},
+                        {value: agenum3, name: '其他'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+    //复员军人
+    function init_demob_terminalstate(count,isdemob,notdemob) {
+        var bd_terminalstate = echarts.init(document.getElementById('demob_terminalstate'));
+        option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['复员军人', '非复员军人']
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '90%',
+                    center: ['50%', '55%'],
+                    data: [
+                        {value: isdemob, name: '复员军人'},
+                        {value: notdemob, name: '非复员军人'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+
+    //低保户
+    function init_lowincome_terminalstate(count,lowincome,notlowincome) {
+        var bd_terminalstate = echarts.init(document.getElementById('lowincome_terminalstate'));
+        option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['低保户', '非低保户']
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '90%',
+                    center: ['50%', '55%'],
+                    data: [
+                        {value: lowincome, name: '低保户'},
+                        {value: notlowincome, name: '非低保户'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+    //新增人口
+    function init_newpopu_terminalstate(count,agenum4,notpopu) {
+        var newtime=$("#newtime").val();
+        var bd_terminalstate = echarts.init(document.getElementById('newpopu_terminalstate'));
+        option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['新增人口:'+newtime+'至今', '非新增人口']
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '90%',
+                    center: ['50%', '55%'],
+                    data: [
+                        {value: agenum4, name: '新增人口:'+newtime+'至今'},
+                        {value: notpopu, name: '非新增人口'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+    //教育水平统计
+    function countsearch1()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var grouptype=$("#grouptype").val();
+        $.ajax({
+            url:prefix + "/count1",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var edu1=data.split('|')[1];//本科
+                var edu2=data.split('|')[2];//研究生
+                var edu3=data.split('|')[3];//大专
+                var edu4=data.split('|')[4];//中专
+                var edu5=data.split('|')[5];//高中
+                var edu6=data.split('|')[6];//初中
+                var edu7=data.split('|')[7];//小学
+                var other=data.split('|')[8];//未知
+                $.modal.closeLoading();
+                init_edu_terminalstate(count,edu1,edu2,edu3,edu4,edu5,edu6,edu7,other);
+
+            }
+        })
+
+
+    }
+    function init_edu_terminalstate(count,edu1,edu2,edu3,edu4,edu5,edu6,edu7,other) {
+        var bd_terminalstate = echarts.init(document.getElementById('edu_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['本科','研究生','大专','中专','高中','初中','小学','未知']
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '90%',
+                    center: ['50%', '50%'],
+                    roseType: 'angle',
+                    data: [
+                        {value: edu1, name: '本科'},
+                        {value: edu2, name: '研究生'},
+                        {value: edu3, name: '大专'},
+                        {value: edu4, name: '中专'},
+                        {value: edu5, name: '高中'},
+                        {value: edu6, name: '初中'},
+                        {value: edu7, name: '小学'},
+                        {value: other, name: '未知'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+    <!------------------------------------------------------------------------------------------------------------ -->
+    function countsearch2()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var grouptype=$("#grouptype").val();
+        $.ajax({
+            url:prefix + "/count2",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var fnum=data.split('|')[1];//男
+                var fnum1=data.split('|')[2];
+                var fnum2=data.split('|')[3];
+                var fmnun=data.split('|')[4]; //女
+                var fmnun1=data.split('|')[5];
+                var fmnun2=data.split('|')[6];
+                $.modal.closeLoading();
+                init_health_terminalstate(count,fnum,fnum1,fnum2,fmnun,fmnun1,fmnun2);
+
+            }
+        })
+
+
+    }
+
+
+    //男女健康比例样式
+    function init_health_terminalstate(count,fnum,fnum1,fnum2,fmnun,fmnun1,fmnun2) {
+        var bd_terminalstate = echarts.init(document.getElementById('health_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+
+            series: [
+                {
+                    type: 'sunburst',
+                    center: ['50%', '50%'],
+                    radius: ['15%', '95%'],
+                    data: [
+                        {name: '人数',
+                            value: count,
+
+                            children:[ {
+                                name: '男性',
+                                value: fnum,
+                                children: [{
+                                    value: fnum1,
+                                    name: '健康'
+                                }, {
+                                    value: fnum2,
+                                    name: '不健康'
+                                }]},
+                                {
+                                    name: '女性',
+                                    value: fmnun,
+                                    children: [{
+                                        value: fmnun1,
+                                        name: '健康'
+                                    }, {
+                                        value: fmnun2,
+                                        name: '不健康'
+                                    }
+                                    ]}]}],
+                    label: {
+                        normal: {
+                            rotate: 'none',
+                            color: '#fff'
+                        }
+                    },
+                    levels: [],
+                    itemStyle: {
+                        color: '#820cff',
+                        borderWidth: 2
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            color: 'red'
+                        }
+                    },
+                    highlight: {
+                        itemStyle: {
+                            color: 'orange'
+                        }
+                    },
+                    downplay: {
+                        itemStyle: {
+                            color: '#ccc'
+                        }
+                    }
+                }]
+
+        };
+
+        setTimeout(function () {
+            myChart.dispatchAction({
+                type: 'sunburstHighlight',
+                targetNodeId: 'target'
+            });
+        });
+        bd_terminalstate.setOption(option);
+    }
+    <!---------------------------------------------------------------------------------------------------------------->
+    $(function() {
+        var options = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            url: prefix + "/list",
+
+            modalName: "村民",
+
+
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field : 'vid',
+                    title : '数据编号',
+                    visible: false
+                },
+                {
+                    field : 'vname',
+                    title : '记录总数',
+                    sortable: true
+                },
+                {
+                    field : 'sex',
+                    title : '男性人数',
+                    sortable: true
+                },
+
+                {
+                    field : 'sex',
+                    title : '女性人数',
+                    sortable: true
+                },
+
+                {
+                    field : 'phone',
+                    title : '图表',
+                    sortable: true
+                },
+
+            ]
+        };
+        $.table.init(options);
+    });
+    <!----------------------------------------------------------------------------------------------------------------------------- -->
+    //婚姻状态的统计
+    function countsearch3()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var grouptype=$("#grouptype").val();
+        $.ajax({
+            url:prefix + "/count3",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var wedding1=data.split('|')[1];//结婚
+                var wedding2=data.split('|')[2];//未婚
+                var wedding3=data.split('|')[3];//丧偶
+                var wedding4=data.split('|')[4];//离异
+                var other=data.split('|')[5];//未知
+                $.modal.closeLoading();
+                init_wedding_terminalstate(count,wedding1,wedding2,wedding3,wedding4,other);
+
+            }
+        })
+
+
+    }
+    function init_wedding_terminalstate(count,wedding1,wedding2,wedding3,wedding4,other) {
+        var ad_terminalstate = echarts.init(document.getElementById('wedding_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            grid:
+                [{top: '70%',
+                    width: '50%',
+                    bottom: '80%',
+                    left: 10,
+                    containLabel: true
+                }],
+            title: {
+                text: '结婚情况统计图',
+                x: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                    type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }},
+            xAxis: [
+                {  type: 'category',
+                    data: ['已婚','未婚','离异','丧偶','未知'],
+                    axisTick: {
+                        alignWithLabel: true
+                    }}
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                }
+            ],
+            legend: {
+                orient: 'vertical',
+                left: 'right',
+                data: ['已婚','未婚','离异','丧偶','未知']
+            },
+            series: [
+                {   type: 'pie',
+                    name: '访问来源',
+                    radius: '80%',
+                    center: ['70%', '60%'],
+                    avoidLabelOverlap: false,
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    },
+                    data: [
+                        {value: wedding1, name: '已婚'},
+                        {value: wedding2, name: '未婚'},
+                        {value: wedding3, name: '离异'},
+                        {value: wedding4, name: '丧偶'},
+                        {value: other, name: '未知'}
+                    ],
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                },{
+                    name: '人数',
+                    type: 'bar',
+                    barWidth: '30%',
+                    data: [wedding1,wedding2,wedding3,wedding4,other]
+
+                }]
+
+        };
+        ad_terminalstate.setOption(option);
+    }
+    <!------------------------------------------------------------------------------------------------------ -->
+    //统计政治面貌
+    function countsearch4()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var aid=$("#aid").val();
+        $.ajax({
+            url:prefix + "/count4",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var pol1=data.split('|')[1];
+                var pol2=data.split('|')[2];
+                var pol3=data.split('|')[3];
+                var pol4=data.split('|')[4];
+                var other=data.split('|')[5]
+                $.modal.closeLoading();
+                init_pol_terminalstate(count,pol1,pol2,pol3,pol4,other);
+
+            }
+        })
+
+
+    }
+
+
+
+    function init_pol_terminalstate(count,pol1,pol2,pol3,pol4,other) {
+        var bd_terminalstate = echarts.init(document.getElementById('pol_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            grid:
+                [{
+                    top: '70%',
+                    width: '50%',
+                    bottom: '80%',
+                    left: 10,
+                    containLabel: true
+                }],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data: ['人数']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: ['群众','中共党员','中共预备党员','共青团员','其他'],
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '人数',
+                    axisLabel: {
+                        formatter: '{value} 人'
+                    }
+                }],
+            series: [
+                {
+                    name: '人数',
+                    type: 'bar',
+                    barWidth: '30%',
+                    data: [
+                        {value: pol1, name: '群众'},
+                        {value: pol2, name: '中共党员'},
+                        {value: pol3, name: '中共预备党员'},
+                        {value: pol4, name: '共青团员'},
+                        {value: other, name: '其他'}
+                    ]
+                }]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+    <!-- ------------------------------------------------------------------------------------------------- - -->
+    function countsearch5()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var grouptype=$("#grouptype").val();
+        $.ajax({
+            url:prefix + "/count5",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var age1=data.split('|')[1];
+                var age2=data.split('|')[2];
+                var age3=data.split('|')[3];
+                var age4=data.split('|')[4];
+                var age5=data.split('|')[5];
+                var age6=data.split('|')[6];
+                var age7=data.split('|')[7];
+                var age8=data.split('|')[8];
+                var age9=data.split('|')[9];
+                var age10=data.split('|')[10];
+                var age11=data.split('|')[11];
+                var age12=data.split('|')[12];
+                var age13=data.split('|')[13];
+                var age14=data.split('|')[14];
+                var age15=data.split('|')[15];
+                var age16=data.split('|')[16];
+                var age17=data.split('|')[17];
+                var age18=data.split('|')[18];
+                $.modal.closeLoading();
+                init_age1_terminalstate(count,age2,age3,age4,age5,age6,age7,age8,age9,age1,age11,age13,age14,age15,age16,age17,age18,age10);
+
+            }
+        })
+
+
+    }
+
+
+    //男女比例样式
+    function  init_age1_terminalstate(count,age2,age3,age4,age5,age6,age7,age8,age9,age1,age11,age13,age14,age15,age16,age17,age18,age10){
+        var bd_terminalstate = echarts.init(document.getElementById('age1_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                },
+                formatter:function(params){
+                    var relVal = params[0].name+"<br/>";
+                    relVal += params[0].seriesName+ ' : ' + (-params[0].value) +"<br/>";
+                    relVal += params[1].seriesName+ ' : ' +params[1].value+"<br/>";
+                    return relVal;}
+            },
+            legend: {
+                data:['男性', '女性']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'value',
+                    axisLabel:{
+                        formatter:function(value) {
+                            return Math.abs(value);
+                        }}}
+            ],
+            yAxis : [
+                {
+                    type : 'category',
+                    axisTick : {show: false},
+                    data : ['0-10岁','11-20岁','21-30岁','31-40岁','41-50岁','51-60岁','61-70岁','70岁以上']
+                }
+            ],
+            series : [
+                {
+                    name:'男性',
+                    type:'bar',
+                    stack: '总量',
+                    data:[-age2,-age3,-age4,-age5,-age6,-age7,-age8,-age9,0],
+                    label:{
+                        normal:{
+                            show: true,
+                            formatter: function (value) {
+                                return Math.abs(value.data);}}
+
+                    }},
+
+                {
+                    name:'女性',
+                    type:'bar',
+                    stack: '总量',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    },
+                    data:[age11,age13,age14,age15,age16,age17,age18,0]
+                }
+            ]
+
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+    <!------------------------------------------------------------------------------------ -->
+    function countsearch6()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var aid=$("#aid").val();
+        $.ajax({
+            url:prefix + "/count6",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var house1=data.split('|')[1];  //男
+                var house2=data.split('|')[2];
+                var house3=data.split('|')[3];
+                var house4=data.split('|')[4];
+                var house5=data.split('|')[5];
+                var house6=data.split('|')[6];//女
+                $.modal.closeLoading();
+                init_house_terminalstate(count,house1,house2,house3,house4,house5,house6);
+
+            }
+        })
+
+
+    }
+
+
+
+    function init_house_terminalstate(count,house1,house2,house3,house4,house5,house6) {
+        var bd_terminalstate = echarts.init(document.getElementById('house_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data: ['男性', '女性']
+            },
+            grid:
+                [{
+                    top: '70%',
+                    width: '50%',
+                    bottom: '80%',
+                    left: 10,
+                    containLabel: true
+                }],
+            xAxis:  {
+                type: 'value'
+            },
+            yAxis: {
+                type: 'category',
+                data: ['自建房','租用房','其他']
+            },
+            series: [
+                {
+                    name: '男性',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'insideRight'
+                        }
+                    },
+                    data: [house1,house2,house3]
+                },
+                {
+                    name: '女性',
+                    type: 'bar',
+                    stack: '总量',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'insideRight'
+                        }
+                    },
+                    data: [house4,house5,house6]
+                }
+
+            ]
+        };
+
+        bd_terminalstate.setOption(option);
+    }
+
+    <!---------------------------------------------------------------------------------------------------------------->
+    //复健军人统计
+    function countsearch7()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var aid=$("#aid").val();
+        $.ajax({
+            url:prefix + "/count7",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var isdemob0=data.split('|')[1];//复健军人
+                var isdemob1=data.split('|')[2];//不是复健军人
+
+                $.modal.closeLoading();
+                init_isdemob_terminalstate(count,isdemob0,isdemob1);
+
+            }
+        })
+
+
+    }
+    function init_isdemob_terminalstate(count,isdemob0,isdemob1) {
+        var bd_terminalstate = echarts.init(document.getElementById('isdemob_terminalstate'));
+        // option = {
+        //     tooltip: {
+        //         trigger: 'item',
+        //         formatter: "{a} <br/>{b} : {c} ({d}%)"
+        //     },
+        //     legend: {
+        //         orient: 'vertical',
+        //         left: 'left',
+        //         data: ['复健军人','其他']
+        //     },
+        //     series: [
+        //         {
+        //             name: '访问来源',
+        //             type: 'pie',
+        //             radius: '90%',
+        //             center: ['50%', '50%'],
+        //             roseType: 'angle',
+        //             data: [
+        //                 {value: isdemob0, name: '复健军人'},
+        //                 {value: isdemob1, name: '其他'},
+        //             ],
+        //             itemStyle: {
+        //                 emphasis: {
+        //                     shadowBlur: 10,
+        //                     shadowOffsetX: 0,
+        //                     shadowColor: 'rgba(0, 0, 0, 0.5)'
+        //                 }
+        //             }
+        //         }]
+        //
+        // };
+        // option = {
+        //     xAxis: {
+        //         type: 'category',
+        //         data: ['复健军人', '其他']
+        //     },
+        //     yAxis: {
+        //         type: 'value'
+        //     },
+        //     series: [{
+        //         data: [isdemob0, isdemob1],
+        //         type: 'bar'
+        //     }]
+        // };
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            title: {
+                text: '复员军人数量',
+                subtext: ''
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['复员军人数量']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+                type: 'category',
+                data: ['复员军人','非复员军人']
+            },
+            series: [
+                {
+                    name: '复健军人数量',
+                    type: 'bar',
+                    data: [isdemob0, isdemob1]
+                },
+                // {
+                //     name: '2012年',
+                //     type: 'bar',
+                //     data: [19325, 23438, 31000, 121594, 134141, 681807]
+                // }
+            ]
+        };
+
+
+        bd_terminalstate.setOption(option);
+    }
+
+    <!---------------------------------------------------------------------------------------------------------------->
+    //低保户统计
+    function countsearch8()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var aid=$("#aid").val();
+        $.ajax({
+            url:prefix + "/count8",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count=data.split('|')[0];
+                var islowincome0=data.split('|')[1];//低保户
+                var islowincome1=data.split('|')[2];//不是低保户
+
+                $.modal.closeLoading();
+                init_islowincome_terminalstate(count,islowincome0,islowincome1);
+
+            }
+        })
+
+
+    }
+    function init_islowincome_terminalstate(count,islowincome0,islowincome1) {
+        var bd_terminalstate = echarts.init(document.getElementById('islowincome_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            backgroundColor: '#2c343c',
+
+            title: {
+                text: '低保户信息',
+                left: 'center',
+                top: 20,
+                textStyle: {
+                    color: '#ccc'
+                }
+            },
+
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+
+            visualMap: {
+                show: false,
+                min: 80,
+                max: 600,
+                inRange: {
+                    colorLightness: [0, 1]
+                }
+            },
+            series : [
+                {
+                    name:'访问来源',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:islowincome0, name:'低保户'},
+                        {value:islowincome1, name:'其他'},
+
+                    ].sort(function (a, b) { return a.value - b.value; }),
+                    roseType: 'radius',
+                    label: {
+                        normal: {
+                            textStyle: {
+                                color: 'rgba(255, 255, 255, 0.3)'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            lineStyle: {
+                                color: 'rgba(255, 255, 255, 0.3)'
+                            },
+                            smooth: 0.2,
+                            length: 10,
+                            length2: 20
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#c23531',
+                            shadowBlur: 200,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+
+                    animationType: 'scale',
+                    animationEasing: 'elasticOut',
+                    animationDelay: function (idx) {
+                        return Math.random() * 200;
+                    }
+                }
+            ]
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+
+    <!---------------------------------------------------------------------------------------------------------------->
+    //家庭设施
+    function countsearch9()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var aid=$("#aid").val();
+        $.ajax({
+            url:prefix + "/count9",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count = data.split('|')[0];
+                var psa1 = data.split('|')[1];//是否接入电力
+                var psa0 = data.split('|')[2];//否
+                var ca1 = data.split('|')[3];//是否接入有线电视
+                var ca0 = data.split('|')[4];//否
+                var woban1 = data.split('|')[5];//是否接入宽带
+                var woban0 = data.split('|')[6];//否
+                var water1 = data.split('|')[7];//是否接入自来水
+                var water0 = data.split('|')[8];//否
+                var ssa1 = data.split('|')[9];//是否接入安防系统
+                var ssa0 = data.split('|')[10];//否
+                var gfs1 = data.split('|')[11];//是否接入燃气
+                var gfs0 = data.split('|')[12];//否
+                var wdr1 = data.split('|')[13];//是否垃圾分类
+                var wdr0 = data.split('|')[14];//否
+                var rth1 = data.split('|')[15];//道路是否到户
+                var rth0 = data.split('|')[16];//否
+
+                $.modal.closeLoading();
+                init_facilities_terminalstate(count,psa1,psa0,ca1,ca0,woban1,woban0,water1,water0,ssa1,ssa0,gfs1,gfs0,wdr1,wdr0,rth1,rth0);
+            }
+        })
+    }
+    // function countsearch9()
+    // {
+    //     $.modal.loading("正在查询，请稍后...");
+    //     var grouptype=$("#grouptype").val();
+    //     $.ajax({
+    //         url:prefix + "/count9",
+    //         data :{"grouptype":$("#grouptype").val()},
+    //         type : 'POST',
+    //         dataType : 'text',
+    //         success:function(data) {
+    //             var count = data.split('|')[0];
+    //             var psa1 = data.split('|')[1];//是否接入电力
+    //             var psa0 = data.split('|')[2];//否
+    //             var ca1 = data.split('|')[3];//是否接入有线电视
+    //             var ca0 = data.split('|')[4];//否
+    //             var woban1 = data.split('|')[5];//是否接入宽带
+    //             var woban0 = data.split('|')[6];//否
+    //             var water1 = data.split('|')[7];//是否接入自来水
+    //             var water0 = data.split('|')[8];//否
+    //             var ssa1 = data.split('|')[9];//是否接入安防系统
+    //             var ssa0 = data.split('|')[10];//否
+    //             var gfs1 = data.split('|')[11];//是否接入燃气
+    //             var gfs0 = data.split('|')[12];//否
+    //             var wdr1 = data.split('|')[13];//是否垃圾分类
+    //             var wdr0 = data.split('|')[14];//否
+    //             var rth1 = data.split('|')[15];//道路是否到户
+    //             var rth0 = data.split('|')[16];//否
+    //
+    //
+    //             $.modal.closeLoading();
+    //             init_facilities_terminalstate(count,psa1,psa0,ca1,ca0,woban1,woban0,water1,water0,ssa1,ssa0,gfs1,gfs0,wdr1,wdr0,rth1,rth0);
+    //
+    //         }
+    //     })
+    //}
+    function init_facilities_terminalstate(count,psa1,psa0,ca1,ca0,woban1,woban0,water1,water0,ssa1,ssa0,gfs1,gfs0,wdr1,wdr0,rth1,rth0) {
+        var bd_terminalstate = echarts.init(document.getElementById('facilities_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            title: {
+                text: '家庭基础设施信息',
+                subtext: '数据来自'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['已实现', '在建']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+                type: 'category',
+                data: ['电力','有线电视','宽带','自来水','安防系统','燃气','垃圾分类','道路到户']
+            },
+            series: [
+                {
+                    name: '已实现',
+                    type: 'bar',
+                    data: [psa1, ca1, woban1, water1, ssa1, gfs1,wdr1,rth1]
+                },
+                {
+                    name: '在建',
+                    type: 'bar',
+                    data: [psa0, ca0, woban0, water0, ssa0, gfs0,wdr0,rth0]
+                }
+            ]
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+
+    <!---------------------------------------------------------------------------------------------------------------->
+    //就业状态
+    function countsearch10()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var aid=$("#aid").val();
+        $.ajax({
+            url:prefix + "/count10",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count = data.split('|')[0];
+                var jobstate1 = data.split('|')[1];//在业
+                var jobstate0 = data.split('|')[2];//失业
+
+
+                $.modal.closeLoading();
+                init_jobstate_terminalstate(count,jobstate1,jobstate0);
+            }
+        })
+    }
+    function init_jobstate_terminalstate(count,jobstate1,jobstate0) {
+        var bd_terminalstate = echarts.init(document.getElementById('jobstate_terminalstate'));
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data:['在业','失业']
+            },
+            series: [
+                {
+                    name:'访问来源',
+                    type:'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '30',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data:[
+                        {value:jobstate1, name:'在业'},
+                        {value:jobstate0, name:'失业'},
+                    ]
+                }
+            ]
+        };
+
+        bd_terminalstate.setOption(option);
+    }
+
+    //职业信息
+    function countsearch11()
+    {
+        $.modal.loading("正在查询，请稍后...");
+        var aid=$("#aid").val();
+        $.ajax({
+            url:prefix + "/count11",
+            data :{"aid":$("#aid").val(),"startTime":$("#startTime").val(),"endTime":$("#endTime").val()},
+            type : 'POST',
+            dataType : 'text',
+            success:function(data){
+                var count = data.split('|')[0];
+                var job0 = data.split('|')[1];
+                var job1 = data.split('|')[2];
+                var job2 = data.split('|')[3];//
+                var job3 = data.split('|')[4];//
+                var job4 = data.split('|')[5];//
+                var job5 = data.split('|')[6];//
+                var job6 = data.split('|')[7];//
+                var job7 = data.split('|')[8];//
+                var job8 = data.split('|')[9];//
+                var job9 = data.split('|')[10];//
+                var job10 = data.split('|')[11];//
+                var job11 = data.split('|')[12];//
+                var job12 = data.split('|')[13];//
+
+                $.modal.closeLoading();
+                init_job_terminalstate(count,job0,job1,job2,job3,job4,job5,job6,job7,job8,job9,job10,job11,job12);
+            }
+        })
+    }
+    function init_job_terminalstate(count,job0,job1,job2,job3,job4,job5,job6,job7,job8,job9,job10,job11,job12) {
+        var bd_terminalstate = echarts.init(document.getElementById('job_terminalstate'));
+        // option = {
+        //     toolbox: {
+        //         feature: {
+        //             dataView: {show: true, readOnly: false},
+        //             magicType: {show: true},
+        //             restore: {show: true},
+        //             saveAsImage: {show: true}
+        //         }
+        //     },
+        //     xAxis: {
+        //         type: 'category',
+        //         data: ['保洁员', '油漆工', '保险员', '厨师', '泥工', '销售','环保','木工','妇女协会','教师','水电工','农民','其他']
+        //     },
+        //     yAxis: {
+        //         type: 'value'
+        //     },
+        //     series: [{
+        //         data: [job0,job1,job2,job3,job4,job5,job6,job7,job8,job9,job10,job11,job12],
+        //         type: 'bar'
+        //     }]
+        // };
+        option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            color: ['#3398DB'],
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    data: ['保洁员', '油漆工', '保险员', '厨师', '泥工', '销售','环保','木工','妇女协会','教师','水电工','农民','其他'],
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'直接访问',
+                    type:'bar',
+                    barWidth: '60%',
+                    data: [job0,job1,job2,job3,job4,job5,job6,job7,job8,job9,job10,job11,job12]
+                }
+            ]
+        };
+        bd_terminalstate.setOption(option);
+    }
+
+    /*。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。*/
+    /*用户管理-新增-选择用户所属区域树*/
+    function selectAidTree() {
+        var url = "/broad/organization/selectAidTree";
+        var options = {
+            title: '选择区域',
+            width: "380",
+            url: "/broad/organization/selectAidTree",
+            callBack: doSubmitAid
+        };
+        $.modal.openOptions(options);
+    }
+
+    /*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+    function doSubmitAid(index, layero){
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            // $("#aid").val(body.find('#treeId').val());
+            var groupname=(body.find('#treeName').val()).replace("组","");
+            $("#grouptype").val(groupname);
+            /*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+            layer.close(index);
+        }
+    }
+
+    function doSubmit(index, layero){
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            $("#treeName").val(body.find('#treeName').val());
+            layer.close(index);
+        }
+    }
+
+    function queryDeptTree()
+    {
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            var treeId = treeNode.id;
+            var treeName = treeNode.name;
+            var a;
+            a=treeName.replace("组","")
+            $("#aid").val(treeId);
+            $("#treeName").val(treeName);
+            $("#grouptype").val(a);
+            onClick : countsearch();
+            countsearch1();
+            countsearch2();
+            countsearch3();
+            countsearch4();
+            countsearch5();
+            countsearch6();
+            countsearch7();
+            countsearch8();
+            countsearch9();
+            countsearch10();
+            countsearch11();
+        }
+    }
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function() {
+        queryDeptTree();
+    });
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+    laydate({
+        elem:"#newtime",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#village",
+            type: 'time',
+        });
+    });
+</script>
+</body>
+</html>

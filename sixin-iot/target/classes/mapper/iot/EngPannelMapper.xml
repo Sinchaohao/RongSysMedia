@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.EngPannelMapper">
+    <resultMap type="com.sixin.iot.domain.EngPannel" id="EngPannelResult">
+        <result property="id"    column="id"    />
+        <result property="imei"    column="imei"    />
+        <result property="addrid"    column="addrid"    />
+        <result property="pow1"    column="pow1"    />
+        <result property="grouppow"    column="grouppow"    />
+        <result property="vol18v1"    column="vol18v1"    />
+        <result property="vol18v2"    column="vol18v2"    />
+        <result property="vol24"    column="vol24"    />
+        <result property="vol28"  column="vol28"  />
+        <result property="extendpow" column="extendpow" />
+        <result property="solarpow" column="solarpow" />
+        <result property="operating_temp" column="operating_temp" />
+        <result property="charge" column="charge" />
+        <result property="work" column="work" />
+        <result property="colltime"    column="colltime"    />
+        <association property="dept"    column="addrid" javaType="com.sixin.system.domain.SysDept" resultMap="deptResult" />
+    </resultMap>
+
+    <resultMap id="deptResult" type="com.sixin.system.domain.SysDept">
+        <id     property="deptId"   column="dept_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="deptName" column="dept_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
+    </resultMap>
+    <!--定义selectEnergy为查询整表命令-->
+    <sql id="selectEnergy">
+    select e.id,e.imei,e.addrid,e.pow1,e.grouppow,e.vol18v1,e.vol18v2,e.vol24,e.vol28,e.extendpow,e.solarpow,e.operating_temp,e.charge,e.work,e.colltime,
+    d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status
+     from iotdata.tb_energy e left join ry.sys_dept d on e.addrid=d.dept_id
+    </sql>
+    <select id="selectEnergyList" parameterType="com.sixin.iot.domain.EngPannel" resultMap="EngPannelResult">
+        <include refid="selectEnergy"/>
+        <where>
+            <if test="id != null and id !='' ">
+                AND id like concat('%', #{id},'%')
+            </if>
+            <if test="imei != null and imei !='' ">
+                AND imei like concat('%', #{imei},'%')
+            </if>
+            <if test="addrid != null and addrid !='' ">
+                AND (d.dept_id = #{addrid} OR d.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{addrid},ancestors) ))
+            </if>
+            <if test="pow1 !=null and pow1 !='' ">
+                AND pow1 like concat('%', #{pow1},'%')
+            </if>
+            <if test="grouppow !=null and grouppow !='' ">
+                AND grouppow like concat('%', #{grouppow},'%')
+            </if>
+            <if test="vol18v1 !=null and vol18v1 !='' ">
+                AND vol18v1 like concat('%', #{vol18v1},'%')
+            </if>
+            <if test="vol18v2 !=null and vol18v2 !='' ">
+                AND vol18v2 like concat('%', #{vol18v2},'%')
+            </if>
+            <if test="vol24 !=null and vol24 !='' ">
+                AND vol24 like concat('%', #{vol24},'%')
+            </if>
+            <if test="vol28 !=null and vol28 !='' ">
+                AND vol28 like concat('%', #{vol28},'%')
+            </if>
+            <if test="extendpow !=null and extendpow !='' ">
+                AND extendpow like concat('%', #{extendpow},'%')
+            </if>
+            <if test="solarpow !=null and solarpow !='' ">
+                AND solarpow like concat('%', #{solarpow},'%')
+            </if>
+            <if test="operating_temp !=null and operating_temp !='' ">
+                AND operating_temp like concat('%', #{operating_temp},'%')
+            </if>
+            <if test="charge !=null and charge !='' ">
+                AND  charge like concat('%', #{charge},'%')
+            </if>
+            <if test="work !=null and work !='' ">
+                AND work like concat('%', #{work},'%')
+            </if>
+            <if test="colltime != null and colltime !='' ">
+                AND colltime like concat('%', #{colltime},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectEnergyListOnControl" parameterType="String" resultMap="EngPannelResult">
+        select imei,addrid,pow1,grouppow,vol18v1,vol18v2,vol24,vol28,extendpow,solarpow,operating_temp,charge,work,colltime from iotdata.tb_energy
+        where 1=1
+        <if test="addrid != null and addrid !=''">
+            AND (addrid = #{addrid} OR addrid IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{addrid},ancestors) ))
+        </if>
+    </select>
+
+</mapper>

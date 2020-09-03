@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main" style="width: 3000px">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 终端列表
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;">
+                        <i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠">
+                        <i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新">
+                        <i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree" style="overflow: auto"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <form action="/iot/terwarning/updatetid" method="post">
+        终端号:<input type="text" name="tid" /></br>
+        <input type="submit" value="确定">
+    </form>
+    <div class="row">
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "iot/terwarning";
+    // var removeFlag = [[${@permission.hasPermi('broad:organization:remove')}]];
+    // var editFlag = [[${@permission.hasPermi('broad:organization:edit')}]];
+    var aid1 = "";
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+    function queryAreaList() {
+
+        var options = {
+            url: prefix + "/list",
+            // createUrl: prefix + "/add",
+            // updateUrl: prefix + "/edit/{id}",
+            // exportUrl: prefix + "/export",
+            // removeUrl: prefix + "/remove",
+            // rdsSetUrl: prefix + "/rdsSet",
+            // fmfrequencyUrl: prefix + "/fmfrequencySet",
+            // exportBySingleUrl: prefix + "/exportbysingle",
+            uniqueId: "tid",
+            striped:true,
+            modalName: "终端管理",
+            showExport: true,
+            search: false,
+            // height: 800,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field : 'tid',
+                    align: 'center',
+                    title : '终端编号',
+                    visible: true
+                },
+                {
+                    field : 'aid',
+                    align: 'center',
+                    title : '地区号',
+                    visible: true
+                },
+                {
+                    field : 'aname',
+                    align: 'center',
+                    title : '终端编号',
+                    visible: true
+                },
+                {
+                    field : 'userid',
+                    title : '用户编号',
+                    align: 'center',
+                    sortable: true
+                },
+                {
+                    field : 'managerid',
+                    title : '管理员编号',
+                    align: 'center',
+                    sortable: true
+                },
+                {
+                    field : 'warn',
+                    title : '警告类型',
+                    align: 'center',
+                    sortable: true
+                },
+                {
+                    field : 'status',
+                    title : '就勤情况',
+                    align: 'center',
+                    sortable: true
+                },
+                {
+                    field : 'lasttime',
+                    title : '最后时间',
+                    align: 'center',
+                    sortable: true
+                },
+                {
+                    field : 'isuse',
+                    title : '是否可用',
+                    align: 'center',
+                    sortable: true,
+                    width:"7%",
+                    formatter:function (value) {
+                        if(value == 0){
+                            var msg = "<span style='color:#e25e08;'>不可用</span>"
+                            return msg;
+                        }else {
+                            var msg = "<span style='color:#13e21b;'>可用</span>"
+                            return msg;
+                        }
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    visible: true,
+                    formatter: function(value, row, index) {
+                        var msg = '<a class="btn btn-xs btn-primary" >设为可用</a> ';
+                        var actions = '<a class="btn btn-xs btn-success" >设为不可用</a>';
+                        if(row.isuse == 0){
+                            return msg;
+                        }else {
+                            return actions;
+                        }
+                    }
+                }
+            ]
+        };
+        $.table.init(options);
+    };
+
+    function queryAreaTree(){
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            aid1 = treeNode.id;
+            $("#aid").val(treeNode.id);
+            $.table.search();
+        }
+        $.tree.init(options);
+    }
+    $('#form-group11').on('change', function (e) {
+        $("#form-group1").attr("name",$("#form-group11").val())
+    });
+    $('#form-group22').on('change', function (e) {
+        $("#form-group2").attr("name",$("#form-group22").val())
+    });
+    $('#form-group33').on('select2:select', function (e) {
+        $("#form-group3").attr("name",$("#form-group33").val())
+    });
+    $('#form-group44').on('change', function (e) {
+        $("#form-group4").attr("value",$("#form-group44").val());
+    });
+</script>
+</body>
+</html>

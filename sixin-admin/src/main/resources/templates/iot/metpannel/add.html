@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-metweatherdata-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">IMEI号：</label>
+            <div class="col-sm-8">
+                <input id="imei" name="imei" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">采集地址编号：</label>
+            <div class="col-sm-8">
+                <input id="deptid" name="deptid" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">环境温度：</label>
+            <div class="col-sm-8">
+                <input id="surrtemp" name="surrtemp" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">环境湿度：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="surrhumi" id="surrhumi">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">环境照度：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="surrlight" id="surrlight">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">大气气压：</label>
+            <div class="col-sm-8">
+                <input id="atmopress" name="atmopress" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">降水量：</label>
+            <div class="col-sm-8">
+                <input id="rainfall" name="rainfall" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">信息状态：</label>
+            <div class="col-sm-8">
+                <input id="remark" name="remark" class="form-control" type="text">
+            </div>
+        </div>
+
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "iot/metpannel"
+
+    $("#form-metweatherdata-add").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+
+
+    function add() {
+        var imei = $("input[name='imei']").val();
+        var deptid = $("input[name='deptid']").val();
+        var surrtemp = $("input[name='surrtemp']").val();
+        var surrhumi = $("input[name='surrhumi']").val();
+        var surrlight = $("input[name='surrlight']").val();
+        var atmopress = $("input[name='atmopress']").val();
+        var rainfall = $("input[name='rainfall']").val();
+        var remark = $("input[name='remark']").val();
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : ctx + "iot/metpannel",
+            data : {
+                "imei": imei,
+                "deptid": deptid,
+                "surrtemp": surrtemp,
+                "surrhumi": surrhumi,
+                "surrlight": surrlight,
+                "atmopress": atmopress,
+                "rainfall": rainfall,
+                "remark": remark,
+            },
+            async : false,
+            error : function(request) {
+                $.modal.alertError("系统错误");
+            },
+            success : function(data) {
+                $.operate.successCallback(data);
+            }
+        });
+    }
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            add();
+        }
+    }
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-metweatherdata-add').serialize());
+        }
+    }
+</script>
+</body>
+</html>

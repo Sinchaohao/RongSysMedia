@@ -1,0 +1,754 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head th:include="include :: header">
+    <style type='text/css'>
+        ul { list-style: none; }
+        #recordingslist audio { display: block; margin-bottom: 10px; }
+    </style>
+</head>
+
+<body class="gray-bg">
+     <div class="wrapper wrapper-content" style="padding-top: 20px; padding-left: 20px;">
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="ibox">
+					<div class="ibox-content">
+						<button class="btn btn-primary" onclick="startRecording(this);">录音</button>
+						<button class="btn btn-success" onclick="stopRecording(this);" disabled>停止录音</button>
+						<h2>录音</h2>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-sm-3">
+				<div class="ibox">
+					<div class="ibox-content">
+						<h1 id="count_dev" class="no-margins"></h1>
+						<ul id="recordingslist"></ul>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-sm-7">
+				<div class="ibox">
+					<div class="ibox-content">
+						<audio class="recPlay" style="width:100%"></audio>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								节目名称：<input type="text" name="fname" placeholder="节目名称"/>
+							</li>
+							<li>
+								所属用户：<input type="text" name="uname" placeholder="所属用户"/>
+							</li>
+							<li>
+								是否公共：<select class="form-control" name="ispublic" style="display: inline;padding-bottom: 0;padding-top: 0;">
+									<option value="">所有</option>
+									<option value="0">非公共</option>
+									<option value="1">公共</option>
+								</select>
+							</li>
+							<li class="select-time">
+								<label>创建时间：</label><input class="laydate-icon  layer-date"
+														   name="downtime"
+														   id="recivedtime"
+														   value=""
+														   readonly="readonly"
+														   style="width:120px;"
+														   placeholder="开始日期"
+														   title="开始日期"/>
+								<span>-</span>
+
+								<input class="laydate-icon  layer-date"
+									   name="endtime"
+									   id="endtime"
+									   value=""
+									   readonly="readonly"
+									   style="width:120px;"
+									   placeholder="结束日期"
+									   title="结束日期"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+
+						</ul>
+					</div>
+				</form>
+			</div>
+
+
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="broad:per:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="broad:per:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.operate.exportExcelBySingle()">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+
+		</div>
+	</div>
+
+    <div th:include="include :: footer"></div>
+
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('broad:per:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('broad:per:remove')}]];
+        var prefix = ctx + "broad/per";
+
+
+        $(function() {
+
+            var options;
+            options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+				exportBySingleUrl: prefix + "/exportbysingle",
+                modalName: "节目单管理",
+                search: false,
+				showExport: true,
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'fid',
+                        align: 'center',
+                        title: '节目编号',
+                        visible: true
+                    },
+                    {
+                        field: 'fname',
+                        title: '节目名称',
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        field: 'filename',
+                        title: '保存名称',
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        field: 'flenth',
+                        title: '时长',
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        field: 'fsize',
+                        title: '文件大小',
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        field: 'uname',
+                        title: '上传者',
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        field: 'urls',
+                        title: '上传路径',
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        field: 'createdtime',
+                        title: '创建时间',
+                        align: 'center',
+                        sortable: true
+                    },
+                    {
+                        field: 'ispublic',
+                        title: '是否公共',
+                        align: 'center',
+                        sortable: true,
+                        width: "7%",
+                        formatter: function (value) {
+                            if (value == 0) {
+                                var msg = "<span style='color:#e25e08;'>非公共</span>"
+                                return msg;
+                            } else {
+                                var msg = "<span style='color:#13e21b;'>公共</span>"
+                                return msg;
+                            }
+                        }
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        visible: true,
+                        formatter: function (value, row, index) {
+                            var msg = '<a class="btn btn-xs btn-primary" onclick=setIsPublic(\'' + row.fid + '\') >设为公共</a> ';
+                            var actions = '<a class="btn btn-xs btn-success" onclick=setIsPublic(\'' + row.fid + '\')>设为非公共</a>';
+                            if (row.ispublic == 0) {
+                                return msg;
+                            } else {
+                                return actions;
+                            }
+                        }
+                    },
+                    {
+                        field: 'urls',
+                        title: '试听',
+                        align: 'center',
+                        visible: true,
+                        formatter: function (value, row, index) {
+							var actions = '<a class=\"btn btn-xs btn-success\"  onclick=func(\'' + value + '\')>试听</a>';
+							return actions;
+                        }
+                    },
+                    {
+                        field: 'urls',
+                        title: '下载',
+                        align: 'center',
+                        visible: true,
+                        formatter: function (value, row, index) {
+                            // var actions = '<a class=\"btn btn-xs btn-success\"  onclick=down(\'' + value + '\')>下载</a>';
+							var actions = '<a class=\"btn btn-xs btn-success" href="https://7465-test-b37cdc-1258150595.tcb.qcloud.la/许嵩 - 南山忆.mp3?sign=7ff582dcd4a4ff735488469d36701a73&t=1553838083" download="南山忆.mp3">下载</a>';
+                            return actions;
+                        }
+                    }]
+            };
+            $.table.init(options);
+        });
+
+        //试听按钮函数
+        function func(value) {
+			// var audio = document.createElement("audio");
+            //  var test = $("#vids").src;
+            //  var vid  =$("#vids");
+			// console.log(test);
+
+			value = "../"+value;
+
+			var audio=$(".recPlay")[0];
+			audio.controls=true;
+			if(!(audio.ended || audio.paused)){
+				audio.pause();
+			};
+			audio.src=value;
+			console.log(audio);
+			audio.play();
+        }
+
+        //下载按钮函数
+        function down(value) {
+			value = '../'+ value;
+			window.location.href = value;
+            console.log(value);
+        }
+
+        function setIsPublic(rowid) {
+			$.get("/broad/per/setispublic/"+rowid, function(data){
+				if(data==1){
+					alert("修改成功");
+					$.table.refresh();
+				}
+			});
+		}
+
+     </script>
+
+	 <script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+	 <script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+
+	 <script>
+         laydate({
+             elem:"#recivedtime",
+             event:"focus"
+         });
+         laydate({
+             elem:"#recivedtime",
+             event:"focus"
+         });
+         layui.use('laydate', function(){
+             var laydate = layui.laydate;
+
+             //执行一个laydate实例
+             laydate.render({
+                 elem:"#broad",
+                 type: 'time',
+             });
+         });
+	 </script>
+
+	 <script>
+         laydate({
+             elem:"#endtime",
+             event:"focus"
+         });
+         laydate({
+             elem:"#endtime",
+             event:"focus"
+         });
+         layui.use('laydate', function(){
+             var laydate2 = layui.laydate;
+
+             //执行一个laydate实例
+             laydate2.render({
+                 elem:"#broad",
+                 type: 'time',
+             });
+         });
+	 </script>
+
+<script>
+    function __log(e, data) {
+        log.innerHTML += "\n" + e + " " + (data || '');
+    }
+
+    var audio_context;
+    var recorder;
+
+    function startUserMedia(stream) {
+        var input = audio_context.createMediaStreamSource(stream);
+        __log('Media stream created.');
+
+        // Uncomment if you want the audio to feedback directly
+        //input.connect(audio_context.destination);
+        //__log('Input connected to audio context destination.');
+
+        recorder = new Recorder(input);
+        __log('Recorder initialised.');
+    }
+
+    function startRecording(button) {
+        recorder && recorder.record();
+        button.disabled = true;
+        button.nextElementSibling.disabled = false;
+        __log('Recording...');
+    }
+
+    function stopRecording(button) {
+        recorder && recorder.stop();
+        button.disabled = true;
+        button.previousElementSibling.disabled = false;
+        __log('Stopped recording.');
+
+        // create WAV download link using audio data blob
+        createDownloadLink();
+
+        recorder.clear();
+    }
+
+    function createDownloadLink() {
+        recorder && recorder.exportWAV(function(blob) {
+            var url = URL.createObjectURL(blob);
+            var li = document.createElement('li');
+            var au = document.createElement('audio');
+            var hf = document.createElement('a');
+
+            au.controls = true;
+            au.src = url;
+            hf.href = url;
+            hf.download = new Date().toISOString() + '.wav';
+            hf.innerHTML = hf.download;
+            li.appendChild(au);
+            li.appendChild(hf);
+            recordingslist.appendChild(li);
+        });
+    }
+
+    window.onload = function init() {
+        try {
+            // webkit shim
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+            window.URL = window.URL || window.webkitURL;
+
+            audio_context = new AudioContext;
+            __log('Audio context set up.');
+            __log('navigator.getUserMedia ' + (navigator.getUserMedia ? 'available.' : 'not present!'));
+        } catch (e) {
+            alert('No web audio support in this browser!');
+        }
+
+        navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+            __log('No live audio input: ' + e);
+        });
+    };
+</script>
+<!--节目库管理录音js文件导入-->
+<script>
+    (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Recorder = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+        "use strict";
+
+        module.exports = require("./recorder").Recorder;
+
+    },{"./recorder":2}],2:[function(require,module,exports){
+        'use strict';
+
+        var _createClass = (function () {
+            function defineProperties(target, props) {
+                for (var i = 0; i < props.length; i++) {
+                    var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+                }
+            }return function (Constructor, protoProps, staticProps) {
+                if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+            };
+        })();
+
+        Object.defineProperty(exports, "__esModule", {
+            value: true
+        });
+        exports.Recorder = undefined;
+
+        var _inlineWorker = require('inline-worker');
+
+        var _inlineWorker2 = _interopRequireDefault(_inlineWorker);
+
+        function _interopRequireDefault(obj) {
+            return obj && obj.__esModule ? obj : { default: obj };
+        }
+
+        function _classCallCheck(instance, Constructor) {
+            if (!(instance instanceof Constructor)) {
+                throw new TypeError("Cannot call a class as a function");
+            }
+        }
+
+        var Recorder = exports.Recorder = (function () {
+            function Recorder(source, cfg) {
+                var _this = this;
+
+                _classCallCheck(this, Recorder);
+
+                this.config = {
+                    bufferLen: 4096,
+                    numChannels: 2,
+                    mimeType: 'audio/wav'
+                };
+                this.recording = false;
+                this.callbacks = {
+                    getBuffer: [],
+                    exportWAV: []
+                };
+
+                Object.assign(this.config, cfg);
+                this.context = source.context;
+                this.node = (this.context.createScriptProcessor || this.context.createJavaScriptNode).call(this.context, this.config.bufferLen, this.config.numChannels, this.config.numChannels);
+
+                this.node.onaudioprocess = function (e) {
+                    if (!_this.recording) return;
+
+                    var buffer = [];
+                    for (var channel = 0; channel < _this.config.numChannels; channel++) {
+                        buffer.push(e.inputBuffer.getChannelData(channel));
+                    }
+                    _this.worker.postMessage({
+                        command: 'record',
+                        buffer: buffer
+                    });
+                };
+
+                source.connect(this.node);
+                this.node.connect(this.context.destination); //this should not be necessary
+
+                var self = {};
+                this.worker = new _inlineWorker2.default(function () {
+                    var recLength = 0,
+                        recBuffers = [],
+                        sampleRate = undefined,
+                        numChannels = undefined;
+
+                    self.onmessage = function (e) {
+                        switch (e.data.command) {
+                            case 'init':
+                                init(e.data.config);
+                                break;
+                            case 'record':
+                                record(e.data.buffer);
+                                break;
+                            case 'exportWAV':
+                                exportWAV(e.data.type);
+                                break;
+                            case 'getBuffer':
+                                getBuffer();
+                                break;
+                            case 'clear':
+                                clear();
+                                break;
+                        }
+                    };
+
+                    function init(config) {
+                        sampleRate = config.sampleRate;
+                        numChannels = config.numChannels;
+                        initBuffers();
+                    }
+
+                    function record(inputBuffer) {
+                        for (var channel = 0; channel < numChannels; channel++) {
+                            recBuffers[channel].push(inputBuffer[channel]);
+                        }
+                        recLength += inputBuffer[0].length;
+                    }
+
+                    function exportWAV(type) {
+                        var buffers = [];
+                        for (var channel = 0; channel < numChannels; channel++) {
+                            buffers.push(mergeBuffers(recBuffers[channel], recLength));
+                        }
+                        var interleaved = undefined;
+                        if (numChannels === 2) {
+                            interleaved = interleave(buffers[0], buffers[1]);
+                        } else {
+                            interleaved = buffers[0];
+                        }
+                        var dataview = encodeWAV(interleaved);
+                        var audioBlob = new Blob([dataview], { type: type });
+
+                        self.postMessage({ command: 'exportWAV', data: audioBlob });
+                    }
+
+                    function getBuffer() {
+                        var buffers = [];
+                        for (var channel = 0; channel < numChannels; channel++) {
+                            buffers.push(mergeBuffers(recBuffers[channel], recLength));
+                        }
+                        self.postMessage({ command: 'getBuffer', data: buffers });
+                    }
+
+                    function clear() {
+                        recLength = 0;
+                        recBuffers = [];
+                        initBuffers();
+                    }
+
+                    function initBuffers() {
+                        for (var channel = 0; channel < numChannels; channel++) {
+                            recBuffers[channel] = [];
+                        }
+                    }
+
+                    function mergeBuffers(recBuffers, recLength) {
+                        var result = new Float32Array(recLength);
+                        var offset = 0;
+                        for (var i = 0; i < recBuffers.length; i++) {
+                            result.set(recBuffers[i], offset);
+                            offset += recBuffers[i].length;
+                        }
+                        return result;
+                    }
+
+                    function interleave(inputL, inputR) {
+                        var length = inputL.length + inputR.length;
+                        var result = new Float32Array(length);
+
+                        var index = 0,
+                            inputIndex = 0;
+
+                        while (index < length) {
+                            result[index++] = inputL[inputIndex];
+                            result[index++] = inputR[inputIndex];
+                            inputIndex++;
+                        }
+                        return result;
+                    }
+
+                    function floatTo16BitPCM(output, offset, input) {
+                        for (var i = 0; i < input.length; i++, offset += 2) {
+                            var s = Math.max(-1, Math.min(1, input[i]));
+                            output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+                        }
+                    }
+
+                    function writeString(view, offset, string) {
+                        for (var i = 0; i < string.length; i++) {
+                            view.setUint8(offset + i, string.charCodeAt(i));
+                        }
+                    }
+
+                    function encodeWAV(samples) {
+                        var buffer = new ArrayBuffer(44 + samples.length * 2);
+                        var view = new DataView(buffer);
+
+                        /* RIFF identifier */
+                        writeString(view, 0, 'RIFF');
+                        /* RIFF chunk length */
+                        view.setUint32(4, 36 + samples.length * 2, true);
+                        /* RIFF type */
+                        writeString(view, 8, 'WAVE');
+                        /* format chunk identifier */
+                        writeString(view, 12, 'fmt ');
+                        /* format chunk length */
+                        view.setUint32(16, 16, true);
+                        /* sample format (raw) */
+                        view.setUint16(20, 1, true);
+                        /* channel count */
+                        view.setUint16(22, numChannels, true);
+                        /* sample rate */
+                        view.setUint32(24, sampleRate, true);
+                        /* byte rate (sample rate * block align) */
+                        view.setUint32(28, sampleRate * 4, true);
+                        /* block align (channel count * bytes per sample) */
+                        view.setUint16(32, numChannels * 2, true);
+                        /* bits per sample */
+                        view.setUint16(34, 16, true);
+                        /* data chunk identifier */
+                        writeString(view, 36, 'data');
+                        /* data chunk length */
+                        view.setUint32(40, samples.length * 2, true);
+
+                        floatTo16BitPCM(view, 44, samples);
+
+                        return view;
+                    }
+                }, self);
+
+                this.worker.postMessage({
+                    command: 'init',
+                    config: {
+                        sampleRate: this.context.sampleRate,
+                        numChannels: this.config.numChannels
+                    }
+                });
+
+                this.worker.onmessage = function (e) {
+                    var cb = _this.callbacks[e.data.command].pop();
+                    if (typeof cb == 'function') {
+                        cb(e.data.data);
+                    }
+                };
+            }
+
+            _createClass(Recorder, [{
+                key: 'record',
+                value: function record() {
+                    this.recording = true;
+                }
+            }, {
+                key: 'stop',
+                value: function stop() {
+                    this.recording = false;
+                }
+            }, {
+                key: 'clear',
+                value: function clear() {
+                    this.worker.postMessage({ command: 'clear' });
+                }
+            }, {
+                key: 'getBuffer',
+                value: function getBuffer(cb) {
+                    cb = cb || this.config.callback;
+                    if (!cb) throw new Error('Callback not set');
+
+                    this.callbacks.getBuffer.push(cb);
+
+                    this.worker.postMessage({ command: 'getBuffer' });
+                }
+            }, {
+                key: 'exportWAV',
+                value: function exportWAV(cb, mimeType) {
+                    mimeType = mimeType || this.config.mimeType;
+                    cb = cb || this.config.callback;
+                    if (!cb) throw new Error('Callback not set');
+
+                    this.callbacks.exportWAV.push(cb);
+
+                    this.worker.postMessage({
+                        command: 'exportWAV',
+                        type: mimeType
+                    });
+                }
+            }], [{
+                key: 'forceDownload',
+                value: function forceDownload(blob, filename) {
+                    var url = (window.URL || window.webkitURL).createObjectURL(blob);
+                    var link = window.document.createElement('a');
+                    link.href = url;
+                    link.download = filename || 'output.wav';
+                    var click = document.createEvent("Event");
+                    click.initEvent("click", true, true);
+                    link.dispatchEvent(click);
+                }
+            }]);
+
+            return Recorder;
+        })();
+
+        exports.default = Recorder;
+
+    },{"inline-worker":3}],3:[function(require,module,exports){
+        "use strict";
+
+        module.exports = require("./inline-worker");
+    },{"./inline-worker":4}],4:[function(require,module,exports){
+        (function (global){
+            "use strict";
+
+            var _createClass = (function () { function defineProperties(target, props) { for (var key in props) { var prop = props[key]; prop.configurable = true; if (prop.value) prop.writable = true; } Object.defineProperties(target, props); } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+            var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
+            var WORKER_ENABLED = !!(global === global.window && global.URL && global.Blob && global.Worker);
+
+            var InlineWorker = (function () {
+                function InlineWorker(func, self) {
+                    var _this = this;
+
+                    _classCallCheck(this, InlineWorker);
+
+                    if (WORKER_ENABLED) {
+                        var functionBody = func.toString().trim().match(/^function\s*\w*\s*\([\w\s,]*\)\s*{([\w\W]*?)}$/)[1];
+                        var url = global.URL.createObjectURL(new global.Blob([functionBody], { type: "text/javascript" }));
+
+                        return new global.Worker(url);
+                    }
+
+                    this.self = self;
+                    this.self.postMessage = function (data) {
+                        setTimeout(function () {
+                            _this.onmessage({ data: data });
+                        }, 0);
+                    };
+
+                    setTimeout(function () {
+                        func.call(self);
+                    }, 0);
+                }
+
+                _createClass(InlineWorker, {
+                    postMessage: {
+                        value: function postMessage(data) {
+                            var _this = this;
+
+                            setTimeout(function () {
+                                _this.self.onmessage({ data: data });
+                            }, 0);
+                        }
+                    }
+                });
+
+                return InlineWorker;
+            })();
+
+            module.exports = InlineWorker;
+        }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+    },{}]},{},[1])(1)
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.RecivedmessagesMapper">
+
+    <resultMap type="com.sixin.broad.domain.Recivedmessages" id="RecivedmessagesResult">
+        <result property="rmid"    column="rmid"    />
+        <result property="rmobile"    column="rmobile"    />
+        <result property="rcontent"    column="rcontent"    />
+        <result property="isread"    column="isread"    />
+        <result property="recivedtime"    column="recivedtime"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectRecivedmessagesVo">
+        select rmid, rmobile, rcontent, isread, recivedtime, remark from recivedmessages
+    </sql>
+
+    <select id="selectRecivedmessagesList" parameterType="com.sixin.broad.domain.Recivedmessages" resultMap="RecivedmessagesResult">
+        <include refid="selectRecivedmessagesVo"/>
+        <where>
+            <if test="rmid != null "> and rmid like '%${rmid}%'</if>
+            <if test="rmobile != null  and rmobile != '' "> and rmobile like '%${rmobile}%'</if>
+            <if test="rcontent != null  and rcontent != '' "> and rcontent like '%${rcontent}%'</if>
+            <if test="isread != null "> and isread like '%${isread}%'</if>
+            <if test="recivedtime != null  and endtime != null"> and recivedtime between #{recivedtime} and #{endtime}</if>
+            <if test="remark != null  and remark != '' "> and remark like '%${remark}%'</if>
+        </where>
+        ORDER BY recivedtime DESC
+    </select>
+
+    <select id="selectRecivedmessagesById" parameterType="Integer" resultMap="RecivedmessagesResult">
+        <include refid="selectRecivedmessagesVo"/>
+        where rmid = #{rmid}
+    </select>
+
+    <insert id="insertRecivedmessages" parameterType="com.sixin.broad.domain.Recivedmessages">
+        insert into recivedmessages
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rmid != null  ">rmid,</if>
+            <if test="rmobile != null  and rmobile != ''  ">rmobile,</if>
+            <if test="rcontent != null  and rcontent != ''  ">rcontent,</if>
+            <if test="isread != null  ">isread,</if>
+            <if test="recivedtime != null  and recivedtime != ''  ">recivedtime,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="rmid != null  ">#{rmid},</if>
+            <if test="rmobile != null  and rmobile != ''  ">#{rmobile},</if>
+            <if test="rcontent != null  and rcontent != ''  ">#{rcontent},</if>
+            <if test="isread != null  ">#{isread},</if>
+            <if test="recivedtime != null  and recivedtime != ''  ">#{recivedtime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRecivedmessages" parameterType="com.sixin.broad.domain.Recivedmessages">
+        update recivedmessages
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="rmobile != null  and rmobile != ''  ">rmobile = #{rmobile},</if>
+            <if test="rcontent != null  and rcontent != ''  ">rcontent = #{rcontent},</if>
+            <if test="isread != null  ">isread = #{isread},</if>
+            <if test="recivedtime != null  and recivedtime != ''  ">recivedtime = #{recivedtime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where rmid = #{rmid}
+    </update>
+
+    <delete id="deleteRecivedmessagesById" parameterType="Integer">
+        delete from recivedmessages where rmid = #{rmid}
+    </delete>
+
+    <delete id="deleteRecivedmessagesByIds" parameterType="String">
+        delete from recivedmessages where rmid in
+        <foreach item="rmid" collection="array" open="(" separator="," close=")">
+            #{rmid}
+        </foreach>
+    </delete>
+
+</mapper>

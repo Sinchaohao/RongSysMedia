@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header">
+    <link th:href="@{/ajax/libs/summernote/summernote-bs3.css}" rel="stylesheet"/>
+    <th:block th:include="include :: files" />
+    <link th:href="@{/ajax/libs/summernote/summernote.css}" rel="stylesheet"/>
+    <link th:href="@{/css/fileinput.min.css}" rel="stylesheet"/>
+</head>
+
+<script th:src="@{/js/jquery.min.js?v=2.1.4}"></script>
+<script th:src="@{/js/bootstrap.min.js?v=3.3.6}"></script>
+<script th:src="@{/js/fileinput.min.js}"></script>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-file-add" action="/file/add" name="form-file-add" method="POST"
+          enctype="multipart/form-data" th:object="${files}"> <!--method="POST"  enctype="multipart/form-data">-->
+        <input type="hidden" id="id" th:field="*{id}" name="id">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">文件名称：</label>
+            <div class="col-sm-8">
+                <input id="fileName" name="fileName" th:field="*{fileName}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">文件类型：</label>
+            <div class="col-sm-8">
+                <div class="radio-box" th:each="dict : ${@dict.getType('sys_file_type')}">
+                    <input type="radio" th:field="*{type}" th:id="${dict.dictCode}" name="type"
+                           th:value="${dict.dictValue}" th:checked="${dict.isDefault == 'Y' ? true : false}">
+                    <label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <style type="text/css">
+            </style>
+            <label class="col-sm-3 control-label">文件：</label>
+            <div class="col-sm-8">
+                <div class="file-loading" style="width: 80%">
+                    <input id="files" class="file" name="file" type="file" data-show-upload="false" language="zh"
+                           data-show-Cancel="false" data-theme="fas">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">文字内容：</label>
+            <div class="col-sm-8">
+                <input id="content" name="content" type="hidden" th:field="*{content}">
+                <div id="te" class="summernote"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">备注：</label>
+            <div class="col-sm-8">
+                <textarea id="remark" name="remark" class="form-control" th:field="*{remark}"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    var content = "";
+    var types = "image";//默认图片
+    var fileTypes = "image";//默认类型
+    if ('[[${files.type}]]' == "1" || '[[${files.type}]]' == 1) {
+        types = "video";
+        fileTypes = "video/mp4";
+    }
+    var captions = '[[${files.fileName}]]' + "." + '[[${files.suffix}]]';
+    //初始化插件基础信息
+    $("#files").fileinput({
+        language: 'zh',
+        maxFileCount: 1,
+        dropZoneEnabled: false,
+        initialPreview: [
+            '[[${fileUrl}]]'
+        ],
+        initialPreviewConfig: [ //配置预览中的一些参数
+            {caption: captions, type: types, filetype: fileTypes, size: 329892, width: "120px", key: 1},
+        ],
+        showCaption: false,
+        allowedFileExtensions: ['jpg', 'png', 'jpeg', "gif", "pdf", "mp4", "ogg"],
+        initialPreviewAsData: true,
+        overwriteInitial: true,
+        layoutTemplates: {
+            actionDelete: ''//预览页面的删除按钮设置为不显示
+        }
+    })
+</script>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/summernote/summernote.min.js}"></script>
+<script th:src="@{/ajax/libs/summernote/summernote-zh-CN.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        var type = $('input[name="type"]:checked').val();
+        show(type);
+
+        $('input').on('ifChecked',
+            function (event) {
+                var menuType = $(event.target).val();
+                show(menuType);
+            });
+
+        var id = $('#id').val();
+        if (id) {
+            $("#fileName").attr("readOnly", "true");
+        }
+
+
+        $('.summernote').summernote({
+            height: '220px',
+            lang: 'zh-CN'
+        });
+        var content = $("#content").val();
+        $('#te').code(content);
+
+    });
+
+    function show(type) {
+        if (type == "0") {//图片
+            $("#content").parents(".form-group").hide();
+            $("#files").parents(".form-group").show();
+        } else if (type == "1") {//视频
+            $("#files").parents(".form-group").show();
+            $("#content").parents(".form-group").hide();
+        } else if (type == "2") {//文字
+            $("#files").parents(".form-group").hide();
+            $("#content").parents(".form-group").show();
+        }
+    }
+
+    $('.summernote').summernote({
+        height: '220px',
+        lang: 'zh-CN'
+    });
+
+    var prefix = ctx + "file";
+    $("#form-file-add").validate({
+        rules: {
+            fileName: {
+                required: true,
+            },
+            url: {
+                required: true
+            }
+        },
+        messages: {
+            "fileName": {
+                remote: "文件名称已经存在"
+            }
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            var form = new FormData();
+            var val = $('input:radio[name="type"]:checked').val();
+            var id = $("#id").val();
+            if (val == null) {
+                $.modal.alertError("请选择文件类型");
+                return;
+            }
+            if (id) {
+                form.append("id", id);
+                form.append("updateFlag", 1);
+            } else {
+                form.append("updateFlag", 0);
+                checkFileName();
+            }
+            if (val != null && val == "2") {
+                var sHTML = $('.summernote').code();
+                $("#content").val(sHTML);
+                form.append("content", $("#content").val());
+                form.append("fileName", $("#fileName").val());
+                form.append("type", $("input[name='type']:checked").val());
+            } else {
+                var file = document.getElementById("files").files[0];
+                form.append("file", file);
+                form.append("fileName", $("#fileName").val());
+                form.append("type", $("input[name='type']:checked").val());
+            }
+            form.append("remark", $("#remark").val());
+            $.operate.save(prefix + "/add", $('#form-file-add').serialize());
+        }
+    }
+
+    function checkFileName() {
+        $.ajax({
+            url: prefix + "/checkFileNameUnqiue",
+            type: "post",
+            dataType: "json",
+            data: {
+                "fileName": function () {
+                    return $.common.trim($("#fileName").val());
+                }
+            },
+            success: function (data) {
+
+            }
+
+
+        })
+
+
+    }
+
+</script>
+</body>
+</html>

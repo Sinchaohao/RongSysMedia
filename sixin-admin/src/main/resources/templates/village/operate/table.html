@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<head th:include="include :: header"></head>
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+     	<div class="btn-group-sm" id="toolbar" role="group">
+	        <!--<a class="btn btn-success" onclick="$.operate.add()">-->
+	            <!--<i class="fa fa-plus"></i> 新增-->
+	        <!--</a>-->
+	        <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()">
+	            <i class="fa fa-edit"></i> 修改
+	        </a>-->
+	        <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()">-->
+	            <!--<i class="fa fa-remove"></i> 删除-->
+	        <!--</a>-->
+	        <a class="btn btn-info" onclick="importExcel()">
+	            <i class="fa fa-upload"></i> 导入
+	        </a>
+	        <a class="btn btn-warning" onclick="$.table.exportExcel()">
+	            <i class="fa fa-download"></i> 导出
+	        </a>
+	        <!--<a class="btn btn-info single disabled" onclick="$.operate.detail()">-->
+	            <!--<i class="fa fa-search"></i> 详细-->
+	        <!--</a>-->
+	        <a class="btn btn-danger" onclick="$.operate.clean()">
+	            <i class="fa fa-trash"></i> 清空
+	        </a>
+        </div>
+		<div class="row">
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var prefix = ctx + "village/operate";
+        var datas = [[${@dict.getType('sys_normal_disable')}]];
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                importUrl: prefix + "/importData",
+                importTemplateUrl: prefix + "/importTemplate",
+                detailUrl: prefix + "/detail/{id}",
+                cleanUrl: prefix + "/clean",
+		        showSearch: false,
+		        showRefresh: false,
+		        showToggle: false,
+		        showColumns: false,
+		        search: true,
+		        modalName: "用户",
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'userId',
+					title : '用户ID'
+				},
+				{
+					field : 'userName',
+					title : '用户姓名'
+				},
+				{
+					field : 'userPhone',
+					title : '用户手机'
+				},
+				{
+					field : 'userEmail',
+					title : '用户邮箱'
+				},
+				{
+				    field : 'userBalance',
+				    title : '用户余额'
+				},
+				{
+                    field: 'status',
+                    title: '用户状态',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                    	return $.table.selectDictLabel(datas, value);
+                    }
+                }/*,
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs" href="#" onclick="$.operate.edit(\'' + row.userId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-info btn-xs" href="#" onclick="$.operate.detail(\'' + row.userId + '\')"><i class="fa fa-search"></i>详细</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs" href="#" onclick="$.operate.remove(\'' + row.userId + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }*/]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+<!-- 导入区域 -->
+<script id="importTpl" type="text/template">
+<form enctype="multipart/form-data" class="mt20 mb10">
+	<div class="col-xs-offset-1">
+		<input type="file" id="file" name="file"/>
+			<!--<input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
+			 &nbsp;	-->
+			<a onclick="importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 点击下载excel模板</a>
+		<font color="red" class="pull-left mt10">
+			提示：仅允许导入“xls”或“xlsx”格式文件！
+		</font>
+	</div>
+</form>
+</script>
+<script>
+	// 下载模板
+	function importTemplate() {
+		$.get($.table._option.importTemplateUrl, function(result) {
+			if (result.code == web_status.SUCCESS) {
+				window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+			} else if (result.code == web_status.WARNING) {
+				$.modal.alertWarning(result.msg)
+			} else {
+				$.modal.alertError(result.msg);
+			}
+		});
+	}
+</script>
+<script>
+	// 导入数据
+	function importExcel(formId){
+		var currentId = $.common.isEmpty(formId) ? 'importTpl' : formId;
+		layer.open({
+			type: 1,
+			area: ['400px', '230px'],
+			fix: false,
+			//不固定
+			maxmin: true,
+			shade: 0.3,
+			title: '导入' + $.table._option.modalName + '数据',
+			content: $('#' + currentId).html(),
+			btn: ['<i class="fa fa-check"></i> 导入', '<i class="fa fa-remove"></i> 取消'],
+			// 弹层外区域关闭
+			shadeClose: true,
+			btn1: function(index, layero){
+				var file = layero.find('#file').val();
+				if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx'))){
+					$.modal.msgWarning("请选择后缀为 “xls”或“xlsx”的文件。");
+					return false;
+				}
+				var index = layer.load(2, {shade: false});
+				//$.modal.disable();
+				// 禁用按钮
+				function disable() {
+					var doc = window.top == window.parent ? window.document : window.parent.document;
+					$("a[class*=layui-layer-btn]", doc).addClass("layer-disabled");
+				};
+				var formData = new FormData();
+				formData.append("file", $('#file')[0].files[0]);
+				formData.append("updateSupport", $("input[name='updateSupport']").is(':checked'));
+				$.ajax({
+					url: $.table._option.importUrl,
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false,
+					type: 'POST',
+					success: function (result) {
+						if (result.code == web_status.SUCCESS) {
+							// 关闭全部窗体
+							layer.closeAll();
+							// 成功提示
+							function alertSuccess(content) {
+								// 弹出提示
+								layer.alert(content, {
+										icon: $.modal.icon("success"),
+										title: "系统提示",
+										btn: ['确认'],
+										btnclass: ['btn btn-primary'],
+									});
+							}
+							$.table.refresh();
+						} else if (result.code == web_status.WARNING) {
+							layer.closeAll();
+							// 启用按钮
+							 function enable() {
+								var doc = window.top == window.parent ? window.document : window.parent.document;
+								$("a[class*=layui-layer-btn]", doc).removeClass("layer-disabled");
+							}
+							// 成功提示
+							function alertSuccess(content) {
+								// 弹出提示
+								layer.alert(content, {
+									icon: $.modal.icon("success"),
+									title: "系统提示",
+									btn: ['确认'],
+									btnclass: ['btn btn-primary'],
+								});
+							}
+							$.modal.alert("warning");
+						} else {
+							layer.closeAll();
+							function enable() {
+								var doc = window.top == window.parent ? window.document : window.parent.document;
+								$("a[class*=layui-layer-btn]", doc).removeClass("layer-disabled");
+							}
+							// 错误提示
+							function alertError(content) {
+								// 弹出提示
+								layer.alert(content, {
+									icon: $.modal.icon("fail"),
+									title: "系统提示",
+									btn: ['确认'],
+									btnclass: ['btn btn-primary'],
+								});
+							}
+							$.modal.alert("操作失败，插入数据与现有数据重复");
+						}
+					}
+				});
+			}
+		});
+	}
+</script>
+</html>

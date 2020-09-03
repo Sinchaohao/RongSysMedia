@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.TempgroupMapper">
+    <resultMap type="com.sixin.broad.domain.Tempgroup" id="TempgroupResult">
+        <result property="tgid" column="tgid"/>
+        <result property="tgname" column="tgname"/>
+        <result property="userid" column="userid"/>
+        <result property="createtime" column="createtime"/>
+        <result property="note" column="note"/>
+        <result property="isuse" column="isuse"/>
+        <result property="rightuserid" column="rightuserid"/>
+
+        <result property="tid" column="tid"/>
+        <result property="tname" column="tname"/>
+        <result property="aname" column="aname"/>
+        <result property="uname" column="uname"/>
+
+    </resultMap>
+
+    <!--根据tgname查询结果    -->
+    <select id="selectAllTempgroup" parameterType="String" resultMap="TempgroupResult">
+        SELECT
+            te.tid as tid,
+            te.tname as tname,
+            a.aname as aname,
+            `ry`.`sys_user`.user_name as uname
+        FROM
+            terminals te,
+            tempgroup tg,
+            tempgroup_ter tgt,
+            area a,
+            `ry`.`sys_user`
+        WHERE
+            te.tid = tgt.tid
+          AND tg.tgid = tgt.tgid
+          AND a.aid = te.aid
+          AND `ry`.`sys_user`.user_id = te.userid
+          AND tg.tgid = #{tgid}
+    </select>
+
+    <select id="selectTempgroupById" parameterType="int" resultMap="TempgroupResult">
+        select * from tempgroup where tgid=#{tgid};
+    </select>
+
+    <!--    新增-->
+    <insert id="insertTempgroup" parameterType="com.sixin.broad.domain.Tempgroup">
+        INSERT INTO `tempgroup`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tgname != null  and tgname != '' ">tgname,</if>
+            <if test="userid != null  and userid != '' ">userid,</if>
+            createtime,
+            <if test="note != null  and note != '' ">note,</if>
+            <if test="isuse != null  and isuse != '' ">isuse,</if>
+            <if test="rightuserid != null  and rightuserid != '' ">rightuserid</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tgname != null  and tgname != '' ">#{tgname},</if>
+            <if test="userid != null  and userid != '' ">#{userid},</if>
+            now(),
+            <if test="note != null  and note != '' ">#{note},</if>
+            <if test="isuse != null  and isuse != '' ">#{isuse},</if>
+            <if test="rightuserid != null  and rightuserid != '' ">#{rightuserid}</if>
+        </trim>
+
+
+    </insert>
+
+    <!--    返回表格数据-->
+    <select id="selectTempgroup" resultMap="TempgroupResult">
+        SELECT
+            tempgroup.*,
+            `ry`.`sys_user`.`user_name` as uname
+        FROM
+            tempgroup,
+            `ry`.`sys_user`
+        WHERE
+            tempgroup.userid = `ry`.`sys_user`.user_id
+    </select>
+
+    <!--    删除-->
+    <delete id="deleteTempgroup" parameterType="String">
+        DELETE tempgroup
+        FROM
+            tempgroup
+                LEFT JOIN tempgroup_ter ON tempgroup.tgid = tempgroup_ter.tgid
+        WHERE
+            tempgroup.tgid = #{tgid}
+    </delete>
+
+    <insert id="insertTempgroupT" parameterType="com.sixin.broad.domain.Tempgroup">
+        INSERT INTO `broad`.`tempgroup_ter` (`tgid`, `tid`) VALUES (#{tgid},#{tid});
+    </insert>
+
+    <delete id="deleteTempgroupT" parameterType="String">
+        DELETE
+        FROM
+            `broad`.`tempgroup_ter`
+        WHERE
+            tid = #{tid}
+    </delete>
+
+    <!--    更新数据-->
+    <update id="updateTempgroup" parameterType="com.sixin.broad.domain.Tempgroup">
+        UPDATE tempgroup
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tgname != null  and tgname != '' ">tgname = #{tgname},</if>
+            <if test="userid != null  and userid != '' ">userid = #{userid},</if>
+            <if test="note != null  and note != '' ">note = #{note},</if>
+            <if test="isuse != null  and isuse != '' ">isuse = #{isuse},</if>
+        </trim>
+        where tgid=#{tgid}
+    </update>
+</mapper>

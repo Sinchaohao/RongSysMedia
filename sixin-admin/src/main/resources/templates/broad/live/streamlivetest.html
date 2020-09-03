@@ -1,0 +1,618 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+    <style>
+        #canvasOne {
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body class="gray-bg" onload="init();">
+<script>
+    var buttonStyle = ["btn btn-primary","btn btn-success","btn btn-info","btn btn-warning","btn btn-danger"];
+    var imea = new Array();
+    var imeiName = new Array();
+    function imeiYes(data) {
+        layer.msg('你确定要取消选择该IMEI吗', {
+            time: 0 //不自动关闭
+            ,btn: ['确定', '取消']
+            ,yes: function(index){
+                layer.close(index);
+                imeiButton(data);
+            }
+        });
+    }
+    function imeiButton(data) {
+        var str = '';
+        for(var i = 0; i <imea.length; i++) {
+            if(imea[i] == data)
+                imea[i] = '';
+            else if(imea[i] != '' && imea[i] != null)
+                str += '<button class="'+buttonStyle[i%5]+'" onclick="imeiYes('+imea[i]+')" ' +
+                    'style="margin: 2px 2px;color: white">终端名称:'+imeiName[i] +'<br>IMEI:'+ imea[i]+'</button>';
+        }
+        $('#imea').html(str);
+    }
+</script>
+<script th:src="@{/js/plugins/live/recorder-core.js}"></script>
+<script th:src="@{/js/plugins/live/FileSaver.js}"></script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/content.min.js}"></script>
+<script th:src="@{/js/views/live/swfobject.min.js}"></script>
+<script th:src="@{/js/views/live/livestreamtest.js}"></script>
+<script th:src="@{/ajax/libs/select/select2.js}"></script>
+<script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+<script th:src="@{/js/plugins/live/engine/mp3.js}"></script>
+<script th:src="@{/js/plugins/live/engine/mp3-engine.js}"></script>
+<!--echarts 可视化图形 插件-->
+<script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>流媒体直播</h5>
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <p class="text-warning">测试直播IMEI为：<span id="test"></span></p>
+                    <div id="livestatus">
+                        <p class="text-primary" >未直播</p>
+                    </div>
+                    <div id="rtmp-streamer" >
+                        <h3>请先安装flash插件</h3>
+                        <p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="下载 Adobe Flash player 插件" /></a></p>
+                    </div>
+                    <div >
+                        <button class="btn btn-primary"  name="organName" onclick="selectOrganTree()" id="treeName">选择终端</button>
+                        <button id="start" class="btn btn-primary"   onclick="startlive(this);"  >
+                            <i  class="ace-icon fa fa-play bigger-110 "></i>&nbsp;开启直播</button>
+                        <button id="end" class="btn btn-danger"  disabled onclick="endlive();"   >
+                            <i  class="ace-icon fa fa-stop bigger-110 " ></i>&nbsp;关闭直播</button>
+                    </div>
+                    <div style="font-size:12px;margin-top:20px;">
+                        <p  class="text-warning" >直播终端：<span id="liveternum">0</span> 个，开启直播：<span id="startternum">0</span> 个</p>
+                    </div>
+                    <div>
+                        <h1>直播声音频域图</h1>
+                        <canvas id="canvasOne" width="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>终端直播状态</h5>
+                </div>
+                <div class="ibox-content">
+                    <form action="" method="post" name="Form" id="Form">
+                        <div style="overflow: scroll;height: 250px">
+                            <table id="simple-table"  class="table table-striped table-bordered table-hover" >
+                                <thead>
+                                <tr>
+                                    <th class="center">终端IMEI</th>
+                                    <th class="center">终端设备名称</th>
+                                    <th class="center">流媒体ID</th>
+                                    <th class="center">记录状态</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>终端数量以及直播状态统计</h5>
+                    <div class="ibox-tools">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-superpowers"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a onclick="terminalStateCount()">原始数据</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="echarts" id="bd_terminalstate"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <audio class="recPlay" style="width:100%"></audio>
+                </div>
+                <input name="deptId"  type="hidden" id="treeId"/>
+                <input name="deptId"  type="hidden" id="tname"/>
+                <div class="ibox-content">
+                    <div id="imea"  style="overflow: scroll;height: 200px"></div>
+                </div>
+                <div class="ibox-content">
+                    <audio class="recPlay" style="width:70%" id="vid"></audio>
+                    <div class="reclog"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script>
+    function terminalStateCount()
+    {
+        var bds_mbygroup = echarts.init(document.getElementById('bd_terminalstate'));
+        $.ajax({
+            type: "GET",
+            url: "/api/bcount/bindex",
+            datatype: "JSON",
+            success: function (data) {
+                //var bd_run = data.data.run;
+                //var bd_stop = data.data.stop;
+                var bd_all = data.data.dev;
+                var bd_run = terminalCount;
+                option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                        data: ['终端总数', '直播终端数']
+                    },
+                    series: [
+                        {
+                            color: ['#fc4945','#00fc1a'],
+                            name: '访问来源',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: [
+                                {value: bd_all, name: '终端总数'},
+                                {value: terminalCount, name: '直播终端数'}
+                            ],
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                bds_mbygroup.setOption(option);
+            }
+
+        });
+    }
+</script>
+<script>
+    function reclog(s){
+        $(".reclog").prepend('<div>['+new Date().toLocaleTimeString()+']'+s+'</div>');
+    };
+    $(window).bind("error",function(e){
+        reclog('<span style="color:red">【Error】:<pre>'+(e.error?e.error.stack:event.message)+'</pre></span>');
+    });
+    function RandomKey(){
+        return "randomkey"+(RandomKey.idx++);
+    };
+    RandomKey.idx=0;
+    //文件转播选择
+    function doFile() {
+        var baseTime = "08:00:00";
+        if($("#broaddate").val() == ""){
+            layer.tips('请选择播出日期','#broaddate', {
+                tips: [1, '#3595CC'],
+                time: 4000
+            });
+            return false;
+        }
+        var data = $("#broaddate").val();
+
+        //console.log("timeFile="+time);
+        var _url = "/broad/live/getdofile";
+        var _title = '文件选择';
+        var _width = "1200";
+        var _height = ($(window).height() - 50);
+        layer.open({
+            type: 2,
+            maxmin: true,
+            shade: 0.3,
+            title: _title,
+            fix: false,
+            area: [_width + 'px', _height + 'px'],
+            content: _url,
+            shadeClose: true,
+            btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+            yes: function (index, layero) {
+                layer.close(index);
+                //获取子页面关闭前的回调函数获取到的值
+                var res = $(layero).find("iframe")[0].contentWindow.callbackfile();
+                var filename = res.data_filename;
+                var fid = res.data_file;
+                console.log("文件id:"+fid+",文件名称："+filename);
+                $("#file").attr("name",fid);
+                $("#file").val(filename);
+                console.log(fid);
+                fid = "../"+fid;
+                fid = "../"+fid;
+                var audio=$(".recPlay")[0];
+                audio.controls=true;
+                if(!(audio.ended || audio.paused)){
+                    audio.pause();
+                };
+                audio.src=fid;
+                console.log(audio);
+            }, cancel: function () {
+                return true;
+            }
+        });
+    }
+    //播放文件
+    function flushfile(){
+        console.log($("#file").attr("name"));
+        // 如果未选择则 提示要选择
+        if(imeilist==null || imeilist==""){
+            $.modal.confirm("无测试终端，请查看源码调试 ----》 方法startlive(obj)");
+            return false;
+        }else{
+            var start = $("#start").attr("disabled");
+            var end = $("#end").attr("disabled");
+            //console.log(start+"-----"+end)
+            if((typeof start =='undefined') == false && (typeof end =='undefined') == false){
+                console.log("请稍后。。。")
+            }else if((typeof start =='undefined') == true && (typeof end =='undefined') == false){
+                console.log("关闭状态。。。")
+            }else if((typeof start =='undefined') == false && (typeof end =='undefined') == true){
+                console.log("开启状态。。。")
+            }else {
+                console.log("异常")
+            }
+        }
+    }
+</script>
+<script>
+    window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
+    var player = document.getElementById('vid'),
+        audioContext = new AudioContext();
+    var playerAnalyser = audioContext.createAnalyser(),
+        playerSource = audioContext.createMediaElementSource(player);
+    playerAnalyser.connect(audioContext.destination);//声音连接到扬声器
+    playerSource.connect(playerAnalyser);//截取音频信
+    function vid(){   //播放文件
+
+        // 设置 streamid 为当前时间
+        streamid = getCurTime();
+        if(rec){
+            rec.start();
+            console.log("开启22")
+        };
+        $(".buttonsd").attr("disabled","disabled");
+        $(".buttonsb").removeAttr("disabled");
+        $("#start").attr("disabled","disabled");
+        $("#end").attr("disabled","disabled");
+
+        var audio=$(".recPlay")[0];
+        if(audio.paused){
+            audio.play();// 播放
+        }
+        // 推流
+        publishRtmp();
+    }
+    function clo() {
+        addlog("close", streamid, list, nameList);
+
+        console.log("关闭成功1");
+        if(rec){
+            rec.stop(function(blob,time){
+                var id=RandomKey(16);
+                recblob[id]={blob:blob,set:$.extend({},rec.set),time:time};
+                recdown(id);
+                var t1=Date.now();
+                reclog("已录制:"+intp(rec.set.bitRate,3)+"kbps "+intp(rec.set.sampleRate,5)+"hz 花"+intp(Date.now()-t1,4)+"ms编码"+intp(blob.size,6)+"b ["+rec.set.type+"]"+intp(time,6)+'ms <button onclick="recdown(\''+id+'\')">下载</button> <button onclick="recplay(\''+id+'\')">播放</button> <span class="p'+id+'"></span> <span class="d'+id+'"></span>');
+                console.log("关闭成功2")
+            },function(s){
+                console.log("关闭失败222")
+            });
+        };
+        console.log("关闭成功3");
+        if(isOpen) streamerDisconnect();
+        if (ws != null) {
+            var message = "end:"+streamid;
+            console.log('Sent End');
+            ws.send(message);
+        } else {
+            $(".buttonsb").attr("disabled","disabled");
+            $(".buttonsd").removeAttr("disabled");
+            $("#start").removeAttr("disabled");
+            $("#end").removeAttr("disabled");
+        }
+        $(".buttonsb").attr("disabled","disabled");
+        $(".buttonsd").removeAttr("disabled");
+        $("#start").removeAttr("disabled");
+        $("#end").removeAttr("disabled");
+        var audio=$(".recPlay")[0];
+        if(!audio.paused){
+            audio.pause();// 暂停
+        }
+    }
+</script>
+<script>
+    function RandomKey(){
+        return "randomkey"+(RandomKey.idx++);
+    };
+    RandomKey.idx=0;
+    var ctx;
+    var audioContext;
+    var analyser;
+    var mic;
+
+    var rec;
+    var recblob={};
+    var wave;
+
+    function initcpt() {
+        var type="mp3";
+        var bit=16;
+        var sample=16000;
+        rec=Recorder({
+            type:type
+            ,bitRate:bit
+            ,sampleRate:sample
+            ,onProcess:function(buffers,level,time,sampleRate){
+                //wave.input(buffers[buffers.length-1],level,sampleRate);
+            }
+        });
+        rec.open(function(){
+            console.log("打开成功22");
+        },function(e,isUserNotAllow){
+            console.log("不允许")
+        });
+    }
+    function init() {
+        initcpt();
+        canvasOne = document.getElementById('canvasOne');
+        ctx = canvasOne.getContext("2d");
+
+    }
+    var intp=function(s,len){
+        s=""+s;
+        if(s.length>=len)return s;
+        return ("_______"+s).substr(-len);
+    };
+    function recplay(key){
+        var o=recblob[key];
+        if(o){
+            var audio=$(".recPlay")[0];
+            audio.controls=true;
+            if(!(audio.ended || audio.paused)){
+                audio.pause();
+            };
+            o.play=(o.play||0)+1;
+            var logmsg=function(msg){
+                $(".p"+key).html('<span style="color:green">'+o.play+'</span> '+new Date().toLocaleTimeString()+" "+msg);
+            };
+            logmsg("");
+
+            var end=function(blob){
+                audio.src=URL.createObjectURL(blob);
+                audio.play();
+            };
+            var wav=Recorder[o.set.type+"2wav"];
+            if(wav){
+                logmsg("正在转码成wav...");
+                wav(o.blob,function(blob){
+                    end(blob);
+                    logmsg("已转码成wav播放");
+                },function(msg){
+                    logmsg("转码成wav失败："+msg);
+                });
+            }else{
+                end(o.blob);
+            };
+        };
+    };
+    /**
+     * 结束直播命令
+     */
+    function endlive(){
+        setLiveButton(3);
+        scrollStatus("text-info","正在关闭直播...");
+        addlog("close",streamid,list, nameList);
+
+        console.log("关闭成功1");
+        if(rec){
+            rec.stop(function(blob,time){
+                var id=RandomKey(16);
+                recblob[id]={blob:blob,set:$.extend({},rec.set),time:time};
+                recdown(id);
+                var t1=Date.now();
+                reclog("已录制:"+intp(rec.set.bitRate,3)+"kbps "+intp(rec.set.sampleRate,5)+"hz 花"+intp(Date.now()-t1,4)+"ms编码"+intp(blob.size,6)+"b ["+rec.set.type+"]"+intp(time,6)+'ms <button onclick="recdown(\''+id+'\')">下载</button> <button onclick="recplay(\''+id+'\')">播放</button> <span class="p'+id+'"></span> <span class="d'+id+'"></span>');
+                console.log("关闭成功2")
+            },function(s){
+                console.log("关闭失败222")
+            });
+        };
+        console.log("关闭成功3");
+        if(isOpen) streamerDisconnect();
+        if (ws != null) {
+            var message = "end:"+streamid;
+            console.log('Sent End');
+            ws.send(message);
+        } else {
+            setLiveButton(2);
+        }
+
+    }
+    function recdown(key){
+        var o=recblob[key];
+        /**
+         * 下载文件
+         */
+        console.log("----here");
+        if(o){
+            var cls=RandomKey(16);
+            var name="rec-"+o.time+"ms-"+o.set.bitRate+"kbps-"+o.set.sampleRate+"hz."+o.set.type;
+            o.down=(o.down||0)+1;
+            var downA=document.createElement("A");
+            console.log(o.blob);
+            downA.innerHTML="下载 "+name;
+            downA.href=URL.createObjectURL(o.blob);
+            downA.download=name;
+            $("."+cls).prepend(downA);
+            downA.click();
+        };
+    };
+    /**
+     * 开始直播
+     * @param obj
+     * @returns {boolean}
+     */
+    function startlive(obj){
+        list = imeilist.toString().split(",");
+        //nameList[0] = imeiNameList;
+        //nameList[1] = imeiNameList+"2";
+        for(var i = 0; i < imea.length; i++) {
+            list[i] = imea[i];
+            nameList[i] = imeiName[i];
+        }
+        imeilist += "," + String(document.getElementById("treeId").value);
+        // 如果未选择则 提示要选择
+        if(imeilist==null || imeilist==""){
+            $.modal.confirm("无测试终端，请查看源码调试 ----》 方法startlive(obj)");
+            return false;
+        }else{
+            // 设置 streamid 为当前时间
+            streamid = getCurTime();
+            if(rec){
+                rec.start();
+                console.log("开启22");
+            }
+            setLiveButton(0);
+            // 推流
+            publishRtmp();
+            list.splice(list.length-1,1);
+            //在这里统计直播终端数量
+            terminalCount = list.length;
+            //addlog("open",streamid,list, nameList);
+            console.log("list:",list);
+            message_1 = "start:"+streamid+":"+list;
+
+            //startsent(message_1);
+            console.log("hello")
+            //ws.send(message_1);
+        }
+
+    }
+    navigator.getMedia = ( navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia);
+
+    navigator.getMedia ( { audio: true }, function (stream) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext);
+        mic = audioContext.createMediaStreamSource(stream);
+        analyser= audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        mic.connect(analyser);
+        drawSpectrum();
+    },function(){});
+
+    var loadImageToBlob = function(url) {
+        if(!url) return false;
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', url, true);
+        xhr.responseType = 'blob';
+        xhr.onload = function() {
+            // 注意这里的this.response 是一个blob对象 就是文件对象
+            console.log(this.status == 200 ? this.response : false);
+        }
+        xhr.send();
+        return true;
+    }
+    function drawSpectrum() {
+        var WIDTH = canvasOne.width;
+        var HEIGHT= canvasOne.height;
+        var array =  new Uint8Array(128);
+        analyser.getByteFrequencyData(array);
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+        for ( var i = 0; i < (array.length); i++ ){
+            var value = array[i];
+            ctx.fillRect(i*5,HEIGHT-value,3,HEIGHT);
+        }
+        requestAnimationFrame(drawSpectrum);
+    };
+</script>
+<script type="text/javascript">
+    var context1;
+    try {
+        context1 = new (window.AudioContext || window.webkitAudioContext);
+    } catch(e) {
+        throw new Error('The Web Audio API is unavailable');
+    }
+    window.addEventListener('load', function(e) {
+        drawSpectrumfa();
+    }, false);
+    function drawSpectrumfa() {
+        var array =  new Uint8Array(128);
+        requestAnimationFrame(drawSpectrumfa);
+    }
+
+
+    /*流媒体直播-选择终端树*/
+    function selectOrganTree() {
+        $('#imea').html('');
+        var _url = "/broad/organization/selectOrganizationTree/01";
+        var _title = '选择终端';
+        var _width = "1200";
+        var _height = ($(window).height() - 50);
+        layer.open({
+            type: 2,
+            maxmin: true,
+            shade: 0.3,
+            title: _title,
+            fix: false,
+            area: [_width + 'px', _height + 'px'],
+            content: _url,
+            shadeClose: true,
+            btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+            yes: function (index, layero) {
+                imea = String(document.getElementById("treeId").value).split(',');
+                console.log("调试imea：",imea)
+                imeiName = String(document.getElementById("tname").value).split(',');
+                console.log("调试imeiname：",imeiName)
+                console.log("aaaaaa: " + document.getElementById("treeId").value);
+                doSubmit(index, layero)
+            }, cancel: function () {
+                return true;
+            }
+        });
+    }
+
+    function doSubmit(index, layero){
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        /* if ($.tree.notAllowParents(tree)) {*/
+        var body = layer.getChildFrame('body', index);
+        $("#treeId").val(body.find('#treeId').val());
+        $("#treeName").val(body.find('#treeName').val());
+        layer.close(index);
+        /*}*/
+    }
+</script>
+
+</body>
+</html>

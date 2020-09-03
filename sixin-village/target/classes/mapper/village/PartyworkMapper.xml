@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.PartyworkMapper">
+    
+    <resultMap type="com.sixin.village.domain.Partywork" id="PartyworkResult">
+        <result property="id"    column="id"    />
+        <result property="grouptype"    column="grouptype"    />
+        <result property="uname"    column="uname"    />
+        <result property="worktime"    column="worktime"    />
+        <result property="address"    column="address"    />
+        <result property="content"    column="content"    />
+        <result property="admin"    column="admin"    />
+        <result property="note"    column="note"    />
+        <result property="adddate"    column="adddate"    />
+        <result property="phone"    column="phone"    />
+        <result property="aid"    column="aid"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectPartyworkVo">
+        select id, grouptype, uname, worktime, address, content, admin, note, adddate,phone, aid, remark from tb_partywork
+    </sql>
+
+    <select id="selectPartyworkListlimit5" resultMap="PartyworkResult">
+        <include refid="selectPartyworkVo"/>
+        order by worktime DESC
+        limit 0,5
+    </select>
+	
+    <select id="selectPartyworkList" parameterType="com.sixin.village.domain.Partywork" resultMap="PartyworkResult">
+        <include refid="selectPartyworkVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="grouptype != null  and grouptype != '' "> and grouptype LIKE CONCAT(CONCAT('%', #{grouptype}),'%')</if>
+             <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+             <if test="worktime != null  and worktime != '' "> and worktime LIKE CONCAT(CONCAT('%', #{worktime}),'%')</if>
+             <if test="address != null  and address != '' "> and address LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+             <if test="content != null  and content != '' "> and content LIKE CONCAT(CONCAT('%', #{content}),'%')</if>
+             <if test="admin != null  and admin != '' "> and admin LIKE CONCAT(CONCAT('%', #{admin}),'%')</if>
+             <if test="note != null  and note != '' "> and note LIKE CONCAT(CONCAT('%', #{note}),'%')</if>
+             <if test="adddate != null "> and adddate LIKE CONCAT(CONCAT('%', #{adddate}),'%')</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="remark != null  and remark != '' "> and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')</if>
+         </where>
+    </select>
+    
+    <select id="selectPartyworkById" parameterType="Integer" resultMap="PartyworkResult">
+        <include refid="selectPartyworkVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectPartyworkByIds" parameterType="java.util.List" resultMap="PartyworkResult">
+        <include refid="selectPartyworkVo"/>
+        where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+        
+    <insert id="insertPartywork" parameterType="com.sixin.village.domain.Partywork">
+        insert into tb_partywork
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="grouptype != null  and grouptype != ''  ">grouptype,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="worktime != null  and worktime != ''  ">worktime,</if>
+			<if test="address != null  and address != ''  ">address,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="admin != null  and admin != ''  ">admin,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+			<if test="adddate != null  ">adddate,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="grouptype != null  and grouptype != ''  ">#{grouptype},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="worktime != null  and worktime != ''  ">#{worktime},</if>
+			<if test="address != null  and address != ''  ">#{address},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="admin != null  and admin != ''  ">#{admin},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+			<if test="adddate != null  ">#{adddate},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePartywork" parameterType="com.sixin.village.domain.Partywork">
+        update tb_partywork
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="grouptype != null  and grouptype != ''  ">grouptype = #{grouptype},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="worktime != null  and worktime != ''  ">worktime = #{worktime},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="admin != null  and admin != ''  ">admin = #{admin},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="adddate != null  ">adddate = #{adddate},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deletePartyworkById" parameterType="Integer">
+        delete from tb_partywork where id = #{id}
+    </delete>
+	
+    <delete id="deletePartyworkByIds" parameterType="String">
+        delete from tb_partywork where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

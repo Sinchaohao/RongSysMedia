@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-company-edit" th:object="${company}">
+		<input id="cid" name="cid" th:field="*{cid}"  type="hidden">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">地域编号：</label>
+			<div class="col-sm-8">
+				<!--<input id="aid" name="aid" th:field="*{aid}" class="form-control" type="text">-->
+				<input  class="form-control" type="text" id="aid" name="aid" th:field="*{aid}" onclick="selectAidTree()" placeholder="点击选择区域">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">企业名称：</label>
+			<div class="col-sm-8">
+				<input id="cname" name="cname" th:field="*{cname}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">社会信用代码：</label>
+			<div class="col-sm-8">
+				<input id="scode" name="scode" th:field="*{scode}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">负责人姓名：</label>
+			<div class="col-sm-8">
+				<input id="pname" name="pname" th:field="*{pname}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">电话：</label>
+			<div class="col-sm-8">
+				<input id="phone" name="phone" th:field="*{phone}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">企业地址：</label>
+			<div class="col-sm-8">
+				<input id="address" name="address" th:field="*{address}" class="form-control" type="text" onclick="selectAidTree()">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">状态：</label>
+			<div class="col-sm-8">
+				<div class="onoffswitch" >
+					<input type="checkbox"  class="onoffswitch-checkbox" th:value="${ctype}" id="ctype1" name="ctype1"  onclick="changevalue();" />
+					<label class="onoffswitch-label" for="ctype1">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<input id="ctype" name="ctype" th:field="*{ctype}"  class="form-control" type="hidden" >
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">删除标识：</label>
+			<div class="col-sm-8">
+				<div class="onoffswitch">
+					<input type="checkbox" class="onoffswitch-checkbox" th:value="${dflag}" id="dflag1" name="dflag1"  onclick="changevalue2();" />
+					<label class="onoffswitch-label" for="dflag1">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<input id="dflag" name="dflag" th:field="*{dflag}" class="form-control" type="hidden" >
+		<div class="form-group">
+			<label class="col-sm-3 control-label">备注：</label>
+			<div class="col-sm-8">
+				<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+
+	//0是关 1是开
+	$(function(){
+		var ctype2=document.getElementById("ctype1");
+		var dflag2=document.getElementById("dflag1");
+		var data = $("#ctype").val();
+		var data2=$("#dflag").val();
+		if(data=="1"){
+
+			ctype2.checked=true;
+
+		}else{
+			ctype2.checked=false;
+		}
+		if(data2=="1"){
+			dflag2.checked=true;
+		}else{
+			dflag2.checked=false;
+		}
+
+	});
+
+	var aa = $("#ctype").val();
+	var aflag = 0;
+	function changevalue() {
+		aflag++;
+		if(aflag % 2 == 0) {
+			$("#ctype").val(aa);
+
+		}else{
+			if (aa == "1") {
+				$("#ctype").val("0");
+			} else{
+				$("#ctype").val("1");
+
+			}
+
+		}
+
+	}
+	var bb = $("#dflag").val();
+	var bflag = 0;
+	function changevalue2() {
+		bflag++;
+		if (bflag % 2 == 0) {
+
+			$("#dflag").val(bb);
+		}else{
+
+
+			if (bb == "1"){
+				$("#dflag").val("0");
+
+			} else {
+				$("#dflag").val("1");
+
+			}
+		}
+
+	}
+	/*企业管理-编辑-选择企业所属区域树*/
+	function selectAidTree() {
+		var url = "/village/company/selectAidTree";
+		var options = {
+			title: '选择区域',
+			width: "380",
+			url: "/village/company/selectAidTree",
+			callBack: doSubmitAid
+		};
+		$.modal.openOptions(options);
+	}
+	/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+	function doSubmitAid(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#aid").val(body.find('#treeId').val());
+			$("#address").val(body.find('#treeName').val());
+			/*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+			layer.close(index);
+		}
+	}
+
+
+
+	var prefix = ctx + "village/company";
+	$().ready(function() {
+		// 在键盘按下并释放及提交后验证提交表单
+		$("#form-company-edit").validate({
+			rules: {
+				aid: {
+					required: true,
+					minlength: 2
+				},
+
+				phone: {
+					required: true,
+					minlength: 11
+				},
+				cname: {
+					required: true,
+					minlength: 2
+				},
+				scode:{
+					required: true,
+					minlength: 18
+				},
+				pname:{
+					required: true,
+					minlength: 2
+				}
+			},
+			messages: {
+				aid: {
+					required: "请输入地域编号",
+					minlength: "地域编号不能小于2个字符"
+				},
+				phone: {
+					required: "请输入手机号码",
+					minlength: "号码不符合规范"
+				},
+				cname: {
+					required: "请输入企业名称",
+					minlength: "企业名称不能小于2个字符"
+				},
+				scode: {
+					required: "请输入社会信用代码",
+					minlength: "社会信用代码不能小于18个字符"
+				},
+				pname: {
+					required: "请输入负责人姓名",
+					minlength: "负责人姓名不能小于2个字符"
+				}
+			}
+		})
+	});
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/edit", $('#form-company-edit').serialize());
+		}
+	}
+
+
+	/*jQuery.validator.addMethod("regex", //addMethod第1个参数:方法名称
+			function(value,element,params){//addMethod第2个参数:验证方法，参数（被验证元素的值，被验证元素，参数）
+				var exp = new RegExp(params);//实例化正则对象，参数为传入的正则表达式
+				return exp.test(value);         //测试是否匹配
+			},"格式错误");//addMethod第3个参数:默认错误信息
+	jQuery.validator.addMethod("mobile", function(value, element) {
+		var length = value.length;
+		var mobile =  /^(((13[0-9]{1})|(15[0-9]{1}))+\d{8})$/;
+		return this.optional(element) || (length == 11 && mobile.test(value));
+	}, "手机号码格式错误");*/
+
+</script>
+</body>
+</html>

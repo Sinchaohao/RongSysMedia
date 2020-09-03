@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<link th:href="@{/css/plugins/dropzone/basic.css}" rel="stylesheet">
+<link th:href="@{/css/plugins/dropzone/dropzone.css}" rel="stylesheet">
+
+<!--①注意head是否有样式冲突，引入需要的css文件-->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-filemanager-add" enctype="multipart/form-data" th:action="@{../../add}" method="post">
+              <input id="proid" name="proid" th:value="${proid}" class="form-control" type="hidden"  readonly>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">项目标题：</label>
+                <div class="col-sm-8">
+                    <input id="proname" name="proname" th:value="${proname}" class="form-control" type="text"  readonly>
+                </div>
+            </div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">标题：</label>
+				<div class="col-sm-8">
+					<input id="wtitle" name="wtitle" class="form-control" type="text"  placeholder="请输入标题">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">工作类型：</label>
+				<div class="col-sm-8">
+					<input list="wtype"  name="wtype" class="form-control" placeholder="请输入/选择工作类型"/>
+					<datalist id="wtype">
+						<option value="选举工作">
+						<option value="社事工作">
+						<option value="民政工作">
+						<option value="农业工作">
+						<option value="财务工作">
+						<option value="公路建设">
+						<option value="环境综治">
+						<option value="工会工作">
+						<option value="妇联工作">
+					</datalist>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">内容：</label>
+				<div class="col-sm-8">
+					<textarea id="content" name="content" placeholder="这里输入内容" autofocus></textarea>
+					<!--②使用textare去作为文本输入框-->
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">文件上传：</label>
+				<div class="col-sm-8">
+					<input id="files" name="files" class="form-control" type="file">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">工作进度：</label>
+				<div class="col-sm-8">
+					<select class="chosen-select form-control" id="ptype" name="ptype"  type="text">
+						<option value=0>未完成</option>
+						<option value=1>已完成</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">是否有效：</label>
+				<div class="col-sm-8">
+					<select class="chosen-select form-control" id="remark" name="remark"  type="text">
+						<option value="是">是</option>
+						<option value="否">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">负责人姓名：</label>
+				<div class="col-sm-8">
+					<input id="wname" name="wname" th:value="${wname}" class="form-control" type="text" placeholder="请输入负责人姓名">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">负责人手机号：</label>
+				<div class="col-sm-8">
+					<input id="wphone" name="wphone" th:value="${wphone}" class="form-control" type="text" placeholder="请输入负责人手机号">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">发布人姓名：</label>
+				<div class="col-sm-8">
+					<input id="uname" name="uname" th:value="${uname}" class="form-control" type="text" hidden readonly>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">区域编号：</label>
+				<div class="col-sm-8">
+					<input id="aid" name="aid" th:value="${aid}" class="form-control" type="text" hidden readonly>
+				</div>
+			</div>
+			<!--因为文件上传功能隐藏的bug，故这文件时长、大小两个字段不能删掉-->
+			<input id="flenth" name="flenth" class="form-control" type="hidden" readonly value="">
+			<input id="fsize" name="fsize" class="form-control" type="hidden"  readonly value="">
+			<input id="uid" name="uid" th:value="${uid}" class="form-control" type="hidden"  readonly value="">
+			<a class="btn btn-success" onclick="work()">提交</a>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+	<!--③引入需要的js文件-->
+	<script th:src="@{/js/plugins/simditor/module.js}"></script>
+	<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+	<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+	<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+	<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+
+	<script type="text/javascript">
+		var prefix = ctx + "village/project"
+		// 检测是否选择文件，如果选择，返回文件对象;如果没选择，返回false
+		function checkFile(){
+			// 获取文件对象(该对象的类型是[object FileList]，其下有个length属性)
+			var fileList = $('#files')[0].files;
+
+			// 如果文件对象的length属性为0，就是没文件
+			if (fileList.length === 0) {
+				console.log('没选择文件');
+				return false;
+			};
+			return fileList[0];
+		};
+		function aa(){
+			let  file = checkFile();
+			let size = file.size;
+			console.log("文件大小",size);
+			//获取录音时长
+			let url = URL.createObjectURL(file);
+			let audioElement = new Audio(url);
+			let duration = audioElement.duration/60; //音频长度 视频不行
+			$("#flenth").attr("value",duration);
+			$("#fsize").attr("value",size);
+			console.log(duration,size)
+		};
+		function submitHandler() {
+			if (!checkFile()) {
+				alert('请先选择文件');
+				return false;
+			}
+			else {
+				aa();
+				$.modal.loading("正在上传中，请稍后...");
+				/** 验证文件是否导入成功  */
+				$("#form-filemanager-add").ajaxSubmit(function (data) {
+					$.operate.successCallback({"code": data.code, "msg": data.msg});
+				});
+				return false;
+			}
+		}
+		/*该按钮供项目管理中工作汇报添加工作记录使用*/
+		function work() {
+			if (!checkFile()) {
+				alert('请先选择文件');
+				return false;
+			}
+			else {
+				aa();
+				$.modal.loading("正在上传中，请稍后...");
+				/** 验证文件是否导入成功  */
+				$("#form-filemanager-add").ajaxSubmit(function (data) {
+					$.operate.successCallback({"code": data.code, "msg": data.msg});
+				})
+				$.modal.close();
+				return false;
+
+			}
+
+		}
+		function sleep(numberMillis) {
+			var now = new Date();
+			var exitTime = now.getTime() + numberMillis;
+			while (true) {
+				now = new Date();
+				if (now.getTime() > exitTime)
+					return;
+			}
+		}
+		$().ready(function() {
+// 在键盘按下并释放及提交后验证提交表单
+			$("#form-filemanager-add").validate({
+				rules: {
+					wtitle: {
+						required: true,
+						minlength: 2
+					},
+					wphone: {
+						required: true,
+						minlength: 11
+					},
+					wname: {
+						required: true,
+						minlength: 2
+					}
+				},
+				messages: {
+					wtitle: {
+						required: "请输入项目名称",
+						minlength: "项目名称不能小于2个字符"
+					},
+					wphone: {
+						required: "请输入手机号码",
+						minlength: "号码长度不能小于11位"
+					},
+					wname: {
+						required: "请输入负责人姓名",
+						minlength: "负责人姓名不能小于2个字符"
+					}
+				}
+			})
+		});
+	</script>
+
+	<script>
+		$(document).ready(function(){var editor2 = new Simditor({placeholder: "输入项目内容", toolbar: ['title', 'bold', 'underline', 'color', '|', 'ol', 'ul', 'table'], textarea: '#content',});Dropzone.options.myAwesomeDropzone={autoProcessQueue:false,uploadMultiple:true,parallelUploads:100,maxFiles:100,init:function(){var myDropzone=this;this.element.querySelector("button[type=submit]").addEventListener("click",function(e){e.preventDefault();e.stopPropagation();myDropzone.processQueue()});this.on("sendingmultiple",function(){});this.on("successmultiple",function(files,response){});this.on("errormultiple",function(files,response){})}}});
+	</script>
+	<script th:src="@{/js/plugins/dropzone/dropzone.js}"></script>
+	<script th:src="@{/js/jquery-form.js}"></script>
+</body>
+</html>

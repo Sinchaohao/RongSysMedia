@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: header"></head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
+<style>
+    h4{display: inline}
+    p{display: inline}
+    p1{display: inline}
+    p2{display: inline}
+</style>
+</head>
+
+<body class="gray-bg" >
+<div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="text-center article-title">
+                        <h1 th:text="${listByid.vname}"></h1>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.age}]]岁</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.nation}]]族</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.politics}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">入党时间:[[${listByid.partyjoindate}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.edulevel}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.marital}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.job}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.company}]]</button>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.nativeplace}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.prt}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">户籍地址：[[${listByid.pra}]]</button>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.idcard}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.phone}]]</button>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-white btn-xs" type="button">现居住地：[[${listByid.home}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.house}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">户主：[[${listByid.hhd}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">户主号：[[${listByid.hhdnum}]]</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4>健康状况:</h4><p th:utext="${listByid.health}"></p><br />
+                <h4>身高:</h4><p th:utext="${listByid.height}"></p><br />
+                <h4>驾照:</h4><p th:utext="${listByid.drive}"></p><br />
+                <h4>车辆:</h4><p th:utext="${listByid.car}"></p><br />
+                <h4>车辆类型:</h4><p th:utext="${listByid.vtype}"></p><br />
+                <h4>车牌号:</h4><p th:utext="${listByid.carnum}"></p><br />
+                <h4>特种信息:</h4><p th:utext="${listByid.special}"></p><br />
+                <h4>优抚信息:</h4><p th:utext="${listByid.entitle}"></p><br />
+                <h4>计生情况:</h4><p th:utext="${listByid.familyplan}"></p><br />
+                <h4>医疗情况:</h4><p th:utext="${listByid.medical}"></p><br />
+                <h4>补助情况:</h4><p th:utext="${listByid.subsidy}"></p><br />
+                <h4>保险情况:</h4><p th:utext="${listByid.insurance}"></p><br />
+                <h4>犯罪史:</h4><p th:utext="${listByid.criminal}"></p><br />
+                <h4>优抚信息:</h4><p th:utext="${listByid.entitle}"></p><br />
+                <h4>计生情况:</h4><p th:utext="${listByid.familyplan}"></p><br />
+                <h4>医疗情况:</h4><p th:utext="${listByid.medical}"></p><br />
+                <h4>补助情况:</h4><p th:utext="${listByid.subsidy}"></p><br />
+                <h4>保险情况:</h4><p th:utext="${listByid.insurance}"></p><br />
+                <h4>犯罪史:</h4><p th:utext="${listByid.criminal}"></p><br />
+                <h4>吸毒史:</h4><p th:utext="${listByid.drug}"></p><br />
+                <h4>户主身份证号:</h4><p th:utext="${listByid.hhdidcard}"></p><br />
+                <h4>与户主关系:</h4><p th:utext="${listByid.hhdrelation}"></p><br />
+                <h4>职务等级:</h4><p th:utext="${listByid.jobrank}"></p><br />
+                <h4>爱好特长:</h4><p th:utext="${listByid.hobby}"></p><br />
+                <h4>思想动向:</h4><p th:utext="${listByid.trend}"></p><br />
+                <h4>就业状态:</h4><p th:utext="${listByid.jobstate}"></p><br />
+                <h4>大病医疗:</h4><p th:utext="${listByid.pr}"></p><br />
+                <h4>医保情况:</h4><p th:utext="${listByid.medinsur}"></p><br />
+                <h4>新农保:</h4><p th:utext="${listByid.fmi}"></p><br />
+                <h4>新农保状态:</h4><p th:utext="${listByid.fmistate}"></p><br />
+                <h4>社保:</h4><p th:utext="${listByid.security}"></p><br />
+                <h4>商业保险:</h4><p th:utext="${listByid.bsecurity}"></p><br />
+                <h4>低保情况:</h4><p th:utext="${listByid.subsis}"></p><br />
+                <h4>特贫/困户:</h4><p th:utext="${listByid.poor}"></p><br />
+                <h4>行驶证号:</h4><p th:utext="${listByid.drivenum}"></p><br />
+                <h4>技术类型:</h4><p th:utext="${listByid.techtype}"></p><br />
+                <h4>技术等级:</h4><p th:utext="${listByid.techgrade}"></p><br />
+                <h4>职称等级:</h4><p th:utext="${listByid.titgrade}"></p><br />
+                <h4>是否迁移（地址）:</h4><p1 th:utext="${listByid.move}" id="is"></p1><br />
+                <h4>田地面积:</h4><p th:utext="${listByid.fieldarea}"></p><br />
+                <h4>林地面积:</h4><p th:utext="${listByid.forestarea}"></p><br />
+                <h4>水塘面积:</h4><p th:utext="${listByid.poolarea}"></p><br />
+                <h4>家庭收入:</h4><p th:utext="${listByid.income}"></p><br />
+                <h4>个人财产总额:</h4><p th:utext="${listByid.totalppt}"></p><br />
+                <h4>月收入:</h4><p th:utext="${listByid.mincome}"></p><br />
+                <h4>年收入:</h4><p th:utext="${listByid.yincome}"></p><br />
+                <h4>银行:</h4><p th:utext="${listByid.bank}"></p><br />
+                <h4>银行卡号:</h4><p th:utext="${listByid.bankcardnum}"></p><br />
+                <h4>土地确权:</h4><p th:utext="${listByid.landowner}"></p><br />
+                <h4>综治:</h4><p th:utext="${listByid.landowner}"></p><br />
+                <h4>房屋面积:</h4><p th:utext="${listByid.housearea}"></p><br />
+                <h4>村务宝典登录名:</h4><p th:utext="${listByid.loginname}"></p><br />
+                <h4>个体经营:</h4><p th:utext="${listByid.selfmanage}"></p><br />
+                <h4>经营类型:</h4><p th:utext="${listByid.managetype}"></p><br />
+                <h4>投入成本:</h4><p th:utext="${listByid.cost}"></p><br />
+                <h4>经营月收入:</h4><p th:utext="${listByid.mmincome}"></p><br />
+                <h4>所在组织/社团:</h4><p th:utext="${listByid.organization}"></p><br />
+                <h4>是否土地流转:</h4><p1 th:utext="${listByid.landtransfer}" id="is"></p1><br />
+                <h4>土地流转收入:</h4><p th:utext="${listByid.landincome}"></p><br />
+                <h4>是否林地流转:</h4><p1 th:utext="${listByid.foresttransfer}" id="is"></p1><br />
+                <h4>林地流转收入:</h4><p th:utext="${listByid.forestincome}"></p><br />
+                <h4>是否征收:</h4><p1 th:utext="${listByid.levy}"></p1><br />
+                <h4>房租收入:</h4><p1 th:utext="${listByid.rent}"></p1><br />
+                <h4>房屋使用状态:</h4><p th:utext="${listByid.housestate}"></p><br />
+                <h4>是否接入电力:</h4><p1 th:utext="${listByid.psa}"></p1><br />
+                <h4>是否接入有线电视:</h4><p1 th:utext="${listByid.ca}"></p1><br />
+                <h4>是否接入宽带:</h4><p1 th:utext="${listByid.woban}"></p1><br />
+                <h4>是否接入自来水:</h4><p1 th:utext="${listByid.water}"></p1><br />
+                <h4>是否接入安防系统:</h4><p1 th:utext="${listByid.ssa}"></p1><br />
+                <h4>是否接入燃气:</h4><p1 th:utext="${listByid.gfs}"></p1><br />
+                <h4>是否垃圾分类:</h4><p1 th:utext="${listByid.wdr}"></p1><br />
+                <h4>道路是否到户:</h4><p1 th:utext="${listByid.rth}"></p1><br />
+                <h4>是否干部:</h4><p1 th:utext="${listByid.iscadre}"></p1><br />
+                <h4>干部行政级别:</h4><p th:utext="${listByid.cadrelevel}"></p><br />
+                <h4>是否低保户:</h4><p1 th:utext="${listByid.islowincome}"></p1><br />
+                <h4>获得低保时间:</h4><p2 th:utext="${listByid.getlowdate}"></p2><br />
+                <h4>是否复员军人:</h4><p1 th:utext="${listByid.isdemob}"></p1><br />
+                <h4>复员时间:</h4><p2 th:utext="${listByid.demobdate}"></p2><br />
+                <h4>个人照片:</h4><p><input id="personphoto" name="personphoto" th:value="${listByid.personphoto}" type="hidden">
+                <div class="layui-carousel" id="test1">
+                <div carousel-item id="pspic">
+                </div>
+                </div></p><br />
+                <!--<h4>个人照片:</h4><p th:utext="${listByid.personphoto}"></p><br />-->
+                <h4>户口照片:</h4><p><input id="hkphoto" name="hkphoto" th:value="${listByid.hkphoto}" type="hidden">
+                <div class="layui-carousel" id="test2">
+                    <div carousel-item id="hkpic">
+                    </div>
+                </div></p><br />
+                <h4>身份证照片:</h4><p><input id="idphoto" name="idphoto" th:value="${listByid.idphoto}" type="hidden">
+                <div class="layui-carousel" id="test3">
+                    <div carousel-item id="idpic">
+                    </div>
+                </div></p><br />
+                <h4>汽车照片:</h4><p><input id="carphoto" name="carphoto" th:value="${listByid.carphoto}" type="hidden">
+                <div class="layui-carousel" id="test4">
+                    <div carousel-item id="carpic">
+                    </div>
+                </div></p><br />
+                <h4>房屋照片:</h4><p><input id="housephoto" name="housephoto" th:value="${listByid.housephoto}" type="hidden">
+                <div class="layui-carousel" id="test5">
+                    <div carousel-item id="hopic">
+                    </div>
+                </div></p><br /><br /><br />
+                <h4>获奖情况:</h4><p th:utext="${listByid.winaward}"></p><br />
+                <h4>处分情况:</h4><p th:utext="${listByid.punish}"></p>
+            </div>
+
+        </div>
+
+
+        </div>
+    </div>
+
+</div>
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<script src="js/content.min.js?v=1.0.0"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/layui/layui.js}"></script>
+<script>
+    window.onload=function(){
+
+        for(var i=0;i<document.getElementsByTagName('p1').length;i++)  {
+            var a=document.getElementsByTagName('p1').item(i).innerHTML;
+            if (a == '') {
+                document.getElementsByTagName('p1').item(i).innerHTML = '';
+            } else if (a == 1) {
+                document.getElementsByTagName('p1').item(i).innerHTML = '是';
+            } else if (a == 0) {
+                document.getElementsByTagName('p1').item(i).innerHTML = '否';
+            }
+            for(var g=0;g<document.getElementsByTagName('p2').length;g++){
+                var b=document.getElementsByTagName('p2').item(g).innerHTML;
+                document.getElementsByTagName('p2').item(g).innerHTML=getTaskTime(b);
+
+            }
+
+        }
+
+
+
+
+    }
+
+
+    function getTaskTime(strDate) {
+
+        var date = new Date(strDate);
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        var h = date.getHours();
+        var minute = date.getMinutes();
+        minute = minute < 10 ? ('0' + minute) : minute;
+        var str = y+"-"+m+"-"+d;
+
+        return str;
+    };
+
+</script>
+<script>
+    var personphoto = document.getElementById("personphoto").value;
+    var hkphoto = document.getElementById("hkphoto").value;
+    var idphoto=document.getElementById("idphoto").value;
+    var carphoto=document.getElementById("carphoto").value;
+    var housephoto=document.getElementById("housephoto").value;
+    //把str按逗号分隔后,并把分隔后的内容存放在strArr数组中
+    var psimgdata = personphoto.split(";");
+    var psoBox = document.getElementById('pspic');
+    var psstr = '';
+    var psnum = psimgdata.length - 1;
+    var j;
+    for (j=0;j<psnum;j++) {
+        psstr += '<img id="pslun" src="'+ psimgdata[j] +'" width="400px" height="300px" />';}
+    psoBox.innerHTML = psstr;
+
+    var hkimgdata=hkphoto.split(";");
+    var hkoBox = document.getElementById('hkpic');
+    var hkstr='';
+    var hknum=hkimgdata.length-1;
+    for(j=0;j<hknum;j++){
+        hkstr+= '<img id="hklun" src="'+ hkimgdata[j] +'" width="400px" height="300px" />';
+    }
+    hkoBox.innerHTML=hkstr;
+
+    var idimgdata=idphoto.split(";");
+    var idoBox = document.getElementById('idpic');
+    var idstr='';
+    var idnum=idimgdata.length-1;
+    for(j=0;j<idnum;j++){
+        idstr+= '<img id="idlun" src="'+ idimgdata[j] +'" width="400px" height="300px" />';
+    }
+    idoBox.innerHTML=idstr;
+
+    var carimgdata=carphoto.split(";");
+    var caroBox = document.getElementById('carpic');
+    var carstr='';
+    var carnum=carimgdata.length-1;
+    for(j=0;j<carnum;j++){
+        carstr+= '<img id="carlun" src="'+ carimgdata[j] +'" width="400px" height="300px" />';
+    }
+    caroBox.innerHTML=carstr;
+
+    var hoimgdata=housephoto.split(";");
+    var hooBox = document.getElementById('hopic');
+    var hostr='';
+    var honum=hoimgdata.length-1;
+    for(j=0;j<honum;j++){
+        hostr+= '<img id="holun" src="'+ hoimgdata[j] +'" width="400px" height="300px" />';
+    }
+    hooBox.innerHTML=hostr;
+</script>
+
+</body>
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/article.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:19:47 GMT -->
+</html>

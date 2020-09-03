@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-led-edit" th:object="${led}">
+        <input id="id" name="id" th:field="*{id}" type="hidden">
+        <h4 class="form-header h4">基本信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label "><span style="color: red; ">*</span>IMEI号：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="imei" onclick="selectIotTree()" readonly="true"
+                               th:field="*{imei}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label "><span style="color: red; ">*</span>存放位置编号：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="deptid" name="deptid"  th:field="*{deptid}" readonly="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>特效：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="effect" id="effect" th:field="*{effect}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>颜色：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="color" id="color" th:field="*{color}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>管理人编号：</label>
+                    <div class="col-sm-8">
+                        <select id="uid" name="uid" class="form-control m-b">
+                            <option th:value="${user}" th:text="${user}">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>设备状态：</label>
+                    <div class="col-sm-8">
+                        <div class="onoffswitch">
+                            <input type="checkbox" class="onoffswitch-checkbox" id="ctype1" name="ctype1"
+                                   onclick="changevalue();"/>
+                            <label class="onoffswitch-label" for="ctype1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input id="status" name="status" th:field="*{status}" class="form-control" type="hidden">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">LED显示信息文字：</label>
+                    <div class="col-sm-8">
+                        <input id="content" name="content" th:field="*{content}" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>是否有效：</label>
+                    <div class="col-sm-8">
+                        <div class="onoffswitch">
+                            <input type="checkbox" class="onoffswitch-checkbox" id="dflag1" name="dflag1"
+                                   onclick="changevalue2();"/>
+                            <label class="onoffswitch-label" for="dflag1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="hidden">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">开始显示时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="startdate"
+                               id="startdate" th:field="*{startdate}" value="" readonly="readonly"
+                               style="width:120px;" placeholder="开始显示时间" title="开始显示时间"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">显示结束时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="enddate"
+                               id="enddate" th:field="*{enddate}" value="" readonly="readonly"
+                               style="width:120px;" placeholder="显示结束时间" title="显示结束时间"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <h4 class="form-header h4">其他信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">创建时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="createdate"
+                               id="createdate" th:field="*{createdate}" value="" readonly="readonly"
+                               style="width:120px;" placeholder="创建时间" title="创建时间"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">备注：</label>
+                    <div class="col-xs-10">
+                        <textarea name="demo" maxlength="500" class="form-control" rows="3">[[*{demo}]]</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "iot/led"
+    $("#form-torrent-edit").validate({
+        rules: {
+            xxxx: {
+                required: true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-led-edit').serialize());
+        }
+    }
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<script>
+    laydate({
+        elem: "#startdate",
+        event: "focus"
+    });
+    laydate({
+        elem: "#enddate",
+        event: "focus"
+    });
+    laydate({
+        elem: "#createdate",
+        event: "focus"
+    });
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem: "#led",
+            type: 'time',
+        });
+    });
+    //0是关 1是开
+    $(function () {
+        var ctype2 = document.getElementById("ctype1");
+        var dflag2 = document.getElementById("dflag1");
+        var data = $("#status").val();
+        var data2 = $("#remark").val();
+        if (data == "1") {
+
+            ctype2.checked = true;
+
+        } else {
+            ctype2.checked = false;
+        }
+        if (data2 == "1") {
+            dflag2.checked = true;
+        } else {
+            dflag2.checked = false;
+        }
+
+    });
+
+    var aa = $("#status").val();
+    var aflag = 0;
+
+    function changevalue() {
+        aflag++;
+        if (aflag % 2 == 0) {
+            $("#status").val(aa);
+
+        } else {
+            if (aa == "1") {
+                $("#status").val("0");
+            } else {
+                $("#status").val("1");
+
+            }
+
+        }
+
+    }
+
+    var bb = $("#remark").val();
+    var bflag = 0;
+
+    function changevalue2() {
+        bflag++;
+        if (bflag % 2 == 0) {
+
+            $("#remark").val(bb);
+        } else {
+
+
+            if (bb == "1") {
+                $("#remark").val("0");
+
+            } else {
+                $("#remark").val("1");
+
+            }
+        }
+
+    }
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            layer.close(index);
+        }
+    }
+
+    function selectIotTree() {
+        var _url = prefix + "/selectIotTree";
+        var _title = '选择终端';
+        var _width = "800";
+        var _height = ($(window).height() - 50);
+        layer.open({
+            type: 2,
+            maxmin: true,
+            shade: 0.3,
+            title: _title,
+            fix: false,
+            area: [_width + 'px', _height + 'px'],
+            content: _url,
+            shadeClose: true,
+            btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+            yes: function (index, layero) {
+                doSubmit(index, layero)
+            }, cancel: function () {
+                return true;
+            }
+        });
+    }
+
+    function ccc(imei) {
+        var imei1 = imei;
+        $("#imei").val(imei1);
+        console.log("imei:" + imei1);
+    }
+    function ddd(deptid){
+        var deptid1 = deptid;
+        $("#deptid").val(deptid1);
+        console.log("deptid:" + deptid1);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<!--①注意head是否有样式冲突，引入需要的css文件-->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-worklog-edit" th:object="${worklog}">
+            <input id="wid" name="wid" th:field="*{wid}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">标题：</label>
+				<div class="col-sm-8">
+					<input id="wtitle" name="wtitle" th:field="*{wtitle}" class="form-control" type="text">
+				</div>
+			</div>
+			<!--<div class="form-group">	-->
+				<!--<label class="col-sm-3 control-label">文件路径：</label>-->
+				<!--<div class="col-sm-8">-->
+					<!--<input id="wpic" name="wpic" th:field="*{wpic}" class="form-control" type="text">-->
+				<!--</div>-->
+			<!--</div>-->
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">工作类型：</label>
+				<div class="col-sm-8">
+					<select class="chosen-select form-control" name="wtype" th:field="*{wtype}">
+						<option value="选举工作">选举工作</option>
+						<option value="社事工作">社事工作</option>
+						<option value="民政工作">民政工作</option>
+						<option value="农业工作">农业工作</option>
+						<option value="财务工作">财务工作</option>
+						<option value="公路建设">公路建设</option>
+						<option value="环境综治">环境综治</option>
+						<option value="工会工作">工会工作</option>
+						<option value="妇联工作">妇联工作</option>
+					</select>
+				</div>
+			</div>
+			<!--②使用input去接收数据，textare去作为文本输入框-->
+			<input id="content" name="content" th:field="*{content}" class="form-control" type="hidden">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">内容：</label>
+				<div class="col-sm-8">
+					<textarea id="aaa" name="aaa"  autofocus></textarea>
+				</div>
+			</div>
+<!--			<div class="form-group">	-->
+<!--				<label class="col-sm-3 control-label">负责人姓名：</label>-->
+<!--				<div class="col-sm-8">-->
+<!--					<input id="wname" name="wname" th:field="*{wname}" class="form-control" type="text">-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class="form-group">	-->
+<!--				<label class="col-sm-3 control-label">负责人手机号：</label>-->
+<!--				<div class="col-sm-8">-->
+<!--					<input id="wphone" name="wphone" th:field="*{wphone}" class="form-control" type="text">-->
+<!--				</div>-->
+<!--			</div>-->
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有效：</label>
+				<div class="col-sm-8">
+					<select class="chosen-select form-control" th:field="*{remark}" id="remark" name="remark" type="text">
+						<option value="1">是</option>
+						<option value="0">否</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">工作进度：</label>
+				<div class="col-sm-8">
+				<select id="ptype" name="ptype" th:field="*{ptype}" class="form-control" type="text">
+					<option value=0>未完成</option>
+					<option value=1>已完成</option>
+				</select>
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+	<!--③引入需要的js文件-->
+	<script th:src="@{/js/plugins/simditor/module.js}"></script>
+	<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+	<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+	<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+	<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+	<!--④初始化文本框并且通过setValue方法传值给富文本编辑器-->
+	<script>
+		$(document).ready(function() {
+			var editor = new Simditor({
+				placeholder: "输入项目内容", // 编辑器默认值（默认为’’）
+				toolbar: [
+					'title', 'bold', 'italic', 'underline',
+					'color', '|', 'ol', 'ul', 'table'
+				],
+				textarea: '#aaa',
+			});
+			proinfo =$("#content").val();//将后台返回的content字段的值提取出来
+			editor.setValue(proinfo);//赋值给UEditor
+		});
+	</script>
+    <script type="text/javascript">
+		var prefix = ctx + "village/worklog"
+		$("#form-worklog-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+
+		<!--⑤获取当前编辑后的文本框的值并赋值给content字段-->
+		function submitHandler() {
+			proinfo =$("#aaa").val();//获取当前编辑后的文本框的值
+			$("#content").val(proinfo);//将获得文本框的值传给content字段
+			if ($.validate.form()) {
+				$.operate.save(prefix + "/edit", $('#form-worklog-edit').serialize());
+			}
+		}
+	</script>
+</body>
+</html>

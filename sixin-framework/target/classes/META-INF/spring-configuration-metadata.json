@@ -1,0 +1,48 @@
+{
+  "groups": [
+    {
+      "name": "spring.datasource.druid.master",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.sixin.framework.config.DruidConfig",
+      "sourceMethod": "masterDataSource(com.sixin.framework.config.properties.DruidProperties)"
+    },
+    {
+      "name": "spring.datasource.druid.slave",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.sixin.framework.config.DruidConfig",
+      "sourceMethod": "slaveDataSource(com.sixin.framework.config.properties.DruidProperties)"
+    },
+    {
+      "name": "spring.datasource.druid.sxbaodian",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.sixin.framework.config.DruidConfig",
+      "sourceMethod": "sx_baodianDataSource()"
+    },
+    {
+      "name": "spring.datasource.druid.sxinfom",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.sixin.framework.config.DruidConfig",
+      "sourceMethod": "sx_infomDataSource()"
+    },
+    {
+      "name": "spring.datasource.druid.sxrivervis",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.sixin.framework.config.DruidConfig",
+      "sourceMethod": "sx_rivervisDataSource()"
+    },
+    {
+      "name": "spring.datasource.druid.sxuser",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.sixin.framework.config.DruidConfig",
+      "sourceMethod": "sx_userDataSource()"
+    },
+    {
+      "name": "spring.datasource.druid.sxvillage",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.sixin.framework.config.DruidConfig",
+      "sourceMethod": "sx_villageDataSource()"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

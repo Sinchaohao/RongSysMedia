@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-proSinmanage-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">节目播出单类别：</label>
+				<div class="col-sm-8">
+					<input id="scategory" name="scategory" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">建立日期：</label>
+				<div class="col-sm-8">
+					<input id="createtime" name="createtime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">播出日期：</label>
+				<div class="col-sm-8">
+					<input id="broaddate" name="broaddate" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">操作（所属）用户：</label>
+				<div class="col-sm-8">
+					<input id="userid" name="userid" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">紧急播出单播放次数：</label>
+				<div class="col-sm-8">
+					<input id="broadtimes" name="broadtimes" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "broad/proSinmanage"
+		$("#form-proSinmanage-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-proSinmanage-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

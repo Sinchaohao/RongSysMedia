@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.WuserMapper">
+    
+    <resultMap type="com.sixin.village.domain.Wuser" id="WuserResult">
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="aid"    column="aid"    />
+        <result property="wgroup"    column="wgroup"    />
+        <result property="rid"    column="rid"    />
+        <result property="utypes"    column="utypes"    />
+        <result property="loginid"    column="loginid"    />
+        <result property="password"    column="password"    />
+        <result property="headimg"    column="headimg"    />
+        <result property="phone"    column="phone"    />
+        <result property="uemail"    column="uemail"    />
+        <result property="idcard"    column="idcard"    />
+        <result property="address"    column="address"    />
+        <result property="usex"    column="usex"    />
+        <result property="wcid"    column="wcid"    />
+        <result property="wcname"    column="wcname"    />
+        <result property="regdate"    column="regdate"    />
+        <result property="lastdate"    column="lastdate"    />
+        <result property="note"    column="note"    />
+        <result property="isuse"    column="isuse"    />
+        <result property="isparty"    column="isparty"    />
+        <result property="remark"    column="remark"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+	
+	<sql id="selectWuserVo">
+        select uid, uname, aid, wgroup, rid, utypes, loginid, password, headimg, phone, uemail, idcard, address, usex, wcid, wcname, regdate, lastdate, note, isuse, isparty, remark, type from tb_wuser
+    </sql>
+	
+    <select id="selectWuserList" parameterType="Wuser" resultMap="WuserResult">
+        <include refid="selectWuserVo"/>
+        <where>  
+            <if test="uid != null "> and  uid LIKE CONCAT(CONCAT('%', #{uid}),'%')</if>
+             <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="wgroup != null  and wgroup != '' "> and wgroup LIKE CONCAT(CONCAT('%', #{wgroup}),'%')</if>
+             <if test="rid != null "> and rid LIKE CONCAT(CONCAT('%', #{rid}),'%')</if>
+             <if test="utypes != null  and utypes != '' "> and utypes LIKE CONCAT(CONCAT('%', #{utypes}),'%')</if>
+             <if test="loginid != null  and loginid != '' "> and loginid LIKE CONCAT(CONCAT('%', #{loginid}),'%')</if>
+             <if test="password != null  and password != '' "> and password LIKE CONCAT(CONCAT('%', #{password}),'%')</if>
+             <if test="headimg != null  and headimg != '' "> and headimg LIKE CONCAT(CONCAT('%', #{headimg}),'%')</if>
+             <if test="phone != null  and phone != '' "> and phone LIKE CONCAT(CONCAT('%', #{phone}),'%')</if>
+             <if test="uemail != null  and uemail != '' "> and uemail LIKE CONCAT(CONCAT('%', #{uemail}),'%')</if>
+             <if test="idcard != null  and idcard != '' "> and idcard LIKE CONCAT(CONCAT('%', #{idcard}),'%')</if>
+             <if test="address != null  and address != '' "> and address LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+             <if test="usex != null  and usex != '' "> and usex LIKE CONCAT(CONCAT('%', #{usex}),'%')</if>
+             <if test="wcid != null  and wcid != '' "> and wcid LIKE CONCAT(CONCAT('%', #{wcid}),'%')</if>
+             <if test="wcname != null  and wcname != '' "> and wcname LIKE CONCAT(CONCAT('%', #{wcname}),'%')</if>
+             <if test="regdate != null  and regdate != '' "> and regdate LIKE CONCAT(CONCAT('%', #{regdate}),'%')</if>
+             <if test="lastdate != null  and lastdate != '' "> and lastdate LIKE CONCAT(CONCAT('%', #{lastdate}),'%')</if>
+             <if test="note != null  and note != '' "> and note LIKE CONCAT(CONCAT('%', #{note}),'%')</if>
+             <if test="isuse != null  and isuse != '' "> and isuse LIKE CONCAT(CONCAT('%', #{isuse}),'%')</if>
+             <if test="isparty != null and isparty != '' "> and isparty LIKE CONCAT(CONCAT('%', #{isparty}),'%')</if>
+             <if test="remark != null and remark != '' "> and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')</if>
+             <if test="type != null and type != '' "> and type LIKE CONCAT(CONCAT('%', #{type}),'%')</if>
+         </where>
+    </select>
+    
+    <select id="selectWuserById" parameterType="Integer" resultMap="WuserResult">
+        <include refid="selectWuserVo"/>
+        where uid = #{uid}
+    </select>
+        
+    <insert id="insertWuser" parameterType="Wuser">
+        insert into tb_wuser
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="uid != null  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="wgroup != null  and wgroup != ''  ">wgroup,</if>
+			<if test="rid != null  ">rid,</if>
+			<if test="utypes != null  and utypes != ''  ">utypes,</if>
+			<if test="loginid != null  and loginid != ''  ">loginid,</if>
+			<if test="password != null  and password != ''  ">password,</if>
+			<if test="headimg != null  and headimg != ''  ">headimg,</if>
+			<if test="phone != null  and phone != ''  ">phone,</if>
+			<if test="uemail != null  and uemail != ''  ">uemail,</if>
+			<if test="idcard != null  and idcard != ''  ">idcard,</if>
+			<if test="address != null  and address != ''  ">address,</if>
+			<if test="usex != null  and usex != ''  ">usex,</if>
+			<if test="wcid != null  and wcid != ''  ">wcid,</if>
+			<if test="wcname != null  and wcname != ''  ">wcname,</if>
+			<if test="regdate != null  and regdate != ''  ">regdate,</if>
+			<if test="lastdate != null  and lastdate != ''  ">lastdate,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+			<if test="isuse != null  and isuse != ''  ">isuse,</if>
+			<if test="isparty != null  and isparty != ''  ">isparty,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="type != null  and type != ''  ">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="uid != null  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="wgroup != null  and wgroup != ''  ">#{wgroup},</if>
+			<if test="rid != null  ">#{rid},</if>
+			<if test="utypes != null  and utypes != ''  ">#{utypes},</if>
+			<if test="loginid != null  and loginid != ''  ">#{loginid},</if>
+			<if test="password != null  and password != ''  ">#{password},</if>
+			<if test="headimg != null  and headimg != ''  ">#{headimg},</if>
+			<if test="phone != null  and phone != ''  ">#{phone},</if>
+			<if test="uemail != null  and uemail != ''  ">#{uemail},</if>
+			<if test="idcard != null  and idcard != ''  ">#{idcard},</if>
+			<if test="address != null  and address != ''  ">#{address},</if>
+			<if test="usex != null  and usex != ''  ">#{usex},</if>
+			<if test="wcid != null  and wcid != ''  ">#{wcid},</if>
+			<if test="wcname != null  and wcname != ''  ">#{wcname},</if>
+			<if test="regdate != null  and regdate != ''  ">#{regdate},</if>
+			<if test="lastdate != null  and lastdate != ''  ">#{lastdate},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+			<if test="isuse != null and isuse != ''">#{isuse},</if>
+			<if test="isparty != null  and isparty != ''">#{isparty},</if>
+			<if test="remark != null  and remark != ''">#{remark},</if>
+			<if test="type != null  and type != ''">#{type},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateWuser" parameterType="Wuser">
+        update tb_wuser
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="wgroup != null  and wgroup != ''  ">wgroup = #{wgroup},</if>
+            <if test="rid != null  ">rid = #{rid},</if>
+            <if test="utypes != null  and utypes != ''  ">utypes = #{utypes},</if>
+            <if test="loginid != null  and loginid != ''  ">loginid = #{loginid},</if>
+            <if test="password != null  and password != ''  ">password = #{password},</if>
+            <if test="headimg != null  and headimg != ''  ">headimg = #{headimg},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="uemail != null  and uemail != ''  ">uemail = #{uemail},</if>
+            <if test="idcard != null  and idcard != ''  ">idcard = #{idcard},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="usex != null  and usex != ''  ">usex = #{usex},</if>
+            <if test="wcid != null  and wcid != ''  ">wcid = #{wcid},</if>
+            <if test="wcname != null  and wcname != ''  ">wcname = #{wcname},</if>
+            <if test="regdate != null  and regdate != ''  ">regdate = #{regdate},</if>
+            <if test="lastdate != null  and lastdate != ''  ">lastdate = #{lastdate},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+            <if test="isuse != null  and isuse != ''  ">isuse = #{isuse},</if>
+            <if test="isparty != null  and isparty != ''  ">isparty = #{isparty},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="type != null  and type != ''  ">type = #{type},</if>
+        </trim>
+        where uid = #{uid}
+    </update>
+
+	<delete id="deleteWuserById" parameterType="Integer">
+        delete from tb_wuser where uid = #{uid}
+    </delete>
+	
+    <delete id="deleteWuserByIds" parameterType="String">
+        delete from tb_wuser where uid in 
+        <foreach item="uid" collection="array" open="(" separator="," close=")">
+            #{uid}
+        </foreach>
+    </delete>
+
+    <insert id="insertVillageuser" parameterType="Wuser">
+       insert into tb_user_admin (
+        user_id,
+        loginid,
+        uname,
+        phone,
+        aid,
+        parentaid
+        ) values (
+        #{sysuserId},#{loginid},#{uname},#{phone},#{aid},(select parentaid from area where aid = #{aid})
+        )
+
+    </insert>
+</mapper>

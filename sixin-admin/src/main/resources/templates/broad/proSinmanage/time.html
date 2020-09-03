@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+<link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+<link th:href="@{/js/plugins/layer/layui-v2.4.5/layui/css/layui.css}" rel="stylesheet"/>
+
+<!--<style>-->
+<!--    .parent {width:100%;height:100%;border:2px solid #000;display:table-cell;vertical-align:middle;text-align: center;}-->
+<!--    .child {width:100%;height:100%;display:inline-block;}-->
+<!--</style>-->
+</head>
+<body class="gray-bg">
+<div class="container-div parent">
+    <div style="" class="child">
+            <label style="margin-left: 35%">播出时间：</label>
+            <input type="text" class="form-control" title="播出时间" id="broad" name="broad" th:value="${oddtime}" style="height:50px;width:140px;margin-left: 35%">
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<!--时间插件-->
+<script>
+    function callback(){
+        return $("#broad").val();
+    }
+    layui.use('laydate', function(){
+        layui.laydate.render({
+            elem:"#broad",
+            type: 'time',
+        });
+    });
+</script>
+</body>
+</html>

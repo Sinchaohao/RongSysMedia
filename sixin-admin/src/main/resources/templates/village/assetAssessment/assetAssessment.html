@@ -1,0 +1,316 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="box box-main">
+        <div class="box-header">
+            <div class="box-title">
+                <i class="fa icon-grid"></i> 组织机构
+            </div>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i
+                        class="fa fa-chevron-up"></i></button>
+                <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i
+                        class="fa fa-chevron-down"></i></button>
+                <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i
+                        class="fa fa-refresh"></i></button>
+            </div>
+        </div>
+        <div class="ui-layout-content">
+            <div id="tree" class="ztree"></div>
+        </div>
+    </div>
+</div>
+<div class="ui-layout-center">
+    <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <input type="hidden" id="aid" name="aid">
+                            <li class="form-group" style="display: inline-flex">
+                                <select class="form-control noselect2 selectpicker" id="form-group11"
+                                        style="width: 120px;padding: 0">
+                                    <option value="vname">村组名称</option>
+                                    <option value="businessland">商服用地</option>
+                                    <option value="homestead">农村宅基地</option>
+                                    <option value="publicland">公共服务区用地</option>
+                                    <option value="twland">交通水利用地</option>
+                                    <option value="otherland">其他建设用地</option>
+                                </select>
+                                <input type="text" name="vname" id="form-group1" style="width: 200px"/>
+                            </li>
+
+                            <li class="form-group" style="display: inline-flex">
+                                <select class="form-control noselect2 selectpicker" id="form-group22"
+                                        style="width: 120px;padding: 0">
+                                    <option value="constructionland">建设用地</option>
+                                    <option value="businessland">商服用地</option>
+                                    <option value="homestead">农村宅基地</option>
+                                    <option value="publicland">公共服务区用地</option>
+                                    <option value="twland">交通水利用地</option>
+                                    <option value="otherland">其他建设用地</option>
+                                </select>
+                                <input type="text" name="age" id="form-group2" style="width: 200px"/>
+                            </li>
+
+                            <li class="form-group" style="display: inline-flex">
+                                <select class="form-control noselect2 selectpicker" id="form-group33"
+                                        style="width: 120px;padding: 0">
+                                    <option value="imsland">工矿仓储用地</option>
+                                    <option value="businessland">商服用地</option>
+                                    <option value="homestead">农村宅基地</option>
+                                    <option value="publicland">公共服务区用地</option>
+                                    <option value="twland">交通水利用地</option>
+                                    <option value="otherland">其他建设用地</option>
+                                </select>
+                                <input type="text" name="sex" id="form-group3" style="width: 200px"/>
+                            </li>
+
+                            <!--							<li>-->
+                            <!--								村组名称：<input type="text" name="grouptype"/>-->
+                            <!--							</li>-->
+
+                            <!--							<li>-->
+                            <!--								建设用地：<input type="text" name="constructionland"/>-->
+                            <!--							</li>-->
+
+                            <!--							<li>-->
+                            <!--								工矿仓储用地：<input type="text" name="imsland"/>-->
+                            <!--							</li>-->
+
+                            <!--							<li>-->
+                            <!--								商服用地：<input type="text" name="businessland"/>-->
+                            <!--							</li>-->
+
+                            <!--							<li>-->
+                            <!--								农村宅基地：<input type="text" name="homestead"/>-->
+                            <!--							</li>-->
+
+                            <!--							<li>-->
+                            <!--								公共服务用地：<input type="text" name="publicland"/>-->
+                            <!--							</li>-->
+
+                            <!--							<li>-->
+                            <!--								交通水利用地：<input type="text" name="twland"/>-->
+                            <!--							</li>-->
+
+                            <!--							<li>-->
+                            <!--								其他建设用地：<input type="text" name="otherland"/>-->
+                            <!--							</li>-->
+
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i
+                                        class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i
+                                        class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()"
+                   shiro:hasPermission="village:assetAssessment:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"
+                   shiro:hasPermission="village:assetAssessment:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()"
+                   shiro:hasPermission="village:assetAssessment:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="exportExcel()" shiro:hasPermission="village:villagerInfo:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+                <a class="btn btn-info" onclick="$.table.importExcel()">
+                    <i class="fa fa-upload"></i> 导入
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table" data-mobile-responsive="true"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('village:assetAssessment:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('village:assetAssessment:remove')}]];
+    var prefix = ctx + "village/assetAssessment";
+    $(function () {
+        var panehHidden = false;
+        if ($(this).width() < 769) {
+            panehHidden = true;
+        }
+        $('body').layout({
+            initClosed: panehHidden,
+            west__size: 185
+        });
+        queryList();
+        queryAreaTree();
+    });
+
+    function queryList() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            exportByIdsUrl: prefix + "/exportByIds",
+            importUrl: prefix + "/importData",
+            importTemplateUrl: prefix + "/importTemplate",
+            modalName: "资产清查",
+            search: false,
+            showExport: true,
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'aaid',
+                title: '',
+                visible: false
+            }, {
+                field: 'aid',
+                title: '地域编号',
+                sortable: true
+            }, {
+                field: 'grouptype',
+                title: '村组名称',
+                sortable: true
+            }, {
+                field: 'constructionland',
+                title: '建设用地',
+                sortable: true
+            }, {
+                field: 'imsland',
+                title: '工矿仓储用地',
+                sortable: true
+            }, {
+                field: 'businessland',
+                title: '商服用地',
+                sortable: true
+            }, {
+                field: 'homestead',
+                title: '农村宅基地',
+                sortable: true
+            }, {
+                field: 'publicland',
+                title: '公共服务用地',
+                sortable: true
+            }, {
+                field: 'twland',
+                title: '交通水利用地',
+                sortable: true
+            }, {
+                field: 'otherland',
+                title: '其他建设用地',
+                sortable: true
+            },
+            {
+                title: '操作',
+                align: 'center',
+                formatter: function (value, row, index) {
+                    var actions = [];
+                    actions.push('<a class="btn btn-success btn-xs ' + editFlag +
+                        '" href="#" onclick="$.operate.edit(\'' + row.aaid +
+                        '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                    actions.push('<a class="btn btn-danger btn-xs ' + removeFlag +
+                        '" href="#" onclick="$.operate.remove(\'' + row.aaid +
+                        '\')"><i class="fa fa-remove"></i>删除</a>');
+                    return actions.join('');
+                }
+            }]
+        };
+        $.table.init(options);
+    }
+
+    function queryAreaTree() {
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick: zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#aid").val(treeNode.id);
+            $("#parentId").val(treeNode.pId);
+            $.table.search();
+        }
+    }
+
+    $('#btnExpand').click(function () {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function () {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function () {
+        queryAreaTree();
+    });
+</script>
+
+<script>
+    //批量导出、全部导出合并为一个按钮
+    function exportExcel() {
+        var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+        rows = rows.toString();
+        var row = $.common.split(rows, ",", 1000);//最多可以一次性选择导出999条数据
+        console.log(row);
+        if ($.common.isNotEmpty(rows)) {
+            $.modal.confirm("确定导出选中的" + row.length + "条数据吗？", function () {
+                $.modal.loading("正在导出数据，请稍后...");
+                $.post($.table._option.exportByIdsUrl, {"rows": rows}, function (result) {
+                    if (result.code == web_status.SUCCESS) {
+                        window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                    } else if (result.code == web_status.WARNING) {
+                        $.modal.alertWarning(result.msg)
+                    } else {
+                        $.modal.alertError(result.msg);
+                    }
+                    $.modal.closeLoading();
+                });
+            });
+        } else {
+            $.table.exportExcel();
+        }
+    }
+</script>
+
+<!-- 导入区域 -->
+<script id="importTpl" type="text/template">
+    <form enctype="multipart/form-data" class="mt20 mb10">
+        <div class="col-xs-offset-1">
+            <input type="file" id="file" name="file"/>
+            <!--<input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
+             &nbsp;	-->
+            <a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i>
+                点击下载excel模板</a>
+            <p style="color: red" class="pull-left mt10">
+                提示：仅允许导入“xls”或“xlsx”格式文件！
+            </p>
+        </div>
+    </form>
+</script>
+</body>
+</html>

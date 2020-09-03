@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.ShishiMapper">
+    
+    <resultMap type="com.sixin.village.domain.Shishi" id="ShishiResult">
+        <result property="shiid"    column="shiid"    />
+        <result property="title"    column="title"    />
+        <result property="type"    column="type"    />
+        <result property="adddate"    column="adddate"    />
+        <result property="reldate"    column="reldate"    />
+        <result property="content"    column="content"    />
+        <result property="pic"    column="pic"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="aid"    column="aid"    />
+        <result property="remark"    column="remark"    />
+        <result property="video"    column="video"    />
+    </resultMap>
+	
+	<sql id="selectShishiVo">
+        select shiid, title, type, adddate, reldate, content, pic, uid, uname, aid, remark, video from tb_shishi
+    </sql>
+	
+    <select id="selectShishiList" parameterType="com.sixin.village.domain.Shishi" resultMap="ShishiResult">
+        <include refid="selectShishiVo"/>
+        <where>  
+            <if test="shiid != null "> and shiid = #{shiid}</if>
+             <if test="title != null  and title != '' "> and title LIKE CONCAT(CONCAT('%', #{title}),'%')</if>
+             <if test="type != null  and type != '' "> and type LIKE CONCAT(CONCAT('%', #{type}),'%')</if>
+             <if test="adddate != null  and adddate != '' "> and adddate LIKE CONCAT(CONCAT('%', #{adddate}),'%')}</if>
+             <if test="reldate != null  and reldate != '' "> and reldate LIKE CONCAT(CONCAT('%', #{reldate}),'%')</if>
+             <if test="content != null  and content != '' "> and content LIKE CONCAT(CONCAT('%', #{content}),'%')</if>
+             <if test="pic != null  and pic != '' "> and pic LIKE CONCAT(CONCAT('%', #{pic}),'%')</if>
+             <if test="uid != null "> and uid LIKE CONCAT(CONCAT('%', #{uid}),'%')</if>
+             <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="remark != null  and remark != '' "> and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')</if>
+         </where>
+        ORDER BY shiid desc
+    </select>
+    
+    <select id="selectShishiById" parameterType="Integer" resultMap="ShishiResult">
+        <include refid="selectShishiVo"/>
+        where shiid = #{shiid}
+    </select>
+        
+    <insert id="insertShishi" parameterType="com.sixin.village.domain.Shishi">
+        insert into tb_shishi
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="shiid != null  ">shiid,</if>
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="type != null  and type != ''  ">type,</if>
+			<if test="adddate != null  and adddate != ''  ">adddate,</if>
+			<if test="reldate != null  and reldate != ''  ">reldate,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="pic != null  and pic != ''  ">pic,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="video != null  and video != ''  ">video,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="shiid != null  ">#{shiid},</if>
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="type != null  and type != ''  ">#{type},</if>
+			<if test="adddate != null  and adddate != ''  ">#{adddate},</if>
+			<if test="reldate != null  and reldate != ''  ">#{reldate},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="pic != null  and pic != ''  ">#{pic},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="video != null  and video != ''  ">#{video},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateShishi" parameterType="com.sixin.village.domain.Shishi">
+        update tb_shishi
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null  and title != ''  ">title = #{title},</if>
+            <if test="type != null  and type != ''  ">type = #{type},</if>
+            <if test="adddate != null  and adddate != ''  ">adddate = #{adddate},</if>
+            <if test="reldate != null  and reldate != ''  ">reldate = #{reldate},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="pic != null  and pic != ''  ">pic = #{pic},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="video != null  and video != ''  ">video = #{video},</if>
+        </trim>
+        where shiid = #{shiid}
+    </update>
+
+	<delete id="deleteShishiById" parameterType="Integer">
+        delete from tb_shishi where shiid = #{shiid}
+    </delete>
+	
+    <delete id="deleteShishiByIds" parameterType="String">
+        delete from tb_shishi where shiid in 
+        <foreach item="shiid" collection="array" open="(" separator="," close=")">
+            #{shiid}
+        </foreach>
+    </delete>
+    
+</mapper>

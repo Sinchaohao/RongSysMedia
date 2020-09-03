@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg" onload="onload();selectTextMessages();$.table.search()">
+
+<div class="container-div">
+<!--TODO 后续改为Ajax局部刷新，参考暮云圈-->
+    <div class="wrapper wrapper-content">
+        <div class="row" >
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>业务频率图</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="echarts" id="tel_freq" ></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <div class="col-sm-2" th:each="obj : ${typeNum}">
+                <div class="widget style1 blue-bg">
+                    <div class="row vertical-align">
+                        <div class="col-xs-9 text-right">
+                            <span th:text="${obj.textnum}">此号码无所属人</span>
+                            <h3 id="count_dev" class="font-bold" th:text="${obj.telnumber}">***</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 select-table table-striped">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <table id="bootstrap-table" data-mobile-responsive="true"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    //分页查询
+    $(function() {
+        var options = {
+            url: "/broad/textmessages/list",
+            search: false,
+            columns: [
+                {
+                    field: 'telid',
+                    title: '电话ID',
+                    visible: true
+                },
+                {
+                    field: 'tid',
+                    title: '终端ID',
+                    sortable: true
+                },
+                {
+                    field: 'tel',
+                    title: '电话号码',
+                    sortable: true
+                },
+                {
+                    field: 'telperson',
+                    title: '电话号码所属人',
+                    sortable: true
+                },
+                {
+                    field: 'isuse',
+                    title: '是否启用',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+<script th:src="@{/js/views/textmessages.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+</body>
+</html>

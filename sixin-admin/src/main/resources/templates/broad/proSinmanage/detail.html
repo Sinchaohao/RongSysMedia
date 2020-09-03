@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+
+    <table class="table table-hover">
+        <tr>
+            <th>播出单ID</th>
+            <th>操作记录</th>
+            <th>节目文件</th>
+            <th>文件编号</th>
+            <th>播放时间</th>
+            <th>播放时长</th>
+            <th>备注</th>
+        </tr>
+        <tr  th:each="list : ${listBySjid}">
+            <td th:text="${list.pid}"></td>
+            <td th:text="${list.ptp}"></td>
+            <td th:text="${list.fN}"></td>
+            <th th:text="${list.fid}"></th>
+            <th th:text="${list.bt}"></th>
+            <th th:text="${list.broadtime}"></th>
+            <th th:text="${list.remark}"></th>
+        </tr>
+    </table>
+
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

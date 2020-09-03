@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-metweatherdata-edit" th:object="${metweatherdata}">
+        <input id="id" name="id" th:field="*{id}"  type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">IMEI号：</label>
+            <div class="col-sm-8">
+                <input id="imei" name="imei" th:field="*{imei}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">采集地址编号：</label>
+            <div class="col-sm-8">
+                <input id="deptid" name="deptid" th:field="*{deptid}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">环境温度：</label>
+            <div class="col-sm-8">
+                <input id="surrtemp" name="surrtemp" th:field="*{surrtemp}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">环境湿度：</label>
+            <div class="col-sm-8">
+                <input id="surrhumi" name="surrhumi" th:field="*{surrhumi}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">环境照度：</label>
+            <div class="col-sm-8">
+                <input id="surrlight" name="surrlight" th:field="*{surrlight}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">降水量：</label>
+            <div class="col-sm-8">
+                <input id="rainfall" name="rainfall" th:field="*{rainfall}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">大气气压：</label>
+            <div class="col-sm-8">
+                <input id="atmopress" name="atmopress" th:field="*{atmopress}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">信息状态：</label>
+            <div class="col-sm-8">
+                <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "iot/metpannel"
+    $("#form-metweatherdata-edit").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-metweatherdata-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

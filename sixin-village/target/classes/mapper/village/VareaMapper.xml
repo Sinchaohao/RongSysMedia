@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.VareaMapper">
+    
+    <resultMap type="com.sixin.village.domain.Varea" id="VareaResult">
+        <result property="aid"    column="aid"    />
+        <result property="parentaid"    column="parentaid"    />
+        <result property="aname"    column="aname"    />
+        <result property="note"    column="note"    />
+    </resultMap>
+	
+	<sql id="selectVareaVo">
+        select aid, parentaid, aname, note from tb_area
+    </sql>
+	
+    <select id="selectVareaList" parameterType="com.sixin.village.domain.Varea" resultMap="VareaResult">
+        <include refid="selectVareaVo"/>
+        <where>  
+            <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+             <if test="parentaid != null  and parentaid != '' "> and parentaid = #{parentaid}</if>
+             <if test="aname != null  and aname != '' "> and aname = #{aname}</if>
+             <if test="note != null  and note != '' "> and note = #{note}</if>
+         </where>
+    </select>
+    
+    <select id="selectVareaById" parameterType="String" resultMap="VareaResult">
+        <include refid="selectVareaVo"/>
+        where aid = #{aid}
+    </select>
+        
+    <insert id="insertVarea" parameterType="com.sixin.village.domain.Varea">
+        insert into tb_area
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="parentaid != null  and parentaid != ''  ">parentaid,</if>
+			<if test="aname != null  and aname != ''  ">aname,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="parentaid != null  and parentaid != ''  ">#{parentaid},</if>
+			<if test="aname != null  and aname != ''  ">#{aname},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateVarea" parameterType="com.sixin.village.domain.Varea">
+        update tb_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentaid != null  and parentaid != ''  ">parentaid = #{parentaid},</if>
+            <if test="aname != null  and aname != ''  ">aname = #{aname},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+        </trim>
+        where aid = #{aid}
+    </update>
+
+	<delete id="deleteVareaById" parameterType="String">
+        delete from tb_area where aid = #{aid}
+    </delete>
+	
+    <delete id="deleteVareaByIds" parameterType="String">
+        delete from tb_area where aid in
+        <foreach item="aid" collection="array" open="(" separator="," close=")">
+            #{aid}
+        </foreach>
+    </delete>
+
+    <select id="listNextAid" parameterType="String" resultType="String">
+        SELECT t.aid
+        FROM tb_area as t
+        WHERE t.parentaid = #{aid}
+        GROUP BY aid
+    </select>
+
+    <select id="listNextAidName" parameterType="String" resultType="com.sixin.village.domain.Varea">
+        SELECT aid,parentaid,aname
+        FROM tb_area
+        WHERE aid = #{aid} or parentaid = #{aid}
+        GROUP BY aid
+    </select>
+</mapper>

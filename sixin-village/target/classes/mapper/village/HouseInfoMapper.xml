@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.HouseInfoMapper">
+    
+    <resultMap type="com.sixin.village.domain.HouseInfo" id="HouseInfoResult">
+        <result property="hid"    column="hid"    />
+        <result property="aid"    column="aid"    />
+        <result property="vname"    column="vname"    />
+        <result property="housepic"    column="housepic"    />
+        <result property="area"    column="area"    />
+        <result property="certificate"    column="certificate"    />
+        <result property="address"    column="address"    />
+        <result property="bankcard"    column="bankcard"    />
+        <result property="psa"    column="psa"    />
+        <result property="ca"    column="ca"    />
+        <result property="woban"    column="woban"    />
+        <result property="water"    column="water"    />
+        <result property="ssa"    column="ssa"    />
+        <result property="wdr"    column="wdr"    />
+        <result property="gfs"    column="gfs"    />
+        <result property="levy"    column="levy"    />
+    </resultMap>
+	
+	<sql id="selectHouseInfoVo">
+        select hid, aid, vname, housepic, area, certificate, address, bankcard, psa, ca, woban, water, ssa, wdr, gfs, levy from house_info
+    </sql>
+	
+    <select id="selectHouseInfoList" parameterType="com.sixin.village.domain.HouseInfo" resultMap="HouseInfoResult">
+        <include refid="selectHouseInfoVo"/>
+        <where>  
+            <if test="hid != null and hid != '' "> and hid = #{hid}</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="vname != null  and vname != '' "> and vname = #{vname}</if>
+             <if test="housepic != null  and housepic != '' "> and housepic = #{housepic}</if>
+             <if test="area != null  and area != '' "> and area = #{area}</if>
+             <if test="certificate != null  and certificate != '' "> and certificate = #{certificate}</if>
+             <if test="address != null  and address != '' "> and address = #{address}</if>
+             <if test="bankcard != null  and bankcard != '' "> and bankcard = #{bankcard}</if>
+             <if test="psa != null  and psa != '' "> and psa = #{psa}</if>
+             <if test="ca != null  and ca != '' "> and ca = #{ca}</if>
+             <if test="woban != null  and woban != '' "> and woban = #{woban}</if>
+             <if test="water != null  and water != '' "> and water = #{water}</if>
+             <if test="ssa != null  and ssa != '' "> and ssa = #{ssa}</if>
+             <if test="wdr != null  and wdr != '' "> and wdr = #{wdr}</if>
+             <if test="gfs != null  and gfs != '' "> and gfs = #{gfs}</if>
+             <if test="levy != null  and levy != '' "> and levy = #{levy}</if>
+         </where>
+    </select>
+    
+    <select id="selectHouseInfoById" parameterType="Integer" resultMap="HouseInfoResult">
+        <include refid="selectHouseInfoVo"/>
+        where hid = #{hid}
+    </select>
+
+    <select id="selectHouseInfoByIds" parameterType="java.util.List" resultMap="HouseInfoResult">
+        <include refid="selectHouseInfoVo"/>
+        where hid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+        
+    <insert id="insertHouseInfo" parameterType="com.sixin.village.domain.HouseInfo">
+        insert into house_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="hid != null  ">hid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="vname != null  and vname != ''  ">vname,</if>
+			<if test="housepic != null  and housepic != ''  ">housepic,</if>
+			<if test="area != null  and area != ''  ">area,</if>
+			<if test="certificate != null  and certificate != ''  ">certificate,</if>
+			<if test="address != null  and address != ''  ">address,</if>
+			<if test="bankcard != null  and bankcard != ''  ">bankcard,</if>
+			<if test="psa != null  and psa != ''  ">psa,</if>
+			<if test="ca != null  and ca != ''  ">ca,</if>
+			<if test="woban != null  and woban != ''  ">woban,</if>
+			<if test="water != null  and water != ''  ">water,</if>
+			<if test="ssa != null  and ssa != ''  ">ssa,</if>
+			<if test="wdr != null  and wdr != ''  ">wdr,</if>
+			<if test="gfs != null  and gfs != ''  ">gfs,</if>
+			<if test="levy != null  and levy != ''  ">levy,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="hid != null  ">#{hid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="vname != null  and vname != ''  ">#{vname},</if>
+			<if test="housepic != null  and housepic != ''  ">#{housepic},</if>
+			<if test="area != null  and area != ''  ">#{area},</if>
+			<if test="certificate != null  and certificate != ''  ">#{certificate},</if>
+			<if test="address != null  and address != ''  ">#{address},</if>
+			<if test="bankcard != null  and bankcard != ''  ">#{bankcard},</if>
+			<if test="psa != null  and psa != ''  ">#{psa},</if>
+			<if test="ca != null  and ca != ''  ">#{ca},</if>
+			<if test="woban != null  and woban != ''  ">#{woban},</if>
+			<if test="water != null  and water != ''  ">#{water},</if>
+			<if test="ssa != null  and ssa != ''  ">#{ssa},</if>
+			<if test="wdr != null  and wdr != ''  ">#{wdr},</if>
+			<if test="gfs != null  and gfs != ''  ">#{gfs},</if>
+			<if test="levy != null  and levy != ''  ">#{levy},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHouseInfo" parameterType="com.sixin.village.domain.HouseInfo">
+        update house_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="vname != null  and vname != ''  ">vname = #{vname},</if>
+            <if test="housepic != null  and housepic != ''  ">housepic = #{housepic},</if>
+            <if test="area != null  and area != ''  ">area = #{area},</if>
+            <if test="certificate != null  and certificate != ''  ">certificate = #{certificate},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="bankcard != null  and bankcard != ''  ">bankcard = #{bankcard},</if>
+            <if test="psa != null  and psa != ''  ">psa = #{psa},</if>
+            <if test="ca != null  and ca != ''  ">ca = #{ca},</if>
+            <if test="woban != null  and woban != ''  ">woban = #{woban},</if>
+            <if test="water != null  and water != ''  ">water = #{water},</if>
+            <if test="ssa != null  and ssa != ''  ">ssa = #{ssa},</if>
+            <if test="wdr != null  and wdr != ''  ">wdr = #{wdr},</if>
+            <if test="gfs != null  and gfs != ''  ">gfs = #{gfs},</if>
+            <if test="levy != null  and levy != ''  ">levy = #{levy},</if>
+        </trim>
+        where hid = #{hid}
+    </update>
+
+	<delete id="deleteHouseInfoById" parameterType="Integer">
+        delete from house_info where hid = #{hid}
+    </delete>
+	
+    <delete id="deleteHouseInfoByIds" parameterType="String">
+        delete from house_info where hid in 
+        <foreach item="hid" collection="array" open="(" separator="," close=")">
+            #{hid}
+        </foreach>
+    </delete>
+    
+</mapper>

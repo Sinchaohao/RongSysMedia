@@ -1,0 +1,271 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<!--<li>-->
+								<!--地域编号：<input type="text" name="aid"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--组别：<input type="text" name="grouptype"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--组内编号：<input type="text" name="gid"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--户主：<input type="text" name="housename"/>-->
+							<!--</li>-->
+
+							<li>
+								用户姓名：<input type="text" name="name"/>
+							</li>
+
+							<li>
+								用户性别：<input type="text" name="sex"/>
+							</li>
+
+							<!--<li>-->
+								<!--民族：<input type="text" name="nation"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--与户主关系：<input type="text" name="relation"/>-->
+							<!--</li>-->
+
+							<li>
+								身份证号：<input type="text" name="idcard"/>
+							</li>
+
+							<!--<li>-->
+								<!--学历：<input type="text" name="edulevel"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--出生年月：<input type="text" name="birthday"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--家庭住址：<input type="text" name="address"/>-->
+							<!--</li>-->
+
+							<li>
+								电话号码：<input type="text" name="phone1"/>
+							</li>
+
+							<!--<li>-->
+								<!--电话号码2：<input type="text" name="phone2"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--职业：<input type="text" name="jod"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--工作地点：<input type="text" name="workplace"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--年收入：<input type="text" name="income"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--银行卡号1：<input type="text" name="bankcard1"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--银行卡号2：<input type="text" name="bankcard2"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--银行卡号3：<input type="text" name="bankcard3"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--备注：<input type="text" name="note"/>-->
+							<!--</li>-->
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:member:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="village:member:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<!--<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:member:remove">-->
+					<!--<i class="fa fa-remove"></i> 删除-->
+				<!--</a>-->
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="village:member:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('village:member:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('village:member:remove')}]];
+        var prefix = ctx + "village/member";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "村民基本",
+				search: false,
+		        showExport: true,
+                columns: [
+                    {
+		            checkbox: true
+		        },
+				{
+					field : 'pid', 
+					title : '数据编号',
+					visible: false
+				},
+//				{
+//					field : 'aid',
+//					title : '地域编号',
+//					sortable: true
+//				},
+//				{
+//					field : 'grouptype',
+//					title : '组别',
+//					sortable: true
+//				},
+//				{
+//					field : 'gid',
+//					title : '组内编号',
+//					sortable: true
+//				},
+//				{
+//					field : 'housename',
+//					title : '户主',
+//					sortable: true
+//				},
+				{
+					field : 'name', 
+					title : '姓名',
+					sortable: true
+				},
+				{
+					field : 'sex',
+					title : '性别',
+					sortable: true
+				},
+//				{
+//					field : 'nation',
+//					title : '民族',
+//					sortable: true
+//				},
+//				{
+//					field : 'relation',
+//					title : '与户主关系',
+//					sortable: true
+//				},
+				{
+					field : 'idcard', 
+					title : '身份证号码',
+					sortable: true
+				},
+//				{
+//					field : 'edulevel',
+//					title : '学历',
+//					sortable: true
+//				},
+				{
+					field : 'birthday', 
+					title : '出生年月',
+					sortable: true
+				},
+//				{
+//					field : 'address',
+//					title : '家庭住址',
+//					sortable: true
+//				},
+				{
+					field : 'phone1', 
+					title : '电话号码1',
+					sortable: true
+				},
+				{
+					field : 'phone2', 
+					title : '电话号码2',
+					sortable: true
+				},
+//				{
+//					field : 'jod',
+//					title : '职业',
+//					sortable: true
+//				},
+//				{
+//					field : 'workplace',
+//					title : '工作地点',
+//					sortable: true
+//				},
+//				{
+//					field : 'income',
+//					title : '年收入',
+//					sortable: true
+//				},
+//				{
+//					field : 'bankcard1',
+//					title : '银行卡号1',
+//					sortable: true
+//				},
+//				{
+//					field : 'bankcard2',
+//					title : '银行卡号2',
+//					sortable: true
+//				},
+//				{
+//					field : 'bankcard3',
+//					title : '银行卡号3',
+//					sortable: true
+//				},
+//				{
+//					field : 'note',
+//					title : '备注',
+//					sortable: true
+//				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.pid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+//                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.pid + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }
+		        ]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

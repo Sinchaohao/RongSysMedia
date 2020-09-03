@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.UserInfoDTOMapper">
+
+    <resultMap type="com.sixin.broad.domain.UserInfoDTO" id="UserInfoDTOResult">
+        <result property="userid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+    </resultMap>
+
+	<select id="findAll" resultMap="UserInfoDTOResult">
+        select * from sys_phonemanage;
+    </select>
+	
+    <select id="findById" parameterType="String" resultMap="UserInfoDTOResult">
+        select * from userinfo_view where userid=#{userid};
+    </select>
+
+    <select id="findUserByName" parameterType="String" resultMap="UserInfoDTOResult">
+        select * from userinfo_view where uname=#{uname}
+    </select>
+</mapper>

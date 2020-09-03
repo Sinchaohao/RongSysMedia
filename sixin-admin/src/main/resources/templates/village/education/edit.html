@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-education-edit" th:object="${education}">
+            <input id="eid" name="eid" th:field="*{eid}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">课程名：</label>
+				<div class="col-sm-8">
+					<input id="courtit" name="courtit" th:field="*{courtit}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">课程介绍：</label>
+				<div class="col-sm-8">
+					<input id="coursum" name="coursum" th:field="*{coursum}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">课程地址：</label>
+				<div class="col-sm-8">
+					<input id="courass" name="courass" th:field="*{courass}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">用户编号：</label>
+				<div class="col-sm-8">
+					<input id="uid" name="uid" th:field="*{uid}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">用户名称：</label>
+				<div class="col-sm-8">
+					<input id="uname" name="uname" th:field="*{uname}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">已读数目：</label>
+				<div class="col-sm-8">
+					<input id="courread" name="courread" th:field="*{courread}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有效：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "village/education"
+		$("#form-politics-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-education-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

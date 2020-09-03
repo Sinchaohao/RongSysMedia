@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.MaintainApplyMapper">
+
+    <resultMap type="com.sixin.broad.domain.MaintainApply" id="MaintainApplyResult">
+        <result property="maid" column="maid"/>
+        <result property="teraddress" column="teraddress"/>
+        <result property="linkman" column="linkman"/>
+        <result property="linkphone" column="linkphone"/>
+        <result property="downtime" column="downtime"/>
+        <result property="applytime" column="applytime"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="userid" column="userid"/>
+        <result property="applicant" column="applicant"/>
+    </resultMap>
+
+    <sql id="selectMaintainApplyVo">
+         SELECT
+            maid,
+            teraddress,
+            linkman,
+            linkphone,
+            downtime,
+            applytime,
+            status,
+            remark,
+            ma.applicant
+        FROM maintain_apply ma
+        LEFT JOIN (userinfo ui
+        LEFT JOIN area a on a.aid = ui.aid) on ui.user_id = ma.userid
+    </sql>
+
+    <select id="selectMaintainApplyList" parameterType="com.sixin.broad.domain.MaintainApply" resultMap="MaintainApplyResult">
+        SELECT
+        m.maid,
+        m.teraddress,
+        m.linkman,
+        m.linkphone,
+        m.downtime,
+        m.applytime,
+        m.status,
+        m.remark,
+        u.user_name AS applicant
+        FROM
+        broad.maintain_apply m
+        left join ry.sys_user u on m.userid = u.user_id
+        <where>
+            <!--            <if test="aid != null and aid != '' ">and m.aid like CONCAT(#{aid},'%') </if>-->
+            <if test="maid != null  and maid != '' ">and m.maid like CONCAT('%',#{maid},'%')</if>
+            <if test="teraddress != null  and teraddress != '' ">and m.teraddress like CONCAT('%',#{teraddress},'%')</if>
+            <if test="linkman != null  and linkman != '' ">and m.linkman like CONCAT('%',#{linkman},'%')</if>
+            <if test="linkphone != null  and linkphone != '' ">and m.linkphone like CONCAT('%',#{linkphone},'%')</if>
+            <if test="downtime != null  and downtime != '' ">and m.downtime like CONCAT('%',#{downtime},'%')</if>
+            <if test="applytime != null  and applytime != '' ">and m.applytime like CONCAT('%',#{applytime},'%')</if>
+            <if test="status != null  and status != '' ">and m.status =#{status} </if>
+            <if test="applicant != null  and applicant != '' ">and applicant like CONCAT('%',#{applicant},'%')</if>
+            <if test="remark != null  and remark != '' ">and m.remark like CONCAT('%',#{remark},'%')</if>
+        </where>
+        ORDER BY m.downtime DESC
+    </select>
+
+    <select id="selectMaintainApplyById" parameterType="String" resultMap="MaintainApplyResult">
+        <include refid="selectMaintainApplyVo"/>
+        WHERE maid = #{maid}
+    </select>
+
+    <select id="selectAllMaintainApply" resultMap="MaintainApplyResult">
+            maid,
+            teraddress,
+            linkman,
+            linkphone,
+            downtime,
+            applytime,
+            status,
+            remark
+            FROM maintain_apply ma
+            LEFT JOIN (userinfo ui
+            LEFT JOIN area a on a.aid = ui.aid) on ui.user_id = ma.userid
+            ORDER BY maid DESC
+    </select>
+    <delete id="deleteMaintainApplyById" parameterType="String">
+        delete from maintain_apply where maid in
+        <foreach item="maid" collection="array" open="(" separator="," close=")">
+            #{maid}
+        </foreach>
+    </delete>
+
+    <insert id="insertMaintainApply" parameterType="com.sixin.broad.domain.MaintainApply">
+        insert into maintain_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="teraddress != null  and teraddress != '' ">teraddress,</if>
+            <if test="maid != null  and maid != '' ">maid,</if>
+            <if test="linkman != null  and linkman != '' ">linkman,</if>
+            <if test="linkphone != null  and linkphone != '' ">linkphone,</if>
+            <if test="downtime != null  and downtime != '' ">downtime,</if>
+            <if test="applytime != null  and applytime != '' ">applytime,</if>
+            <if test="status != null  and status != '' ">status,</if>
+            <if test="remark != null  and remark != '' ">remark,</if>
+            <if test="uid != null  and uid != '' ">uid,</if>
+            <if test="applicant != null  and applicant != '' ">applicant</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="teraddress != null  and teraddress != '' ">#{teraddress},</if>
+            <if test="maid != null  and maid != '' ">#{maid},</if>
+            <if test="linkman != null  and linkman != '' ">#{linkman},</if>
+            <if test="linkphone != null  and linkphone != '' ">#{linkphone},</if>
+            <if test="downtime != null  and downtime != '' ">#{downtime},</if>
+            <if test="applytime != null  and applytime != '' ">#{applytime},</if>
+            <if test="status != null  and status != '' ">#{status},</if>
+            <if test="remark != null  and remark != '' ">#{remark},</if>
+            <if test="uid != null  and uid != '' ">#{uid},</if>
+            <if test="applicant != null  and applicant != '' ">#{applicant}</if>
+        </trim>
+    </insert>
+
+    <!-- 根据ids批量查询数据，主要用于导出-->
+    <select id="selectMaintainApplyByIds" resultMap="MaintainApplyResult">
+        SELECT
+        m.maid,
+        m.teraddress,
+        m.linkman,
+        m.linkphone,
+        m.downtime,
+        m.applytime,
+        m.status,
+        m.remark,
+        u.user_name AS applicant
+        FROM
+        broad.maintain_apply m
+        left join ry.sys_user u on m.userid = u.user_id
+        WHERE
+        m.maid in
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
+    <update id="updateMaintainApply" parameterType="com.sixin.broad.domain.MaintainApply">
+        update maintain_apply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="teraddress != null  and teraddress != ''  ">teraddress = #{teraddress},</if>
+            <if test="maid != null  and maid != ''  ">maid = #{maid},</if>
+            <if test="linkman != null  and linkman != ''  ">linkman = #{linkman},</if>
+            <if test="linkphone != null  and linkphone != ''  ">linkphone = #{linkphone},</if>
+            <if test="downtime != null  and downtime != ''  ">downtime = #{downtime},</if>
+            <if test="applytime != null  and applytime != ''  ">applytime = #{applytime},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+        </trim>
+        where maid = #{maid}
+    </update>
+</mapper>

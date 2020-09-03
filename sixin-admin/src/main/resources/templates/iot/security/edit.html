@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-security-edit" th:object="${security}">
+        <input id="id" name="id" type="hidden" th:field="*{id}"/>
+        <h4 class="form-header h4">基本信息</h4>
+        <div class="row">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label "><span style="color: red; ">*</span>IMEI号：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" id="sno" onclick="selectIotTree()" readonly="true"
+                                   th:field="*{sno}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label "><span style="color: red; ">*</span>存放位置编号：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" id="dept_id" name="dept_id"  th:field="*{dept_id}" readonly="true">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label "><span style="color: red; ">*</span>安防类型：</label>
+                        <div class="col-sm-8">
+                            <select id="stype" name="stype" class="form-control m-b" th:field="*{stype}">
+                                <option th:each="list:${securitype}" th:value="${list.name}" th:text="${list.name}">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>产品型号名称：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="sname" id="sname" th:field="*{sname}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>采购jiage：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="price" id="price" th:field="*{price}" placeholder="请填写价格">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>安装人员：</label>
+                        <div class="col-sm-8">
+                            <select id="installer" name="installer" class="form-control m-b" th:field="*{installer}">
+                                <option th:each="list:${user}" th:value="${list.user_name}" th:text="${list.user_name}">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>生产企业：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control" type="text" name="producer" id="producer" th:field="*{producer}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>生产时间：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control laydate-icon  layer-date" name="prodtime"
+                                   id="prodtime" th:field="*{prodtime}" value="" readonly="readonly"
+                                   style="width:120px;" placeholder="安装时间" title="安装时间"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="form-header h4">其他信息</h4>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">安装时间：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control laydate-icon  layer-date" name="installtime"
+                                   id="installtime" th:field="*{installtime}" value="" readonly="readonly"
+                                   style="width:120px;" placeholder="安装时间" title="安装时间"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">有效时间：</label>
+                        <div class="col-sm-8">
+                            <input class="form-control laydate-icon  layer-date" name="endtime"
+                                   id="endtime" th:field="*{endtime}" value="" readonly="readonly"
+                                   style="width:120px;" placeholder="有效时间" title="有效时间"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label"><span style="color: red; ">*</span>设备状态：</label>
+                        <div class="col-sm-8">
+                            <div class="onoffswitch">
+                                <input type="checkbox" class="onoffswitch-checkbox" id="dflag1" name="dflag1"
+                                       onclick="changevalue2();"/>
+                                <label class="onoffswitch-label" for="dflag1">
+                                    <span class="onoffswitch-inner"></span>
+                                    <span class="onoffswitch-switch"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <input id="delflag" name="delflag" th:field="*{delflag}" class="form-control" type="hidden">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">备注：</label>
+                        <div class="col-xs-10">
+                            <textarea name="demo" maxlength="500" class="form-control" rows="3">[[*{demo}]]</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "iot/security";
+    var prefix1 = ctx + "system/dept";
+    $("#form-security-edit").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-security-edit').serialize());
+        }
+    }
+
+
+    //0是关 1是开
+    $(function () {
+        var dflag2 = document.getElementById("dflag1");
+        var data2 = $("#delflag").val();
+        if (data2 == "1") {
+            dflag2.checked = true;
+        } else {
+            dflag2.checked = false;
+        }
+
+    });
+
+
+    var bb = $("#delflag").val();
+    var bflag = 0;
+
+    function changevalue2() {
+        bflag++;
+        if (bflag % 2 == 0) {
+
+            $("#delflag").val(bb);
+        } else {
+
+
+            if (bb == "1") {
+                $("#delflag").val("0");
+
+            } else {
+                $("#delflag").val("1");
+
+            }
+        }
+
+    }
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<script>
+    laydate({
+        elem:"#prodtime",
+        event:"focus"
+    });
+    laydate({
+        elem:"#endtime",
+        event:"focus"
+    });
+    laydate({
+        elem:"#installtime",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#security",
+            type: 'time',
+        });
+    });
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            layer.close(index);
+        }
+    }
+
+    function selectIotTree() {
+        var _url = prefix + "/selectIotTree";
+        var _title = '选择终端';
+        var _width = "800";
+        var _height = ($(window).height() - 50);
+        layer.open({
+            type: 2,
+            maxmin: true,
+            shade: 0.3,
+            title: _title,
+            fix: false,
+            area: [_width + 'px', _height + 'px'],
+            content: _url,
+            shadeClose: true,
+            btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+            yes: function (index, layero) {
+                doSubmit(index, layero)
+            }, cancel: function () {
+                return true;
+            }
+        });
+    }
+    function ccc(imei){
+        var imei1 = imei;
+        $("#sno").val(imei1);
+        console.log("sno:" + imei1);
+    }
+    function ddd(dept_id){
+        var dept_id1 = dept_id;
+        $("#dept_id").val(dept_id1);
+        console.log("dept_id:" + dept_id1);
+    }
+</script>
+</body>
+</html>

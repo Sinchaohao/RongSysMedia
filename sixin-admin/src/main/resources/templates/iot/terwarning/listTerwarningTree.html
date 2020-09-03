@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <form id="user-form">
+                <li>
+                    <input type="hidden" name="aid"  id="aid" style="width: 100px"/>
+                </li>
+            </form>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+<!--    <div class="row">-->
+
+<!--        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">-->
+<!--            <a class="btn btn-success btn-del disabled" onclick="addProIdAll()">-->
+<!--                <i class="fa fa-edit"></i> 终端选择-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    <div>-->
+        <input id="org" name="org"  width="50%" placeholder="">
+        <input id="tname" type="hidden" name="tname"  width="50%" placeholder="">
+    </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "iot/terwarning";
+
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/listTerwarningTree",
+            modalName: "终端管理",
+            search: false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field : 'tid',
+                    title : '终端设备IMEI',
+                    visible: true
+                },
+                {
+                    field : 'tname',
+                    title : '终端设备名称',
+                    sortable: true
+                },
+                {
+                    field : 'aid',
+                    title : '区域编号',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    };
+
+    function queryAreaTree(){
+        var url = ctx + "iot/area/treeData";
+        var options = {
+            url: url,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            aid1 = treeNode.id;
+            $("#aid").val(treeNode.id);
+            $.table.search();
+        }
+        $.tree.init(options);
+    }
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+</script>
+</body>
+</html>

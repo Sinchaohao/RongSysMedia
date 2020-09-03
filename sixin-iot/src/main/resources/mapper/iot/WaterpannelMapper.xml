@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.WaterpannelMapper">
+    <resultMap type="com.sixin.iot.domain.Water" id="waterpannelResult">
+        <result property="id"    column="id"    />
+        <result property="ctype"    column="ctype"    />
+        <result property="cid"    column="cid"    />
+        <result property="vdata"    column="vdata"  />
+        <result property="vunit"    column="vunit"    />
+        <result property="status"    column="status"    />
+        <result property="colldate"    column="colldate"    />
+        <result property="collip"    column="collip"    />
+        <result property="startdate"    column="startdate"    />
+        <result property="exdate"    column="exdate"    />
+        <result property="deptid"    column="deptid"    />
+        <result property="user_name"    column="user_name"    />
+        <result property="demo"    column="demo"    />
+        <result property="delflag"    column="delflag"    />
+    </resultMap>
+
+    <!--定义selectWater为查询整表命令-->
+    <sql id="selectwaterpannel">
+    select id,ctype,cid,vdata,vunit,a.status,colldate,collip,startdate,exdate,deptid,uid,u.user_name,demo,delflag
+    from iotdata.tb_collect a
+         inner join ry.sys_dept b on a.deptid=b.dept_id
+         inner join ry.sys_user u on a.uid=u.user_id
+    </sql>
+    <select id="selectWaterpannelList" parameterType="com.sixin.iot.domain.Water" resultMap="waterpannelResult">
+        <include refid="selectwaterpannel"/>
+        <where>
+            a.ctype='水质'
+            <if test="id !=null and id!=' '">
+                AND id like concat('%',#{id},'%')
+            </if>
+            <if test="ctype !=null and ctype!=' '">
+                AND ctype like concat('%',#{ctype},'%')
+            </if>
+            <if test="cid !=null and cid!=' '">
+                AND cid like concat('%',#{cid},'%')
+            </if>
+            <if test="vdata !=null and vdata!=' '">
+                AND vdata like concat('%',#{vdata},'%')
+            </if>
+            <if test="vunit !=null and vunit!=' '">
+                AND vunit like concat('%',#{vunit},'%')
+            </if>
+            <if test="status !=null and status!=' '">
+                AND status like concat('%',#{status},'%')
+            </if>
+            <if test="colldate !=null and colldate!=' '">
+                AND colldate like concat('%',#{colldate},'%')
+            </if>
+            <if test="collip !=null and collip!=' '">
+                AND collip like concat('%',#{collip},'%')
+            </if>
+            <if test="startdate !=null and startdate!=' '">
+                AND startdate like concat('%',#{startdate},'%')
+            </if>
+            <if test="exdate !=null and exdate!=' '">
+                AND exdate like concat('%',#{exdate},'%')
+            </if>
+            <if test="deptid !=null and deptid!=' '">
+                AND deptid like concat('%',#{deptid},'%')
+            </if>
+            <if test="uid !=null and uid!=' '">
+                AND uid like concat('%',#{uid},'%')
+            </if>
+            <if test="demo !=null and demo!=' '">
+                AND demo like concat('%',#{demo},'%')
+            </if>
+            <if test="delflag !=null and delflag!=' '">
+                AND delflag like concat('%',#{delflag},'%')
+            </if>
+        </where>
+
+    </select>
+
+    <select id="ImeiInstallcount" parameterType="Long" resultMap="waterpannelResult">
+        select count(a.startdate)as id,a.startdate as startdate,a.deptid as deptid from
+        (select ctype,date_format(startdate,'%Y-%m-%d')as startdate,deptid from iotdata.tb_collect)as a
+        where a.ctype='水质'
+        <if test="deptid != null and deptid != ''">
+            and (a.deptid = #{deptid} OR a.deptid IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptid},ancestors) ))
+        </if>
+        group by a.startdate,a.deptid order by a.startdate
+    </select>
+
+    <select id="WaterData" parameterType="Long" resultMap="waterpannelResult">
+        select id,ctype,cid,vdata,vunit,colldate,collip,startdate,exdate,deptid,uid,demo,delflag from iotdata.tb_collect
+        where ctype='水质'
+        <if test="deptid != null and deptid != ''">
+            and (deptid = #{deptid} OR deptid IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptid},ancestors) ))
+        </if>
+        order by colldate desc
+    </select>
+</mapper>

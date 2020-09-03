@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ProListenMapper">
+
+    <resultMap type="com.sixin.broad.domain.ProListen" id="ProListenResult">
+        <result property="paid"    column="paid"    />
+        <result property="pname"    column="pname"    />
+        <result property="userid"    column="userid"    />
+        <result property="uname"     column="uname"     />
+        <result property="requires"    column="requires"    />
+        <result property="isemergency"    column="isemergency"    />
+        <result property="timelimit"    column="timelimit"    />
+        <result property="filename"    column="filename"    />
+        <result property="fileurl"    column="fileurl"    />
+        <result property="submittime"    column="submittime"    />
+        <result property="iscancel"    column="iscancel"    />
+        <result property="isread"    column="isread"    />
+        <result property="isreply"    column="isreply"    />
+        <result property="replytime"    column="replytime"    />
+        <result property="replyperson"    column="replyperson"    />
+        <result property="replyprogramid"    column="replyprogramid"    />
+        <result property="islisten"    column="islisten"    />
+        <result property="nopassreason"    column="nopassreason"    />
+        <result property="listenpass"    column="listenpass"    />
+        <result property="nopasstimes"    column="nopasstimes"    />
+        <result property="fid" column="fid"  />
+        <result property="urls" column="urls"/>
+        <result property="fname" column="fname"/>
+        <result property="profilename" column="profilename"/>
+    </resultMap>
+
+    <!--表名 -->
+    <sql id="tableName">
+        prore_apply
+    </sql>
+    <sql id="programtable">
+        programs
+    </sql>
+    <sql id="areatableName">
+        user.area
+    </sql>
+    <sql id="userstable">
+        user.userinfo
+    </sql>
+
+    <!--根据用户查询节目申请列表 -->
+    <select id="selectProListenList" parameterType="com.sixin.broad.domain.ProListen" resultMap="ProListenResult">
+        SELECT
+        temp.*,
+        programs.urls,
+        programs.fid
+        FROM
+        (
+        SELECT
+        prore_apply.*,
+        `ry`.`sys_user`.user_name AS uname
+        FROM
+        prore_apply,
+        `ry`.`sys_user`
+        WHERE
+        prore_apply.userid = `ry`.`sys_user`.user_id
+        <if test="userid != null  and userid != '' ">and `ry`.`sys_user`.user_id  = #{userid}</if>
+        ) temp
+        LEFT JOIN programs ON programs.fid = temp.replyprogramid
+        <where>
+            <if test="paid != null  and paid != '' ">paid like CONCAT('%',#{paid},'%')</if>
+            <if test="pname != null  and pname != '' ">and pname like CONCAT('%',#{pname},'%')</if>
+            <if test="uname != null  and uname != '' ">and uname like CONCAT('%',#{uname},'%')</if>
+            <if test="requires != null  and requires != '' ">and requires like CONCAT('%',#{requires},'%')</if>
+            <if test="isemergency != null  and isemergency != '' ">and isemergency  like CONCAT('%',#{isemergency},'%')</if>
+            <if test="timelimit != null  and timelimit != '' ">and timelimit = #{timelimit}</if>
+            <if test="filename != null  and filename != '' ">and filename like CONCAT('%',#{filename},'%')</if>
+            <if test="fileurl != null  and fileurl != '' ">and fileurl like CONCAT('%',#{fileurl},'%')</if>
+            <if test="submittime != null  and submittime != '' ">and submittime like CONCAT('%',#{submittime},'%')</if>
+            <if test="iscancel != null  and iscancel != '' ">and iscancel like CONCAT('%',#{iscancel},'%')</if>
+        </where>
+        order by paid desc
+    </select>
+
+    <update id="checkpass" >
+        update prore_apply set listenpass=true,nopassreason="" where paid =#{paid}
+    </update>
+
+    <update id="updateProListen" parameterType="com.sixin.broad.domain.ProListen">
+        update prore_apply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nopassreason != null  and nopassreason != ''  ">nopassreason = #{nopassreason},islisten=true,nopasstimes=nopasstimes+1,isread=true</if>
+            <if test="replyperson != null  and replyperson != ''  ">replyperson = #{replyperson},</if>
+            <if test="islisten != islisten  ">islisten = #{islisten},</if>
+            <if test="listenpass != listenpass  and listenpass != ''  ">listenpass = #{listenpass},</if>
+            <if test="requires != null  and requires != ''  ">requires = #{requires},</if>
+            <if test="iscancel != null  and iscancel != ''  ">iscancel = #{iscancel},</if>
+        </trim>
+        where paid = #{paid}
+    </update>
+
+</mapper>

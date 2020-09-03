@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-fileinfo-edit" th:object="${fileinfo}">
+            <input id="fileid" name="fileid" th:field="*{fileid}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件全称：</label>
+				<div class="col-sm-8">
+					<input id="filename" name="filename" th:field="*{filename}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件下载地址：</label>
+				<div class="col-sm-8">
+					<input id="furl" name="furl" th:field="*{furl}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件大小：</label>
+				<div class="col-sm-8">
+					<input id="filesize" name="filesize" th:field="*{filesize}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">上传时间：</label>
+				<div class="col-sm-8">
+					<input id="pushdate" name="pushdate" th:field="*{pushdate}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件名 去掉后缀：</label>
+				<div class="col-sm-8">
+					<input id="fsname" name="fsname" th:field="*{fsname}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件后缀名：</label>
+				<div class="col-sm-8">
+					<input id="suffix" name="suffix" th:field="*{suffix}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">下载次数：</label>
+				<div class="col-sm-8">
+					<input id="downloadnum" name="downloadnum" th:field="*{downloadnum}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">用户编号：</label>
+				<div class="col-sm-8">
+					<input id="uid" name="uid" th:field="*{uid}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">用户名称：</label>
+				<div class="col-sm-8">
+					<input id="uname" name="uname" th:field="*{uname}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地域编号：</label>
+				<div class="col-sm-8">
+					<input id="aid" name="aid" th:field="*{aid}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有效：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "village/fileinfo"
+		$("#form-fileinfo-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-fileinfo-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

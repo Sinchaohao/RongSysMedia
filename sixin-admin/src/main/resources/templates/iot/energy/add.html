@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-energy-add">
+        <h4 class="form-header h4">基本信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label "><span style="color: red; ">*</span>IMEI号：</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="imei" onclick="selectIotTree()"
+                                   readonly="true" name="imei" value="">
+                            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        </div>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>存放位置编号：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="deptid" id="deptid" placeholder=""
+                               readonly="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label ">电池1电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="pow1" id="pow1" placeholder="请输入电池1电压"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">电池组电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="grouppow" id="grouppow" placeholder="请输入电池组电压">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">18V1输出电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="vol18v1" id="vol18v1" placeholder="请输入18V1输出电压">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">18V2输出电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="vol18v2" id="vol18v2" placeholder="请输入18V2输出电压">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">24V输出电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="vol24" id="vol24" placeholder="请输入24V输出电压">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">28V输出电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="vol28" id="vol28" placeholder="请输入28V输出电压">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">外部电源电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="extendpow" id="extendpow" placeholder="请输入外部电源电压">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">太阳能电压：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="solarpow" id="solarpow" placeholder="请输入太阳能电压">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">工作温度：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="operating_temp" id="operating_temp"
+                               placeholder="请输入工作温度">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">充电状况：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="charge" id="charge" placeholder="请输入充电状况">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">工作状况：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="work" id="work" placeholder="请输入工作状况">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">采集时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date"
+                               name="colltime"
+                               id="colltime"
+                               value=""
+                               readonly="readonly"
+                               style="width:120px;"
+                               placeholder="采集时间"
+                               title="采集时间"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "iot/energy";
+
+    $("#form-energy-add").validate({
+        rules: {
+            xxxx: {
+                required: true,
+            },
+        }
+    });
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-energy-add').serialize());
+        }
+    }
+
+    laydate({
+        elem:"#colltime",
+        event:"focus"
+    });
+
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#energy",
+            type: 'time',
+        });
+    });
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            layer.close(index);
+        }
+    }
+
+    function selectIotTree() {
+        var _url = prefix + "/selectIotTree";
+        var _title = '选择终端';
+        var _width = "800";
+        var _height = ($(window).height() - 50);
+        layer.open({
+            type: 2,
+            maxmin: true,
+            shade: 0.3,
+            title: _title,
+            fix: false,
+            area: [_width + 'px', _height + 'px'],
+            content: _url,
+            shadeClose: true,
+            btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+            yes: function (index, layero) {
+                doSubmit(index, layero)
+            }, cancel: function () {
+                return true;
+            }
+        });
+    }
+
+    function ccc(imei) {
+        var imei1 = imei;
+        $("#imei").val(imei1);
+        console.log("imei:" + imei1);
+    }
+
+    function ddd(deptid) {
+        var deptid1 = deptid;
+        $("#deptid").val(deptid1);
+        console.log("deptid:" + deptid1);
+    }
+</script>
+</body>
+</html>

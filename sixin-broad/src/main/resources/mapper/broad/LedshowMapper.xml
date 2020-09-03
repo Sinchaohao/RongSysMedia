@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.LedshowMapper">
+    
+    <resultMap type="com.sixin.broad.domain.Ledshow" id="LedshowResult">
+        <result property="lsid"    column="lsid"    />
+        <result property="userid"    column="userid"    />
+        <result property="content"    column="content"    />
+        <result property="showtime"    column="showtime"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectLedshowVo">
+        select lsid, userid, content, showtime, createtime, remark from ledshow
+    </sql>
+	
+    <select id="selectLedshowList" parameterType="com.sixin.broad.domain.Ledshow" resultMap="LedshowResult">
+        <include refid="selectLedshowVo"/>
+        <where>  
+            <if test="lsid != null "> and lsid like '%${lsid}%'</if>
+             <if test="userid != null  and userid != '' "> and userid like '%${userid}%'</if>
+             <if test="content != null  and content != '' "> and content like '%${content}%'</if>
+             <if test="showtime != null  and showtime != '' "> and showtime like '%${showtime}%'</if>
+             <if test="createtime != null  and createtime != '' "> and createtime like '%${createtime}%'</if>
+             <if test="remark != null  and remark != '' "> and remark like '%${remark}%'</if>
+         </where>
+        ORDER BY createtime DESC
+    </select>
+    
+    <select id="selectLedshowById" parameterType="Integer" resultMap="LedshowResult">
+        <include refid="selectLedshowVo"/>
+        where lsid = #{lsid}
+    </select>
+        
+    <insert id="insertLedshow" parameterType="com.sixin.broad.domain.Ledshow">
+        insert into ledshow
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="lsid != null  ">lsid,</if>
+			<if test="userid != null  and userid != ''  ">userid,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="showtime != null  and showtime != ''  ">showtime,</if>
+			<if test="createtime != null  and createtime != ''  ">createtime,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="lsid != null  ">#{lsid},</if>
+			<if test="userid != null  and userid != ''  ">#{userid},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="showtime != null  and showtime != ''  ">#{showtime},</if>
+			<if test="createtime != null  and createtime != ''  ">#{createtime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateLedshow" parameterType="com.sixin.broad.domain.Ledshow">
+        update ledshow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userid != null  and userid != ''  ">userid = #{userid},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="showtime != null  and showtime != ''  ">showtime = #{showtime},</if>
+            <if test="createtime != null  and createtime != ''  ">createtime = #{createtime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where lsid = #{lsid}
+    </update>
+
+	<delete id="deleteLedshowById" parameterType="Integer">
+        delete from ledshow where lsid = #{lsid}
+    </delete>
+	
+    <delete id="deleteLedshowByIds" parameterType="String">
+        delete from ledshow where lsid in 
+        <foreach item="lsid" collection="array" open="(" separator="," close=")">
+            #{lsid}
+        </foreach>
+    </delete>
+
+    <select id="selectLedshowList1" parameterType="PersonApi" resultMap="LedshowResult">
+        select SQL_CALC_FOUND_ROWS distinct ledshow.lsid,ledshow.userid,ledshow.content,ledshow.showtime,ledshow.createtime,ledshow.remark
+        from
+        ledshow left join terminals_ledshow on ledshow.lsid=terminals_ledshow.lsid
+        <where>
+            <if test="userid != null  and userid != '' "> and userid like '%${userid}%'</if>
+            <if test="tids != null "> and tid in
+                <foreach item="tids" collection="tids" open="(" separator="," close=")">
+                    #{tids}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY createtime DESC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

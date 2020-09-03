@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.CameraDeptMapper">
+
+	<resultMap type="com.sixin.iot.domain.CameraDept" id="SysDeptResult">
+		<id     property="deptId"     column="dept_id"     />
+		<result property="parentId"   column="parent_id"   />
+		<result property="ancestors"  column="ancestors"   />
+		<result property="deptName"   column="dept_name"   />
+		<result property="orderNum"   column="order_num"   />
+		<result property="leader"     column="leader"      />
+		<result property="phone"      column="phone"       />
+		<result property="email"      column="email"       />
+		<result property="status"     column="status"      />
+		<result property="delFlag"    column="del_flag"    />
+		<result property="parentName" column="parent_name" />
+		<result property="createBy"   column="create_by"   />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy"   column="update_by"   />
+		<result property="updateTime" column="update_time" />
+		<result property="isCamera"   column="isCamera"   />
+		<result property="url" column="url" />
+	</resultMap>
+<!--	&#45;&#45;         select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.create_by, d.create_time-->
+<!--	&#45;&#45;     ,d.isCamera,d.url-->
+<!--	&#45;&#45;         from tb_camera d-->
+	<sql id="selectDeptVo">
+
+		select d.dept_id , d.parent_id, d.dept_name,'N' as isCamera, '' as url , d.status
+		from ry.sys_dept d where d.del_flag = '0'
+		union
+		select t.id as dept_id , t.deptid as parent_id ,  t.ctype as dept_name, 'Y' as isCamera,t.conip as url,t.delflag as status
+		from tb_ioterminal as t
+    </sql>
+    <sql id="Tab">
+		ry.sys_dept
+	</sql>
+	<select id="selectRoleDeptTree" parameterType="Long" resultType="String">
+		select concat(d.dept_id, d.dept_name) as dept_name
+		from <include refid="Tab"/> d
+			left join sys_role_dept rd on d.dept_id = rd.dept_id
+		where d.del_flag = '0' and rd.role_id = #{roleId}
+		order by d.parent_id, d.order_num
+	</select>
+	
+	<select id="selectDeptList" parameterType="com.sixin.iot.domain.CameraDept" resultMap="SysDeptResult">
+        <include refid="selectDeptVo"/>
+        where  t.ctype = "摄相头"
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+		order by dept_id
+    </select>
+
+	<select id="chooseDeptList"  resultMap="SysDeptResult">
+		select dept_id , parent_id , dept_name from <include refid="Tab"/>
+
+	</select>
+	
+	<select id="checkDeptExistUser" parameterType="Long" resultType="int">
+		select count(1) from sys_user where dept_id = #{deptId} and del_flag = '0'
+	</select>
+	
+	<select id="selectDeptCount" parameterType="com.sixin.iot.domain.CameraDept" resultType="int">
+		select count(1) from <include refid="Tab"/>
+		where del_flag = '0'
+		<if test="deptId != null and deptId != 0"> and dept_id = #{deptId} </if>
+		<if test="parentId != null and parentId != 0"> and parent_id = #{parentId} </if>
+	</select>
+	
+	<select id="checkDeptNameUnique" resultMap="SysDeptResult">
+	    <include refid="selectDeptVo"/>
+		where dept_name=#{deptName} and parent_id = #{parentId}
+	</select>
+
+	<select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">
+		select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status,d.isCamera,d.url,
+			(select dept_name from <include refid="Tab"/> where dept_id = d.parent_id) parent_name
+		from <include refid="Tab"/> d
+		where d.dept_id = #{deptId}
+	</select>
+
+	<select id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
+		select * from <include refid="Tab"/> where find_in_set(#{deptId}, ancestors)
+	</select>
+
+	<select id="selectDeptById2" parameterType="Long" resultMap="SysDeptResult">
+		select dept_id as deptId, parent_id as parentId, dept_name as deptName
+		from <include refid="Tab"/>
+		where dept_id = #{deptId}
+	</select>
+
+	<insert id="insertDept" parameterType="com.sixin.iot.domain.CameraDept">
+ 		insert into <include refid="Tab"/>(
+ 			<if test="deptId != null and deptId != 0">dept_id,</if>
+ 			<if test="parentId != null and parentId != 0">parent_id,</if>
+ 			<if test="deptName != null and deptName != ''">dept_name,</if>
+ 			<if test="ancestors != null and ancestors != ''">ancestors,</if>
+ 			<if test="orderNum != null and orderNum != ''">order_num,</if>
+ 			<if test="leader != null and leader != ''">leader,</if>
+ 			<if test="phone != null and phone != ''">phone,</if>
+ 			<if test="email != null and email != ''">email,</if>
+ 			<if test="status != null">status,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			<if test="isCamera != null and isCamera != ''">isCamera,</if>
+			<if test="url != null and url != ''">url,</if>
+ 			create_time
+ 		)values(
+ 			<if test="deptId != null and deptId != 0">#{deptId},</if>
+ 			<if test="parentId != null and parentId != 0">#{parentId},</if>
+ 			<if test="deptName != null and deptName != ''">#{deptName},</if>
+ 			<if test="ancestors != null and ancestors != ''">#{ancestors},</if>
+ 			<if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+ 			<if test="leader != null and leader != ''">#{leader},</if>
+ 			<if test="phone != null and phone != ''">#{phone},</if>
+ 			<if test="email != null and email != ''">#{email},</if>
+ 			<if test="status != null">#{status},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+		<if test="isCamera != null and isCamera != ''">#{isCamera},</if>
+		<if test="url != null and url != ''">#{url},</if>
+ 			sysdate()
+ 		)
+	</insert>
+	
+	<update id="updateDept" parameterType="com.sixin.iot.domain.CameraDept">
+ 		update <include refid="Tab"/>
+ 		<set>
+ 			<if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+ 			<if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
+ 			<if test="ancestors != null and ancestors != ''">ancestors = #{ancestors},</if>
+ 			<if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+ 			<if test="leader != null">leader = #{leader},</if>
+ 			<if test="phone != null">phone = #{phone},</if>
+ 			<if test="email != null">email = #{email},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="isCamera != null and isCamera != ''">isCamera = #{isCamera},</if>
+			<if test="url != null and url != ''">url = #{url},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where dept_id = #{deptId}
+	</update>
+	
+	<update id="updateDeptChildren" parameterType="java.util.List">
+	    update <include refid="Tab"/> set ancestors =
+	    <foreach collection="depts" item="item" index="index"
+	        separator=" " open="case dept_id" close="end">
+	        when #{item.deptId} then #{item.ancestors}
+	    </foreach>
+	    where dept_id in
+	    <foreach collection="depts" item="item" index="index"
+	        separator="," open="(" close=")">
+	        #{item.deptId}
+	    </foreach>
+	 </update>
+
+	<delete id="deleteDeptById" parameterType="Long">
+		update <include refid="Tab"/> set del_flag = '2' where dept_id = #{deptId}
+	</delete>
+	
+	<update id="updateDeptStatus" parameterType="com.sixin.iot.domain.CameraDept">
+ 	    update <include refid="Tab"/>
+ 	    <set>
+ 	        <if test="status != null and status != ''">status = #{status},</if>
+ 	        <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			<if test="isCamera != null and isCamera != ''">isCamera = #{isCamera},</if>
+			<if test="url != null and url != ''">url = #{url},</if>
+ 	        update_time = sysdate()
+        </set>
+ 	    where dept_id in (${ancestors})
+	</update>
+
+</mapper> 

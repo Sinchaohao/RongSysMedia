@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-phone-edit" th:object="${phone}">
+        <input id="pid" name="pid" th:field="*{pid}"  type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">授权手机号码：</label>
+            <div class="col-sm-8">
+                <input id="phone" name="phone" th:field="*{phone}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">用户ID：</label>
+            <div class="col-sm-8">
+                <input id="uid" name="uid" th:field="*{uid}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">用户姓名：</label>
+            <div class="col-sm-8">
+                <input id="uname" name="uname" th:field="*{uname}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">部门编号：</label>
+            <div class="col-sm-8">
+                <input id="deptid" name="deptid" th:field="*{deptid}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">编码权限：</label>
+            <div class="col-sm-8">
+                <input id="rolecode" name="rolecode" th:field="*{rolecode}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">批准人编号：</label>
+            <div class="col-sm-8">
+                <input id="allowid" name="allowid" th:field="*{allowid}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">批准人姓名：</label>
+            <div class="col-sm-8">
+                <input id="allowname" name="allowname" th:field="*{allowname}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">再次批准人编号：</label>
+            <div class="col-sm-8">
+                <input id="reallowid" name="reallowid" th:field="*{reallowid}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">再次批准人姓名：</label>
+            <div class="col-sm-8">
+                <input id="reallowname" name="reallowname" th:field="*{reallowname}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">批准证明：</label>
+            <div class="col-sm-8">
+                <input id="allowpic" name="allowpic" th:field="*{allowpic}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否有效：</label>
+            <div class="col-sm-8">
+                <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "system/phonemanage"
+    $("#form-phone-edit").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-phone-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

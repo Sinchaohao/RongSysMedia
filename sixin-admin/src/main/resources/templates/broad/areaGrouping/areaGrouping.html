@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+    <div class="ui-layout-west">
+        <div class="main-content">
+            <div class="box box-main" style="width: 3000px">
+                <div class="box-header">
+                    <div class="box-title">
+                        <i class="fa icon-grid"></i> 终端列表
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;">
+                            <i class="fa fa-chevron-up"></i></button>
+                        <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠">
+                            <i class="fa fa-chevron-down"></i></button>
+                        <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新">
+                            <i class="fa fa-refresh"></i></button>
+                    </div>
+                </div>
+                <div class="ui-layout-content">
+                    <div id="tree" class="ztree" style="overflow: auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-div ui-layout-center">
+    <div class="row">
+
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            分组编号：<input type="text" name="aid" id="aid" placeholder="请输入分组编号"/>
+                            <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> 如：1003（农3师）044（44团）001（1连）  </span>
+                        </li>
+
+                        <li>
+                            地域名称：<input type="text" name="aname" id="aname"/>
+                        </li>
+
+                        <li>
+                            <input type="hidden" name="parentaid" id="parentaid"/>
+                        </li>
+
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()">
+                <i class="fa fa-plus"></i> 添加
+            </a>
+            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()"
+               shiro:hasPermission="broad:areaGrouping:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()">
+                <i class="fa fa-remove"></i> 批量删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel();"
+               shiro:hasPermission="broad:areaGrouping:export">
+                <i class="fa fa-export"></i> 导出
+            </a>
+            <a class="btn btn-info" onclick="$.table.importExcel()"
+               shiro:hasPermission="broad:areaGrouping:import">
+                <i class="fa fa-import"></i> 导入
+            </a>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+
+    var prefix = ctx + "broad/areaGrouping";
+    var removeFlag = [[${@permission.hasPermi('broad:areagrouping:remove')}]];
+    var editFlag = [[${@permission.hasPermi('broad:areaGrouping:edit')}]];
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/list",
+            exportUrl: prefix + "/export",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            modalName: "分组管理",
+            importUrl: prefix + "/importData",
+            importTemplateUrl: prefix + "/importTemplate",
+            search: false,
+            showExport: true,
+            columns: [{
+                checkbox: true
+                },
+                {
+                    field : 'aid',
+                    title : '分组编号',
+                    visible: true
+                },
+                {
+                    field : 'parentaid',
+                    title : '父编号',
+                    visible: false
+                },
+                {
+                    field : 'aname',
+                    title : '地域名称',
+                    sortable: true
+                },
+                {
+                    field: 'note',
+                    title: '备注',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.aid + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.aid + '\')"><i class="fa fa-edit" ></i>修改</a> ');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    };
+
+    function queryAreaTree()
+    {
+        var url = ctx + "broad/area/treeData";
+        var options = {
+            url: url,
+//            expandLevel: 2,
+            onClick : zOnClick
+        };
+//        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#aid").val(treeNode.id);
+            $.table.search();
+        }
+        $.tree.init(options);
+    }
+
+</script>
+    <!-- 导入区域 -->
+    <script id="importTpl" type="text/template">
+        <form enctype="multipart/form-data" class="mt20 mb10">
+            <div class="col-xs-offset-1">
+                <input type="file" id="file" name="file"/>
+                <div class="mt10 pt5">
+                    <input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
+                    &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
+                </div>
+                <font color="red" class="pull-left mt10">
+                    提示：仅允许导入“xls”或“xlsx”格式文件！
+                </font>
+            </div>
+        </form>
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.system.mapper.SysPersonMapper">
+
+    <resultMap type="SysPerson" id="SysPersonResult">
+        <result property="id"        column="id"       />
+        <result property="pid"        column="pid"       />
+        <result property="deptid" column="deptid"/>
+        <result property="pname"      column="pname"     />
+        <result property="phone"      column="phone"     />
+        <result property="ptype"      column="ptype"     />
+        <result property="stationcode"        column="stationode"        />
+        <result property="redius"      column="redius"     />
+        <result property="address"    column="address"   />
+        <result property="startdate"      column="startdate"     />
+        <result property="enddate"    column="enddate"   />
+        <result property="remark"        column="remark"        />
+    </resultMap>
+
+    <select id="selectPersonlist" parameterType="SysPerson" resultMap="SysPersonResult">
+        select p.id,p.pid,LEFT(p.pid,CHAR_LENGTH(p.pid)-CHAR_LENGTH(RIGHT(p.pid,4)))as deptid,p.pname,p.phone,p.ptype,p.stationcode,p.redius,p.address,p.startdate,p.enddate,p.remark
+        from ry.sys_specialperson p left join ry.sys_dept d on LEFT(p.pid,CHAR_LENGTH(p.pid)-CHAR_LENGTH(RIGHT(p.pid,4)))=d.dept_id
+        where 1=1
+        <if test="deptid != null and deptid != ''">
+            and (d.dept_id = #{deptid} OR d.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptid},ancestors) ))
+        </if>
+    </select>
+
+    <insert id="insertPerson" parameterType="SysPerson">
+        insert into sys_specialperson
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null  ">pid,</if>
+            <if test="pname != null  and pname != ''  ">pname,</if>
+            <if test="phone != null  ">phone,</if>
+            <if test="ptype != null  and ptype != ''  ">ptype,</if>
+            <if test="stationcode != null  and stationcode != ''  ">stationcode,</if>
+            <if test="redius != null  and redius != ''  ">redius,</if>
+            <if test="address != null  and address != ''  ">address,</if>
+            <if test="remark != null  and remark !=''  ">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null  ">#{pid},</if>
+            <if test="pname != null  and pname != ''  ">#{pname},</if>
+            <if test="phone != null  ">#{phone},</if>
+            <if test="ptype != null  and ptype!= ''  ">#{ptype},</if>
+            <if test="stationcode != null  and stationcode != ''  ">#{stationcode},</if>
+            <if test="redius != null  and redius != ''  ">#{redius},</if>
+            <if test="address != null  and address != ''  ">#{address},</if>
+            <if test="remark != null  and remark !=''  ">#{remark},</if>
+        </trim>
+    </insert>
+    <delete id="deletePersonById" parameterType="Long">
+        delete from sys_specialperson where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectPersonById" parameterType="Long" resultMap="SysPersonResult">
+        select id,pid,pname,phone,ptype,stationcode,redius,address,remark
+        from sys_specialperson where id=#{id}
+    </select>
+    <update id="updatePerson" parameterType="com.sixin.system.domain.SysPerson">
+        update sys_specialperson
+        <set>
+<!--            <if test="pid != null  ">pid=#{pid},</if>-->
+<!--            <if test="pname != null  and pname != ''  ">pname=#{pname},</if>-->
+<!--            <if test="phone != null  ">phone=#{phone},</if>-->
+<!--            <if test="ptype != null  and ptype!= ''  ">ptype#{ptype},</if>-->
+<!--            <if test="stationcode != null  and stationcode != ''  ">stationcode=#{stationcode},</if>-->
+<!--            <if test="redius != null  and redius != ''  ">redius=#{redius},</if>-->
+<!--            <if test="address != null  and address != ''  ">address=#{address},</if>-->
+<!--            <if test="remark != null  and remark !=''  ">remark=#{remark},</if>-->
+<!--            startdate=sysdate(),enddate=sysdate(),-->
+            pid=#{pid},pname=#{pname},phone=#{phone},ptype=#{ptype},stationcode=#{stationcode},redius=#{redius},address=#{address},remark=#{remark}
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

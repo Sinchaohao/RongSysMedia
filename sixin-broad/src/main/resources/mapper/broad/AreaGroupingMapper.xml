@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.AreaGroupingMapper">
+    <resultMap type="com.sixin.broad.domain.AreaGrouping" id="AreaGroupingResult">
+        <result property="aid"    column="aid"    />
+        <result property="parentaid"    column="parentaid"    />
+        <result property="aname"    column="aname"    />
+        <result property="note"    column="note"    />
+        <result property="parentaname"    column="parentaname"    />
+    </resultMap>
+
+    <select id="selectAreaGroupingById" parameterType="String" resultMap="AreaGroupingResult">
+        select
+        a.aid as aid,
+        a.parentaid as parentaid,
+        a.aname as aname,
+        a.note as note
+        from area a
+        <where>
+            <if test="aid != null  and aid != '' "> a.aid =#{aid}</if>
+        </where>
+    </select>
+
+    <select id="listAreaGrouping"  parameterType="com.sixin.broad.domain.AreaGrouping" resultMap="AreaGroupingResult">
+        select
+			a.aid as aid,
+			a.parentaid as parentaid,
+			a.aname as aname,
+			a.note as note
+        from area a
+        <where>
+            <if test="aid != null  and aid != '' ">and a.aid like CONCAT(#{aid},'%')</if>
+            <if test="aname != null  and aname != '' ">and a.aname like CONCAT('%',#{aname},'%')</if>
+        </where>
+    </select>
+
+
+    <delete id="deleteAreaGroupingByIds" parameterType="String">
+        delete from area where aid IN
+        <foreach item="aid" collection="array" open="(" separator="," close=")">
+            #{aid}
+        </foreach>
+    </delete>
+
+    <insert id="insertAreaGrouping" parameterType="com.sixin.broad.domain.AreaGrouping">
+        insert into area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="aid != null  and aid != '' ">aid,</if>
+            <if test="parentaid != null  and parentaid != '' ">parentaid,</if>
+            <if test="aname != null  and aname != '' ">aname,</if>
+            <if test="note != null  and note != '' ">note</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="aid != null  and aid != '' ">#{aid},</if>
+            <if test="parentaid != null  and parentaid != '' ">#{parentaid},</if>
+            <if test="aname != null  and aname != '' ">#{aname},</if>
+            <if test="note != null  and note != '' ">#{note}</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertAreaGrouping">
+        insert into area
+        (`aid`, `parentaid`, `aname`, `note`) VALUES
+        <foreach item="item" index="index" collection="list"  separator="," >
+           (#{item.aid},#{item.parentaid},#{item.aname},#{item.note})
+        </foreach>
+    </insert>
+
+    <update id="updateAreaGrouping" parameterType="com.sixin.broad.domain.AreaGrouping">
+        update area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="parentaid != null  and parentaid != ''  ">parentaid = #{parentaid},</if>
+            <if test="aname != null  and aname != ''  ">aname = #{aname},</if>
+            <if test="note != null  and note != ''  ">note = #{note}</if>
+        </trim>
+        where aid = #{aid}
+    </update>
+
+    <select id="selectAreaGroupingByAid" parameterType="String" resultMap="AreaGroupingResult">
+        select
+			a1.aid as aid,
+			a1.parentaid as parentaid,
+			a1.aname as aname,
+			a1.note as note,
+			a2.aname as parentaname
+        from area a1 left join area a2 on a1.parentaid = a2.aid
+        where a1.aid = #{aid}
+    </select>
+
+    <select id="selectAreaGroupingListByids" parameterType="java.util.List" resultMap="AreaGroupingResult">
+        select
+        a.aid as aid,
+        a.parentaid as parentaid,
+        a.aname as aname,
+        a.note as note
+        from area a
+        where a.aid in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+    </select>
+</mapper>

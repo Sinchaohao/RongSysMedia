@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.SocialcircleMapper">
+    
+    <resultMap type="com.sixin.village.domain.Socialcircle" id="socialCircleResult">
+        <result property="pcid"    column="pcid"    />
+        <result property="pcsennum"    column="pcsennum"    />
+        <result property="aid"    column="aid"    />
+        <result property="videourl"    column="videourl"    />
+        <result property="imgurl"    column="imgurl"    />
+        <result property="adddate"    column="adddate"    />
+        <result property="pcontent"    column="pcontent"    />
+        <result property="uid"    column="uid"    />
+    </resultMap>
+	<sql id="selectSocialCircleVo">
+        select pcid, aid, pcsennum, videourl, imgurl, adddate, pcontent, uid from tb_partycircle
+    </sql>
+	
+    <select id="selectSocialCircleList" parameterType="int" resultMap="socialCircleResult">
+        <include refid="selectSocialCircleVo"/>
+        order by pcid desc limit #{in} , #{index}
+    </select>
+	 <select id="selectSocialCircleList_Heat" parameterType="int" resultMap="socialCircleResult">
+         <include refid="selectSocialCircleVo"/>
+         order by pcsennum desc limit #{in}, #{index}
+     </select>
+    <update id="updateSocialCircle" parameterType="com.sixin.village.domain.Socialcircle">
+        update myc_member
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pcid != null  and pcid != ''  ">pcid = #{pcid},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="pcsennum != null  and pcsennum != '' ">pcsennum = #{pcsennum},</if>
+            <if test="videourl != null  and videourl != ''  ">videourl = #{videourl},</if>
+            <if test="imgurl != null  and imgurl != ''  ">imgurl = #{imgurl},</if>
+            <if test="adddate != null  and adddate != ''  ">adddate = #{adddate},</if>
+            <if test="pcontent != null  and pcontent != ''  ">pcontent = #{pcontent},</if>
+            <if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+        </trim>
+        where pcid = #{pcid}
+    </update>
+
+    
+</mapper>

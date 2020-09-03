@@ -1,0 +1,169 @@
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns="http://xmlns.jcp.org/jsf/html">
+<head th:include="include :: header"></head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../../../css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="../../../css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="../../../css/animate.min.css" rel="stylesheet">
+    <link href="../../../css/style.min862f.css?v=4.1.0" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="pull-right">
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.protype}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.fname}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.fphone}]]</button>
+                    </div>
+                    <div class="pull-left">
+                    <a class="btn btn-success" onclick="workInfoAdd()">工作汇报</a>
+                    </div>
+                    <div class="text-center article-title">
+                        <h1 th:text="${listByid.proname}"></h1>
+                        <p>工作人员：<input  id="wwname" name="wwname" type="text" readonly style= "background-color:transparent;border:0;"></p>
+                        <p>项目地址：[[${listByid.address}]]  投资金额：[[${listByid.money}]]万元</p>
+                        <p>投资明细：</p><p th:utext="${listByid.moneynote}"></p>
+                    </div>
+                    <p th:utext="${listByid.content}"></p>
+
+                    <input id="proid" name="proid" th:value="${listByid.proid}" type="hidden">
+                    <input id="proname" name="proname" th:value="${listByid.proname}" type="hidden">
+                    <input id="fileaddress" name="fileaddress" th:value="${listByid.propic}" type="hidden">
+                    <input id="returnId" name="returnId" th:value="${returnId}" type="hidden">
+
+                    <input id="wpeopleid" name="wpeopleid" th:value="${listByid.wpeopleid}" type="hidden">
+                    <input id="wpeoplename" name="wpeoplename" th:value="${listByid.wpeoplename}" type="hidden">
+                    <!--<img border="0" th:src="${listByid.propic}" height="200" width="400" type="hidden">-->
+                   <!-- <img th:src="${listByid.propic}" height="200" width="400"/>-->
+                    <a class="btn btn-success btn-xs" onclick="test()"><i class="fa fa-download"></i>文件下载</a>
+
+                </div>
+                <input id="listWorklognum" name="listWorklognum" th:value="${listWorklognum}" type="hidden">
+                <input id="uname" name="uname" th:value="${unamelist}"  type="hidden">
+                <input id="wtitle" name="wtitle" th:value="${wtitlelist}" type="hidden">
+                <input id="wpic" name="wpic" th:value="${wpiclist}"  type="hidden">
+                <input id="content" name="content" th:value="${contentlist}"  type="hidden">
+                <input id="pushdate" name="pushdate" th:value="${pushdatelist}"  type="hidden">
+
+                <HR style="border:3 double #987cb9" width="80%"color=#987cb9 SIZE=3>
+
+                <div class="row">
+                    <div >
+                        <div id="box"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script src="../../../js/jquery.min.js"></script>
+<script src="../../../js/bootstrap.min.js"></script>
+<script src="../../../js/content.min.js"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+
+<script type="text/javascript">
+        function test() {
+            //文件路径
+            var filePath = $("#fileaddress").val();
+            //获取最后一个.的位置
+            var index= filePath.lastIndexOf(".");
+            //获取后缀
+            var ext = filePath.substr(index+1);
+            //输出结果
+            console.log(ext);
+            //判断是否是图片
+            console.log("该文件是否为图片：" + isAssetTypeAnImage(ext));
+           var flag = isAssetTypeAnImage(ext);
+            if(flag == false){
+                downloadNormalFile(filePath)
+            }else{
+                alert("该文件为图片，无法直接下载");
+            }
+        }
+
+        function isAssetTypeAnImage(ext) {
+            return [
+                'png', 'jpg', 'jpeg', 'bmp', 'gif', 'webp', 'psd', 'svg', 'tiff', 'pdf'].
+            indexOf(ext.toLowerCase()) !== -1;
+        }
+
+        function  downloadNormalFile(src) {
+            var link = document.createElement('a');
+            //link.setAttribute("download", download);
+            link.href = src;
+            document.body.appendChild(link);//添加到页面中，为兼容Firefox浏览器
+            link.click();
+            document.body.removeChild(link);//从页面移除
+        }
+
+        //待分隔的字符串
+        var userid = document.getElementById("wpeopleid").value;
+        var username = document.getElementById("wpeoplename").value;
+        //把str按逗号分隔后,并把分隔后的内容存放在strArr数组中
+        var strIdArr = userid.split(",");
+        //var strNameArr = username.split(",");
+
+         $("#wwname").val(username);
+
+        function workInfoAdd() {
+            var returnId = $("#returnId").val();
+            var flag = 0;
+            //用于判断用户权限
+            for (i = 0; i < strIdArr.length - 1; i++) {
+                if (returnId == strIdArr[i]) {
+                    flag = 1;
+                }
+            }
+            if (flag == 1) {
+                var projectId = $("#proid").val() + "";
+                var projectName = $("#proname").val();
+                var _url = "/village/worklog/add/" + projectId + "/" + projectName;
+                var _title = "新增工作记录";
+                var _width = "800";
+                var _height = ($(window).height() - 50);
+                layer.open({
+                    type: 2,
+                    maxmin: true,
+                    shade: 0.3,
+                    title: _title,
+                    fix: false,
+                    area: [_width + 'px', _height + 'px'],
+                    content: _url,
+                    shadeClose: true
+                });
+            }if (flag == 0) {
+                alert("无操作权限！")
+            }
+        }
+
+
+        var ggg = $("#wtitle").val();
+        var strwtitleArr = ggg.split(",");
+        var fff = $("#uname").val();
+        var strunameArr = fff.split(",");
+        var kkk = $("#wpic").val();
+        var strwpicArr = kkk.split(",");
+        var jjj = $("#content").val();
+        var strcontentArr = jjj.split(",");
+        var zzz = $("#pushdate").val();
+        var strpushdateArr = zzz.split(",");
+
+        var oBox = document.getElementById('box');
+        var str = '';
+
+        var wnum = $("#listWorklognum").val();
+        var num = Number(wnum);
+        var i = 0;
+        for (i=0;i<num;i++) {
+            str += '<div class="ibox"><div class="ibox-title"><span class="label label-info pull-right" >'+ strpushdateArr[i] +'</span><span class="label label-primary pull-right" >'+ strunameArr[i] +'</span></div><div class="ibox-content"><h3>'+ strwtitleArr[i] +'</h3>'+ strcontentArr[i] +'<div><span>当前工作进度：</span><div class="stat-percent">50%</div><div class="progress progress-mini"><div style="width: 50%;" class="progress-bar"></div></div></div></div>';        }
+        oBox.innerHTML = str;
+</script>
+</body>
+</html>

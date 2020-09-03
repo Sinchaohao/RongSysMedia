@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								投诉标题：<input type="text" name="title"/>
+							</li>
+
+							<li>
+								投诉类型：<input type="text" name="ftype"/>
+							</li>
+
+							<!--<li>
+								回复人：<input type="text" name="uname"/>
+							</li>-->
+
+							<!--<li>
+								投诉时间：<input type="text" name="fbdatetime"/>
+							</li>-->
+
+							<!--<li>-->
+								<!--是否有效：<input type="text" name="remark"/>-->
+							<!--</li>-->
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:complaint:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:complaint:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('village:complaint:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('village:complaint:remove')}]];
+        var prefix = ctx + "village/complaint";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove/{id}",
+				exportUrl: prefix + "/export",
+                modalName: "投诉记录",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'fbid',
+					title : '投诉数据编号',
+					visible: false
+				},
+				{
+				    field:'fbuid',
+					title:'投诉人编号',
+					visible:false
+				},
+				{
+					field : 'ftype',
+					title : '类型',
+					sortable: true
+				},
+				{
+					field : 'title',
+					title : '投诉标题',
+					sortable: true,
+                    width: '10%'
+				},
+				{
+				    field:'fbdatetime',
+					title:'投诉时间',
+					visible:true
+				},
+				{
+				    field:'content',
+					title:'投诉内容',
+					sortable:true,
+                    width: '30%'
+				},
+				{
+				    field:'isread',
+					title:'管理员是否已读',
+					visible:true
+				},
+				{
+					field:'uid',
+					title:'回复人编号',
+					visible:false
+				},
+				{
+				    field:'uname',
+					title:'回复人',
+					visible:true
+				},
+				{
+				    field:'datetime',
+					title:'回复时间',
+					visible:true
+				},
+				{
+					field : 'remark', 
+					title : '是否有效',
+					sortable: true
+				}
+//				,{
+//		            title: '操作',
+//		            align: 'center',
+//		            formatter: function(value, row, index) {
+//		            	var actions = [];
+//		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.fbid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+//                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.fbid + '\')"><i class="fa fa-remove"></i>删除</a>');
+//						return actions.join('');
+//		            }
+//		        }
+		        ]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

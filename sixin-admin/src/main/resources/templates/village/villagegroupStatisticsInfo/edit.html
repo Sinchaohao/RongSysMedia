@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-villagegroupStatisticsInfo-edit" th:object="${villagegroupStatisticsInfo}">
+            <input id="vgsid" name="vgsid" th:field="*{vgsid}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地域编号：</label>
+				<div class="col-sm-8">
+					<input class="form-control" th:field="*{aid}" type="text" id="aid" name="aid" onclick="selectAidTree()"
+						   placeholder="点击选择区域">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">村组名称：</label>
+				<div class="col-sm-8">
+					<input id="grouptype" name="grouptype" th:field="*{grouptype}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">总面积：</label>
+				<div class="col-sm-8">
+					<input id="area" name="area" th:field="*{area}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">农用地小计：</label>
+				<div class="col-sm-8">
+					<input id="farmland" name="farmland" th:field="*{farmland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">耕地：</label>
+				<div class="col-sm-8">
+					<input id="plowland" name="plowland" th:field="*{plowland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">园地：</label>
+				<div class="col-sm-8">
+					<input id="orchard" name="orchard" th:field="*{orchard}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">林地：</label>
+				<div class="col-sm-8">
+					<input id="forest" name="forest" th:field="*{forest}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">农田水利设施用地：</label>
+				<div class="col-sm-8">
+					<input id="fland" name="fland" th:field="*{fland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">养殖水面：</label>
+				<div class="col-sm-8">
+					<input id="aqarea" name="aqarea" th:field="*{aqarea}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">其他农用地：</label>
+				<div class="col-sm-8">
+					<input id="otherland" name="otherland" th:field="*{otherland}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "village/villagegroupStatisticsInfo"
+		$("#form-villagegroupStatisticsInfo-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+
+		function selectAidTree() {
+			var url = "/village/company/selectAidTree";
+			var options = {
+				title: '选择区域',
+				width: "380",
+				url: "/village/company/selectAidTree",
+				callBack: doSubmitAid
+			};
+			$.modal.openOptions(options);
+		}
+
+		/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+		function doSubmitAid(index, layero) {
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#aid").val(body.find('#treeId').val());
+				$("#grouptype").val(body.find('#treeName').val());
+				/*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+				layer.close(index);
+			}
+		}
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-villagegroupStatisticsInfo-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

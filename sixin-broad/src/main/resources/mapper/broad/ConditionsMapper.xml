@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ConditionsMapper">
+    
+    <resultMap type="com.sixin.broad.domain.Conditions" id="ConditionsResult">
+        <result property="tid"    column="tid"    />
+        <result property="hversion"    column="hversion"    />
+        <result property="sversion"    column="sversion"    />
+        <result property="temp"    column="temp"    />
+        <result property="nettype"    column="nettype"    />
+        <result property="qsignal"    column="qsignal"    />
+        <result property="sd"    column="sd"    />
+        <result property="mp3"    column="mp3"    />
+        <result property="fm"    column="fm"    />
+        <result property="gsm"    column="gsm"    />
+        <result property="nullv"    column="nullv"    />
+        <result property="basestation"    column="basestation"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="remark"    column="remark"    />
+        <result property="transmitpower"    column="transmitpower"    />
+        <result property="reflectedpower"    column="reflectedpower"    />
+        <result property="workvoltage"    column="workvoltage"    />
+        <result property="rds"    column="rds"    />
+        <result property="fmfrequency"    column="fmfrequency"    />
+        <result property="updatetime"    column="updatetime"    />
+        <result property="lastaccesstime"    column="lastaccesstime"    />
+    </resultMap>
+	
+	<sql id="selectConditionsVo">
+        select tid, hversion, sversion, temp, nettype, qsignal, sd, mp3, fm, gsm, nullv, basestation, createtime, remark, transmitpower, reflectedpower, workvoltage, rds, fmfrequency,updatetime,lastaccesstime from ter_conditions
+    </sql>
+	
+    <select id="selectConditionsList" parameterType="com.sixin.broad.domain.Conditions" resultMap="ConditionsResult">
+        <include refid="selectConditionsVo"/>
+        <where>  
+            <if test="tid != null  and tid != '' "> and tid like '%${tid}%'</if>
+             <if test="hversion != null  and hversion != '' "> and hversion like '%${hversion}%'</if>
+             <if test="sversion != null  and sversion != '' "> and sversion like '%${sversion}%'</if>
+             <if test="temp != null  and temp != '' "> and temp like '%${temp}%'</if>
+             <if test="nettype != null  and nettype != '' "> and nettype like '%${nettype}%'</if>
+             <if test="qsignal != null  and qsignal != '' "> and qsignal like '%${qsignal}%'</if>
+             <if test="sd != null  and sd != '' "> and sd like '%${sd}%'</if>
+             <if test="mp3 != null  and mp3 != '' "> and mp3 like '%${mp3}%'</if>
+             <if test="fm != null  and fm != '' "> and fm like '%${fm}%'</if>
+             <if test="gsm != null  and gsm != '' "> and gsm like '%${gsm}%'</if>
+             <if test="nullv != null  and nullv != '' "> and nullv like '%${nullv}%'</if>
+             <if test="basestation != null  and basestation != '' "> and basestation like '%${basestation}%'</if>
+             <if test="createtime != null  and createtime != '' "> and createtime like '%${createtime}%'</if>
+             <if test="remark != null  and remark != '' "> and remark like '%${remark}%'</if>
+             <if test="transmitpower != null "> and transmitpower like '%${transmitpower}%'</if>
+             <if test="reflectedpower != null "> and reflectedpower like '%${reflectedpower}%'</if>
+             <if test="workvoltage != null "> and workvoltage like '%${workvoltage}%'</if>
+             <if test="rds != null  and rds != '' "> and rds like '%${rds}%'</if>
+             <if test="fmfrequency != null  and fmfrequency != '' "> and fmfrequency like '%${fmfrequency}%'</if>
+         </where>
+        ORDER BY createtime DESC
+    </select>
+    
+    <select id="selectConditionsById" parameterType="String" resultMap="ConditionsResult">
+        <include refid="selectConditionsVo"/>
+        where tid = #{tid}
+    </select>
+
+    <select id="selectConditionsByRandom" resultMap="ConditionsResult">
+        <include refid="selectConditionsVo"/>
+        ORDER BY  RAND() LIMIT 100
+    </select>
+
+        
+    <insert id="insertConditions" parameterType="com.sixin.broad.domain.Conditions">
+        insert into ter_conditions
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="tid != null  and tid != ''  ">tid,</if>
+			<if test="hversion != null  and hversion != ''  ">hversion,</if>
+			<if test="sversion != null  and sversion != ''  ">sversion,</if>
+			<if test="temp != null  and temp != ''  ">temp,</if>
+			<if test="nettype != null  and nettype != ''  ">nettype,</if>
+			<if test="qsignal != null  and qsignal != ''  ">qsignal,</if>
+			<if test="sd != null  and sd != ''  ">sd,</if>
+			<if test="mp3 != null  and mp3 != ''  ">mp3,</if>
+			<if test="fm != null  and fm != ''  ">fm,</if>
+			<if test="gsm != null  and gsm != ''  ">gsm,</if>
+			<if test="nullv != null  and nullv != ''  ">nullv,</if>
+			<if test="basestation != null  and basestation != ''  ">basestation,</if>
+			<if test="createtime != null  and createtime != ''  ">createtime,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="transmitpower != null  ">transmitpower,</if>
+			<if test="reflectedpower != null  ">reflectedpower,</if>
+			<if test="workvoltage != null  ">workvoltage,</if>
+			<if test="rds != null  and rds != ''  ">rds,</if>
+			<if test="fmfrequency != null  and fmfrequency != ''  ">fmfrequency,</if>
+			<if test="updatetime != null  and updatetime != ''  ">updatetime,</if>
+			<if test="lastaccesstime != null  and lastaccesstime != ''  ">lastaccesstime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="tid != null  and tid != ''  ">#{tid},</if>
+			<if test="hversion != null  and hversion != ''  ">#{hversion},</if>
+			<if test="sversion != null  and sversion != ''  ">#{sversion},</if>
+			<if test="temp != null  and temp != ''  ">#{temp},</if>
+			<if test="nettype != null  and nettype != ''  ">#{nettype},</if>
+			<if test="qsignal != null  and qsignal != ''  ">#{qsignal},</if>
+			<if test="sd != null  and sd != ''  ">#{sd},</if>
+			<if test="mp3 != null  and mp3 != ''  ">#{mp3},</if>
+			<if test="fm != null  and fm != ''  ">#{fm},</if>
+			<if test="gsm != null  and gsm != ''  ">#{gsm},</if>
+			<if test="nullv != null  and nullv != ''  ">#{nullv},</if>
+			<if test="basestation != null  and basestation != ''  ">#{basestation},</if>
+			<if test="createtime != null  and createtime != ''  ">#{createtime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="transmitpower != null  ">#{transmitpower},</if>
+			<if test="reflectedpower != null  ">#{reflectedpower},</if>
+			<if test="workvoltage != null  ">#{workvoltage},</if>
+			<if test="rds != null  and rds != ''  ">#{rds},</if>
+			<if test="fmfrequency != null  and fmfrequency != ''  ">#{fmfrequency},</if>
+			<if test="updatetime != null  and updatetime != ''  ">#{updatetime},</if>
+			<if test="lastaccesstime != null  and lastaccesstime != ''  ">#{lastaccesstime},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateConditions" parameterType="com.sixin.broad.domain.Conditions">
+        update ter_conditions
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hversion != null  and hversion != ''  ">hversion = #{hversion},</if>
+            <if test="sversion != null  and sversion != ''  ">sversion = #{sversion},</if>
+            <if test="temp != null  and temp != ''  ">temp = #{temp},</if>
+            <if test="nettype != null  and nettype != ''  ">nettype = #{nettype},</if>
+            <if test="qsignal != null  and qsignal != ''  ">qsignal = #{qsignal},</if>
+            <if test="sd != null  and sd != ''  ">sd = #{sd},</if>
+            <if test="mp3 != null  and mp3 != ''  ">mp3 = #{mp3},</if>
+            <if test="fm != null  and fm != ''  ">fm = #{fm},</if>
+            <if test="gsm != null  and gsm != ''  ">gsm = #{gsm},</if>
+            <if test="nullv != null  and nullv != ''  ">nullv = #{nullv},</if>
+            <if test="basestation != null  and basestation != ''  ">basestation = #{basestation},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="transmitpower != null  ">transmitpower = #{transmitpower},</if>
+            <if test="reflectedpower != null  ">reflectedpower = #{reflectedpower},</if>
+            <if test="workvoltage != null  ">workvoltage = #{workvoltage},</if>
+            <if test="rds != null  and rds != ''  ">rds = #{rds},</if>
+            <if test="fmfrequency != null  and fmfrequency != ''  ">fmfrequency = #{fmfrequency},</if>
+            <if test="updatetime != null  and updatetime != ''  ">updatetime = #{updatetime},</if>
+            <if test="lastaccesstime != null  and lastaccesstime != ''  ">lastaccesstime = #{lastaccesstime},</if>
+        </trim>
+        where tid = #{tid}
+    </update>
+
+	<delete id="deleteConditionsById" parameterType="String">
+        delete from ter_conditions where tid = #{tid}
+    </delete>
+	
+    <delete id="deleteConditionsByIds" parameterType="String">
+        delete from ter_conditions where tid in 
+        <foreach item="tid" collection="array" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </delete>
+    
+</mapper>

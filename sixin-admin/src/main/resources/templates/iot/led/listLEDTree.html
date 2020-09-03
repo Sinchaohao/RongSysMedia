@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <form id="user-form">
+                <input type="hidden" id="aid" name="aid">
+            </form>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "iot/led";
+
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/listLED",
+            modalName: "终端管理",
+            search: false,
+            columns: [
+                {
+                    checkbox: true
+                },
+                {
+                    field: 'led_id',
+                    title: 'LED显示编号',
+                    sortable: true
+                },
+                {
+                    field: 'uid',
+                    title: '用户编号',
+                    sortable: true
+                },
+                {
+                    field: 'tid',
+                    title: '终端号',
+                    sortable: true
+                },
+                {
+                    field: 'content',
+                    title: 'LED显示信息文字',
+                },
+                {
+                    field: 'stardate',
+                    title: '开始显示时间',
+                    sortable: true
+                },
+                {
+                    field: 'enddate',
+                    title: '显示结束时间',
+                    sortable: true
+                },
+                {
+                    field: 'createtime',
+                    title: '创建时间',
+                    sortable: true
+                },
+                {
+                    field: 'effect',
+                    title: '特效',
+                },
+                {
+                    field: 'color',
+                    title: '颜色',
+                },
+                {
+                    field: 'demo',
+                    title: '备注',
+                },
+                {
+                    field: 'remark',
+                    title: '是否有效',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(datas, value);
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + openFlag + '" href="#" onclick="href=\'/iot/led/open\'"><i class="fa fa-edit"></i>开灯</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + closeFlag + '" href="#" onclick="href=\'/iot/led/close\'"><i class="fa fa-remove"></i>关灯</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.led_id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.led_id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                },
+                {
+                    field: 'aname',
+                    title: '地区',
+                }
+            ]
+        };
+        $.table.init(options);
+    };
+
+    function queryAreaTree()
+    {
+        var url = ctx + "iot/led/listLEDTree";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#aid").val(treeNode.id);
+            /*$("#tid").val(treeNode.pId);*/
+            $.table.search();
+        }
+    }
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+</script>
+</body>
+</html>

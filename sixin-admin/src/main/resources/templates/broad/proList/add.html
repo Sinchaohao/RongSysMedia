@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-proList-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">操作记录：</label>
+				<div class="col-sm-8">
+					<input id="ptp" name="ptp" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">节目文件：</label>
+				<div class="col-sm-8">
+					<input id="fN" name="fN" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">文件编号：</label>
+				<div class="col-sm-8">
+					<input id="fid" name="fid" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">播放时间：</label>
+				<div class="col-sm-8">
+					<input id="bt" name="bt" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">播放时长</label>
+				<div class="col-sm-8">
+					<input id="broadtime" name="broadtime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "broad/proList"
+		$("#form-proList-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+
+                var ptp = $("#ptp").val();
+                var fN = $("#fN").val();
+                var fid = $("#fid").val();
+                var bt = $("#bt").val();
+                var broadtime = $("#broadtime").val();
+                var remark = $("#remark").val();
+
+                var info = {
+                    "ptp": ptp,
+                    "fN": fN,
+                    "fid": fid,
+                    "bt": bt,
+                    "broadtime": broadtime,
+                    "remark" : remark
+                }
+
+                $.operate.save(prefix + "/add", info);
+	        }
+	    }
+	</script>
+<script th:
+</body>
+</html>

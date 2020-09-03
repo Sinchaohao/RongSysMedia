@@ -1,0 +1,337 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="multipart/form-data;charset=utf-8" />
+<link th:href="@{/css/plugins/dropzone/basic.css}" rel="stylesheet">
+<link th:href="@{/css/plugins/dropzone/dropzone.css}" rel="stylesheet">
+
+<!--①注意head是否有样式冲突，引入需要的css文件-->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-filemanager-add" enctype="multipart/form-data" th:action="@{add}" method="post">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">项目名称：</label>
+			<div class="col-sm-8">
+				<input id="proname" name="proname" class="form-control" type="text" placeholder="请输入项目名称">
+			</div>
+		</div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">选择用户：</label>
+            <div class="col-sm-8">
+            <input class="form-control" type="text" name="organName" onclick="selectOrganTree()" readonly="true" id="treeName" placeholder="点击选择工作用户">
+        </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">工作用户：</label>
+            <div class="col-sm-8">
+                <input class="form-control" id="wpeoplename" name="wpeoplename" type="text" readonly="true" >
+                <input class="form-control" id="wpeopleid"  name="wpeopleid"  type="hidden"  readonly="true">
+            </div>
+        </div>
+
+        <div class="form-group">
+			<label class="col-sm-3 control-label">项目上传：</label>
+			<div class="col-sm-8">
+				<!--<input id="files" name="files" class="form-control" type="file" multiple>-->
+				<input id="files" name="files" class="form-control" type="file">
+			</div>
+		</div>
+		<!--<input class="form-control" id="filesnum"  name="filesnum"  type="hidden"  readonly="true">-->
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">项目类别：</label>
+			<div class="col-sm-8">
+				<select class="form-control" placeholder="请选择类别" name="protype">
+					<option value="新建项目">新建项目</option>
+					<option value="扩建项目">扩建项目</option>
+					<option value="改建项目">改建项目</option>
+					<option value="迁建项目">迁建项目</option>
+					<option value="恢复项目">恢复项目</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">投资金额：</label>
+			<div class="col-sm-8">
+				<input id="money" name="money" class="form-control" type="text" placeholder="请输入投资金额，单位（万元）">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">开支明细：</label>
+			<div class="col-sm-8">
+				<!--<input id="moneynote" name="moneynote" class="form-control" type="text" placeholder="请输入开支明细">-->
+				<textarea id="moneynote" name="moneynote" placeholder="请输入开支明细" autofocus></textarea>
+			</div>
+		</div>
+		<!--<div class="form-group">
+			<label class="col-sm-3 control-label">项目内容：</label>
+			<div class="col-sm-8">
+				<input id="content" name="content" class="form-control" type="text" >
+			</div>
+		</div>-->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">项目内容：</label>
+			<div class="col-sm-8">
+				<textarea id="content" name="content" placeholder="这里输入内容" autofocus></textarea>
+				<!--②使用textare去作为文本输入框-->
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">项目地址：</label>
+			<div class="col-sm-8">
+				<input id="address" name="address" class="form-control" type="text" placeholder="请输入项目地址">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">项目主管：</label>
+			<div class="col-sm-8">
+				<input id="fname" name="fname" th:value="${fname}" class="form-control" type="text" placeholder="请输入项目负责人">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">主管手机：</label>
+			<div class="col-sm-8">
+				<input id="fphone" name="fphone" th:value="${fphone}" class="form-control" type="text" placeholder="请输入负责人手机号">
+			</div>
+		</div>
+		<!--<div class="form-group">-->
+		<!--<label class="col-sm-3 control-label">项目发布日期：</label>-->
+		<!--<div class="col-sm-8">-->
+		<!--<input id="pushdate" name="pushdate" class="form-control" type="text">-->
+		<!--</div>-->
+		<!--</div>-->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否有效：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="remark" name="remark"  type="text">
+					<option value=1>是</option>
+					<option value=0>否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">项目状态：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="ptype" name="ptype"  type="text">
+					<option value=1>在建</option>
+					<option value=0>未建</option>
+					<option value=2>已建</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">发布人姓名：</label>
+			<div class="col-sm-8">
+				<input id="uname" name="uname" th:value="${uname}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">区域编号：</label>
+			<div class="col-sm-8">
+				<input id="aid" name="aid" th:value="${aid}" class="form-control" type="text" hidden readonly>
+			</div>
+		</div>
+		<!--因为文件上传功能隐藏的bug，故这文件时长、大小两个字段不能删掉-->
+		<input id="flenth" name="flenth" class="form-control" type="hidden" readonly value="">
+		<input id="fsize" name="fsize" class="form-control" type="hidden"  readonly value="">
+		<input id="uid" name="uid" th:value="${uid}" class="form-control" type="hidden"  readonly value="">
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<!--③引入需要的js文件-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+
+<script type="text/javascript">
+	var prefix = ctx + "village/project"
+
+	/*var Upload=document.getElementById("files");
+	//var formData=new FormData(); //通过FormData对象可以组装一组用 [XMLHttpRequest]发送请求的键/值对,它可以更灵活方便的发送表单数据。
+	Upload.onchange=function(){  //onchange在你选择完文件时触发
+		var fileList=Upload.files ; //通过input的files属性获得fileList
+		var filesnum = fileList.length;//获得文件数量
+		$("#filesnum").val(filesnum);//用于传至后台进行处理
+		for(let i=0;i<filesnum;i++)
+		{
+			var file=fileList[i];
+			//formData.append("file"+i,file);  //key:"file"+i,value:file,然后就可以把formData post到后台了
+			console.log(file.name+file.lastModifiedDate);
+		}
+	}*/
+
+	// 检测是否选择文件，如果选择，返回文件对象;如果没选择，返回false
+	function checkFile(){
+		// 获取文件对象(该对象的类型是[object FileList]，其下有个length属性)
+		var fileList = $('#files')[0].files;
+
+		// 如果文件对象的length属性为0，就是没文件
+		if (fileList.length === 0) {
+			console.log('没选择文件');
+			return false;
+		};
+		return fileList[0];
+	};
+	function aa(){
+		let  file = checkFile();
+		let size = file.size;
+		console.log("文件大小",size);
+		//获取录音时长
+		let url = URL.createObjectURL(file);
+		let audioElement = new Audio(url);
+		let duration = audioElement.duration/60; //音频长度 视频不行
+		$("#flenth").attr("value",duration);
+		$("#fsize").attr("value",size);
+		console.log(duration,size)
+	};
+	function submitHandler() {
+		if (!checkFile()) {
+			alert('请先选择文件');
+			return false;
+		}
+		else {
+			aa();
+			$.modal.loading("正在上传中，请稍后...");
+			/** 验证文件是否导入成功  */
+			$("#form-filemanager-add").ajaxSubmit(function (data) {
+				$.operate.successCallback({"code": data.code, "msg": data.msg});
+			});
+			return false;
+		}
+	}
+	function sleep(numberMillis) {
+		var now = new Date();
+		var exitTime = now.getTime() + numberMillis;
+		while (true) {
+			now = new Date();
+			if (now.getTime() > exitTime)
+				return;
+		}
+	}
+
+	$().ready(function() {
+// 在键盘按下并释放及提交后验证提交表单
+		$("#form-filemanager-add").validate({
+			rules: {
+				proname: {
+					required: true,
+					minlength: 2
+				},
+				fphone: {
+					required: true,
+					minlength: 11
+				},
+				money: {
+					required: true,
+					minlength: 1
+				},
+				moneynote: {
+					required: true,
+					minlength: 2
+				},
+				address: {
+					required: true,
+					minlength: 5
+				},
+				fname: {
+					required: true,
+					minlength: 2
+				}
+			},
+			messages: {
+				proname: {
+					required: "请输入项目名称",
+					minlength: "项目名称不能小于2个字符"
+				},
+				fphone: {
+					required: "请输入手机号码",
+					minlength: "号码长度不能小于11位"
+				},
+				money: {
+					required: "请输入投资金额,单位（万元）",
+					minlength: "投资金额不能小于1个字符"
+				},
+				moneynote: {
+					required: "请输入开支明细",
+					minlength: "开支明细不能小于2个字符"
+				},
+				address: {
+					required: "请输入项目地址",
+					minlength: "项目地址不能小于5个字符"
+				},
+				fname: {
+					required: "请输入负责人姓名",
+					minlength: "负责人姓名不能小于2个字符"
+				}
+			}
+		})
+	});
+</script>
+
+<script>
+	$(document).ready(function(){var editor = new Simditor({placeholder: "输入开支明细", toolbar: ['title', 'bold', 'underline', 'color', '|', 'ol', 'ul', 'table'], textarea: '#moneynote',});Dropzone.options.myAwesomeDropzone={autoProcessQueue:false,uploadMultiple:true,parallelUploads:100,maxFiles:100,init:function(){var myDropzone=this;this.element.querySelector("button[type=submit]").addEventListener("click",function(e){e.preventDefault();e.stopPropagation();myDropzone.processQueue()});this.on("sendingmultiple",function(){});this.on("successmultiple",function(files,response){});this.on("errormultiple",function(files,response){})}}});
+</script>
+<script>
+	var editor2 = new Simditor({placeholder: "输入项目内容", toolbar: ['title', 'bold', 'underline', 'color', '|', 'ol', 'ul', 'table'], textarea: '#content',});
+</script>
+
+<script th:src="@{/js/plugins/dropzone/dropzone.js}"></script>
+<script th:src="@{/js/jquery-form.js}"></script>
+<script>
+	/*选择部门用户树*/
+	function selectOrganTree() {
+		$('#imea').html('');
+		var _url = "/village/project/selectDeptTree/0";
+		var _title = '选择部门';
+		var _width = "800";
+		var _height = ($(window).height() - 50);
+		layer.open({
+			type: 2,
+			maxmin: true,
+			shade: 0.3,
+			title: _title,
+			fix: false,
+			area: [_width + 'px', _height + 'px'],
+			content: _url,
+			shadeClose: true,
+			btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			yes: function (index, layero) {
+				doSubmit(index, layero)
+			}, cancel: function () {
+				return true;
+			}
+		});
+	}
+
+	function doSubmit(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		var body = layer.getChildFrame('body', index);
+		$("#treeId").val(body.find('#treeId').val());
+		$("#treeName").val(body.find('#treeName').val());
+		layer.close(index);
+	}
+
+	/*供子页面listProBroa调用的方法*/
+    function ccc(userid,username){
+    	var userid2 = userid + document.getElementById("uid").value + ",";
+        $("#wpeopleid").val(userid2);
+        $("#wpeoplename").val(username);
+        console.log("add页面采集到的userid:" + userid2);
+        console.log("add页面采集到的username:" + username);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<script>
+    function search(){
+        window.location.href = "/analysis";
+    }
+</script>
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main" style="width: 3000px">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 终端列表
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;">
+                        <i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠">
+                        <i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新">
+                        <i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree" ></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <input type="text" name="deptid" th:type="hidden" id="deptid" style="width: 100px"/>
+                        </li>
+                        <li class="form-group" style="display: inline-flex">
+                            <select class="form-control noselect2 selectpicker" id="form-group11" style="width: 120px;padding: 0">
+                                <option value="cid">存放编号</option>
+                                <option value="vdata">数据值</option>
+                                <option value="collip">采集IP</option>
+                                <option value="uid">录入人编号</option>
+                                <option value="vunit">数据单位</option>
+                                <option value="deptid">存放位置编号</option>
+                            </select>
+                            <input type="text" name="cid" id="form-group1" style="width: 100px"/>
+                        </li>
+
+                        <li class="form-group" style="display: inline-flex">
+                            <select class="form-control noselect2 selectpicker" id="form-group22" style="width: 120px;padding: 0">
+                                <option value="vunit">数据单位</option>
+                                <option value="vdata">数据值</option>
+                                <option value="collip">采集IP</option>
+                                <option value="uid">录入人编号</option>
+                                <option value="cid">存放编号</option>
+                                <option value="deptid">存放位置编号</option>
+                            </select>
+                            <input type="text" name="vunit" id="form-group2" style="width: 100px"/>
+                        </li>
+
+                        <li>
+                            是否有效：<select name="delflag">
+                            <option value=""></option>
+                            <option value="">所有</option>
+                            <option value="0">无效</option>
+                            <option value="1">有效</option>
+                        </select>
+                        </li>
+                        <li>
+                            数据状态：<select name="status">
+                            <option value=""></option>
+                            <option value="">所有</option>
+                            <option value="1">正常</option>
+                            <option value="0">停用</option>
+                        </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="iot:fireinfo:add">
+                <i class="fa fa-plus"></i> 新增
+            </a>
+            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="iot:fireinfo:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="iot:fireinfo:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning btn-del btn-del disabled" onclick="exportExcel()">
+                <i class="fa fa-export"></i> 选择导出
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="iot:fireinfo:export">
+                <i class="fa fa-export"></i> 全部导出
+            </a>
+            <a class="btn btn-info" onclick="importExcel()" shiro:hasPermission="iot:fireinfo:import">
+                <i class="fa fa-upload"></i> 导入
+            </a>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('iot:fireinfo:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('iot:fireinfo:remove')}]];
+    var prefix = ctx + "iot/fire";
+
+    $(function() {
+        var panehHidden = false;
+        if ($(this).width() < 769) {
+            panehHidden = true;
+        }
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            exportBySingleUrl: prefix + "/exportbysingle",
+            importUrl: prefix + "/importData",       //analysisUrl:prefix + "/analysis",
+            importTemplateUrl: prefix + "/importTemplate",
+            sortName: "id",
+            modalName: "火灾探头",
+            search: false,
+            pageList:[10,20,50,100,200],
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '序号'
+                },
+                {
+                    field: 'cid',
+                    title: 'IMEI号',
+                    sortable: true
+                },
+                {
+                    field: 'ctype',
+                    title: '类型',
+                    sortable: true
+                },
+                {
+                    field: 'deptid',
+                    title: '存放位置编号',
+                    sortable: true
+                },
+                {
+                    field: 'vdata',
+                    title: '测试数据',
+                    sortable: true
+                },
+                {
+                    field: 'vunit',
+                    title: '测试单位',
+                    sortable: true
+                },
+                {
+                    field: 'collip',
+                    title: ' 采集IP',
+                    sortable: true
+                },
+                {
+                    field: 'colldate',
+                    title: ' 采集时间',
+                    sortable: true
+                },
+                {
+                    field: 'startdate',
+                    title: '安装时间',
+                    sortable: true
+                },
+                {
+                    field: 'exdate',
+                    title: '更换时间',
+                    sortable: true
+                },
+                {
+                    field: 'user_name',
+                    title: '录入人姓名',
+                    sortable: true
+                },
+                {
+                    visible: editFlag == 'hidden' ? false : true,
+                    title: '数据状态',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        return statusTools(row);
+                    }
+                },
+                {
+                    field: 'delflag',
+                    title: '是否有效',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        if(value == 1)
+                            return "是";
+                        else
+                            return "否";
+                    }
+                },
+                {
+                    field: 'demo',
+                    title: '备注',
+                    sortable: true
+                },
+
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+
+        };
+        $.table.init(options);
+    };
+    function queryAreaTree(){
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            expandLevel: 2,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#deptid").val(treeNode.id);
+            //$("#parentId").val(treeNode.pId);
+            $.table.search();
+        }
+        $.tree.init(options);
+    }
+
+    function statusTools(row) {
+        if (row.status == 1) {
+            return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+        } else {
+            return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+        }
+    }
+    /* 数据管理-停用 */
+    function disable(id) {
+        $.modal.confirm("确认关闭状态吗？", function() {
+            $.operate.post(prefix + "/changeStatus", { "id": id, "status": 0 });
+        })
+    }
+
+    /* 数据管理启用 */
+    function enable(id) {
+        $.modal.confirm("确认开启状态吗？", function() {
+            $.operate.post(prefix + "/changeStatus", { "id": id, "status": 1 });
+        })
+    }
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function() {
+        queryAreaTree();
+    });
+
+
+
+
+    $('#form-group11').on('change', function (e) {
+        $("#form-group1").attr("name",$("#form-group11").val())
+    });
+    $('#form-group22').on('change', function (e) {
+        $("#form-group2").attr("name",$("#form-group22").val())
+    });
+    $('#form-group33').on('select2:select', function (e) {
+        $("#form-group3").attr("name",$("#form-group33").val())
+    });
+    $('#form-group44').on('change', function (e) {
+        $("#form-group4").attr("value",$("#form-group44").val());
+    });
+
+</script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/plugins/layer/layui-v2.4.5/layui/layui.js"></script>
+<!--时间插件-->
+<script>
+    laydate({
+        elem:"#colldate",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#fire",
+            type: 'time',
+        });
+    });
+</script>
+</body>
+<script>
+    //批量导出
+    function exportExcel() {
+
+        var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+        var sjids = rows.toString();
+        $.modal.loading("正在导出数据，请稍后...");
+        $.post($.table._option.exportBySingleUrl, {"sjids": sjids}, function (result) {
+            if (result.code == web_status.SUCCESS) {
+                window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+            } else if (result.code == web_status.WARNING) {
+                $.modal.alertWarning(result.msg)
+            } else {
+                $.modal.alertError(result.msg);
+            }
+            $.modal.closeLoading();
+        });
+
+    }
+</script>
+<!-- 导入区域 -->
+<script id="importTpl" type="text/template">
+    <form enctype="multipart/form-data" class="mt20 mb10">
+        <div class="col-xs-offset-1">
+            <input type="file" id="file" name="file"/>
+            <div class="mt10 pt5">
+                <input type="checkbox" id="updateSupport" name="updateSupport" title="如果登录账户已经存在，更新这条数据。"> 是否更新已经存在的用户数据
+                &nbsp;	<a onclick="$.table.importTemplate()" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> 下载模板</a>
+            </div>
+            <font color="red" class="pull-left mt10">
+                提示：仅允许导入“xls”或“xlsx”格式文件！
+            </font>
+        </div>
+    </form>
+</script>
+<script>
+    // 导入数据
+    function importExcel(formId){
+        var currentId = $.common.isEmpty(formId) ? 'importTpl' : formId;
+        layer.open({
+            type: 1,
+            area: ['400px', '230px'],
+            fix: false,
+            //不固定
+            maxmin: true,
+            shade: 0.3,
+            title: '导入' + $.table._option.modalName + '数据',
+            content: $('#' + currentId).html(),
+            btn: ['<i class="fa fa-check"></i> 导入', '<i class="fa fa-remove"></i> 取消'],
+            // 弹层外区域关闭
+            shadeClose: true,
+            btn1: function(index, layero){
+                var file = layero.find('#file').val();
+                if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx'))){
+                    $.modal.msgWarning("请选择后缀为 “xls”或“xlsx”的文件。");
+                    return false;
+                }
+                var index = layer.load(2, {shade: false});
+                //$.modal.disable();
+                // 禁用按钮
+                function disable() {
+                    var doc = window.top == window.parent ? window.document : window.parent.document;
+                    $("a[class*=layui-layer-btn]", doc).addClass("layer-disabled");
+                };
+                var formData = new FormData();
+                formData.append("file", $('#file')[0].files[0]);
+                formData.append("updateSupport", $("input[name='updateSupport']").is(':checked'));
+                $.ajax({
+                    url: $.table._option.importUrl,
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    type: 'POST',
+                    success: function (result) {
+                        if (result.code == web_status.SUCCESS) {
+                            // 关闭全部窗体
+                            layer.closeAll();
+                            // 成功提示
+                            function alertSuccess(content) {
+                                // 弹出提示
+                                layer.alert(content, {
+                                    icon: $.modal.icon("success"),
+                                    title: "系统提示",
+                                    btn: ['确认'],
+                                    btnclass: ['btn btn-primary'],
+                                });
+                            }
+                            $.table.refresh();
+                        } else if (result.code == web_status.WARNING) {
+                            layer.closeAll();
+                            // 启用按钮
+                            function enable() {
+                                var doc = window.top == window.parent ? window.document : window.parent.document;
+                                $("a[class*=layui-layer-btn]", doc).removeClass("layer-disabled");
+                            }
+                            // 成功提示
+                            function alertSuccess(content) {
+                                // 弹出提示
+                                layer.alert(content, {
+                                    icon: $.modal.icon("success"),
+                                    title: "系统提示",
+                                    btn: ['确认'],
+                                    btnclass: ['btn btn-primary'],
+                                });
+                            }
+                            $.modal.alert("warning");
+                        } else {
+                            layer.closeAll();
+                            function enable() {
+                                var doc = window.top == window.parent ? window.document : window.parent.document;
+                                $("a[class*=layui-layer-btn]", doc).removeClass("layer-disabled");
+                            }
+                            // 错误提示
+                            function alertError(content) {
+                                // 弹出提示
+                                layer.alert(content, {
+                                    icon: $.modal.icon("fail"),
+                                    title: "系统提示",
+                                    btn: ['确认'],
+                                    btnclass: ['btn btn-primary'],
+                                });
+                            }
+                            $.modal.alert("操作失败，插入数据与现有数据重复");
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+
+</html>

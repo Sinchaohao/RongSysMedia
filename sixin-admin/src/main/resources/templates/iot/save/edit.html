@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-save-edit" th:object="${save}">
+        <input id="id" name="id" type="hidden" th:field="*{id}"/>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">安防类型：</label>
+            <div class="col-sm-8">
+                <select id="stype" name="stype" class="form-control m-b" th:field="*{stype}">
+                    <option th:each="list:${securitype}" th:value="${list.name}" th:text="${list.name}">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">存放地址编号：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" id="treeId" onclick="selectDeptTree()" readonly="true" th:field="*{dept_id}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">设备编号：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="sno" id="sno" th:field="*{sno}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">产品型号名称：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="sname" id="sname" th:field="*{sname}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">生产企业：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="producer" id="producer" th:field="*{producer}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">生产时间：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="datetime-local" name="prodtime" id="prodtime" th:field="*{prodtime}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">采购单格：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="price" id="price" th:field="*{price}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">有效时间：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="datetime-local" name="endtime" id="endtime" th:field="*{endtime}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">安装时间：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="datetime-local" name="installtime" id="installtime" th:field="*{installtime}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">安装人员：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="installer" id="installer" th:field="*{installer}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">备注：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="demo" id="demo" th:field="*{demo}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">设备状态：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="delflag" id="delflag" th:field="*{delflag}">
+            </div>
+        </div>
+
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "iot/save";
+    var prefix1 = ctx + "system/dept";
+    $("#form-save-edit").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-save-edit').serialize());
+        }
+    }
+
+    /*部门管理-修改-选择部门树*/
+    function selectDeptTree() {
+
+        var url=prefix1 + "/selectDeptTree/"
+        var options = {
+            title: '部门选择',
+            width: "380",
+            url:prefix1 + "/selectDeptTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+
+    }
+
+    function doSubmit(index, layero){
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            layer.close(index);
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-personalDetail-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地域编号：</label>
+				<div class="col-sm-8">
+					<input id="aid" name="aid" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">村民姓名：</label>
+				<div class="col-sm-8">
+					<input id="vname" name="vname" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">个人照片编号：</label>
+				<div class="col-sm-8">
+					<input id="personpic" name="personpic" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">身份证号码：</label>
+				<div class="col-sm-8">
+					<input id="idcard" name="idcard" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">身份证照片地址：</label>
+				<div class="col-sm-8">
+					<input id="idcardpic" name="idcardpic" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车牌号：</label>
+				<div class="col-sm-8">
+					<input id="carnum" name="carnum" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">车辆照片地址：</label>
+				<div class="col-sm-8">
+					<input id="carpic" name="carpic" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "village/personalDetail"
+		$("#form-personalDetail-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-personalDetail-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

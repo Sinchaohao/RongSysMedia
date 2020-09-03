@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-12 search-collapse">
+			<form id="formId">
+				<div class="select-list">
+					<ul>
+						<li>
+							标题：<input type="text" name="mtitle"/>
+						</li>
+
+						<!--<li>
+                            图片地址：<input type="text" name="mpic"/>
+                        </li>-->
+
+						<li>
+							内容：<input type="text" name="mcontent"/>
+						</li>
+
+						<li>
+							发布人：<input type="text" name="uname"/>
+						</li>
+
+						<li>
+							<input class="laydate-icon  layer-date"
+								   name="pushdate"
+								   id="pushdate"
+								   value=""
+								   readonly="readonly"
+								   style="width:150px;"
+								   placeholder="建立日期"
+								   title="建立日期"/>
+						</li>
+
+						<!--<li>
+                            阅读数：<input type="text" name="greadtotal"/>
+                        </li>
+-->
+						<li>
+							状态：<input list="mtype"  name="mtype"/>
+							<datalist id="mtype">
+								<option value=0>无效</option>
+								<option value=1>有效</option>
+							</datalist>
+						</li>
+
+						<!--<li>-->
+						<!--用户所属地区编号：<input type="text" name="aid"/>-->
+						<!--</li>-->
+
+						<li>
+							备注：<input type="text" name="note"/>
+						</li>
+
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:partyactive:add">-->
+			<!--<i class="fa fa-plus"></i> 添加-->
+			<!--</a>-->
+			<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="village:partyactive:edit">-->
+			<!--<i class="fa fa-edit"></i> 修改-->
+			<!--</a>-->
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:partyactive:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+			<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="village:partyactive:export">
+				<i class="fa fa-download"></i> 导出
+			</a>
+		</div>
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+	var editFlag = [[${@permission.hasPermi('village:partyactive:edit')}]];
+	var removeFlag = [[${@permission.hasPermi('village:partyactive:remove')}]];
+	var prefix = ctx + "village/partyactive";
+
+	$(function() {
+		var options = {
+			url: prefix + "/list",
+			createUrl: prefix + "/add",
+			updateUrl: prefix + "/edit/{id}",
+			removeUrl: prefix + "/remove",
+			exportUrl: prefix + "/export",
+			modalName: "党员活动",
+			search: false,
+			showExport: true,
+			columns: [{
+				checkbox: true
+			},
+				{
+					field : 'mid',
+					title : '数据编号',
+					visible: false
+				},
+				{
+					field : 'mtitle',
+					title : '标题',
+					sortable: true
+				},
+				{
+					field : 'mcontent',
+					title : '内容',
+					sortable: true
+				},
+				{
+					field : 'uname',
+					title : '发布人',
+					sortable: true
+				},
+				{
+					field : 'greadtotal',
+					title : '阅读数',
+					sortable: true
+				},
+				{
+					field : 'mtype',
+					title : '状态',
+					sortable: true,
+					formatter:function(value,row,index){
+						var html = "";
+						if(value == "0"){
+							html += "<label style='color: #ff5909'>无效</label>";
+							return html;
+						}else {
+							html += "<label>有效</label>";
+							return html;
+						}
+					}
+				},
+				{
+					field : 'note',
+					title : '备注',
+					sortable: true
+				},
+				{
+					field : 'pushdate',
+					title : '建立日期',
+					sortable: true
+				}]
+		};
+		$.table.init(options);
+	});
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+	laydate({
+		elem:"#pushdate",
+		event:"focus"
+	});
+	layui.use('laydate', function(){
+		var laydate = layui.laydate;
+		//执行一个laydate实例
+		laydate.render({
+			elem:"#village",
+			type: 'time',
+		});
+	});
+</script>
+</body>
+</html>

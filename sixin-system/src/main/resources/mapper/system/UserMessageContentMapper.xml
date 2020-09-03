@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.system.mapper.UserMessageContentMapper">
+    
+    <resultMap type="UserMessageContent" id="UserMessageContentResult">
+        <result property="id"    column="Id"    />
+        <result property="content"    column="content"    />
+        <result property="enable"    column="enable"    />
+    </resultMap>
+
+    <sql id="selectUserMessageContentVo">
+        select Id, content, enable from user_message_content
+    </sql>
+
+    <select id="selectUserMessageContentList" parameterType="UserMessageContent" resultMap="UserMessageContentResult">
+        <include refid="selectUserMessageContentVo"/>
+        <where>  
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="enable != null  and enable != ''"> and enable = #{enable}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserMessageContentById" parameterType="Long" resultMap="UserMessageContentResult">
+        <include refid="selectUserMessageContentVo"/>
+        where Id = #{id}
+    </select>
+        
+    <insert id="insertUserMessageContent" parameterType="UserMessageContent" useGeneratedKeys="true" keyProperty="id">
+        insert into user_message_content
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="content != null  and content != ''">content,</if>
+            <if test="enable != null  and enable != ''">enable,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="content != null  and content != ''">#{content},</if>
+            <if test="enable != null  and enable != ''">#{enable},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserMessageContent" parameterType="UserMessageContent">
+        update user_message_content
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="content != null  and content != ''">content = #{content},</if>
+            <if test="enable != null  and enable != ''">enable = #{enable},</if>
+        </trim>
+        where Id = #{id}
+    </update>
+
+    <delete id="deleteUserMessageContentById" parameterType="Long">
+        delete from user_message_content where Id = #{id}
+    </delete>
+
+    <delete id="deleteUserMessageContentByIds" parameterType="String">
+        delete from user_message_content where Id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

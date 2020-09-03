@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.AssetAssessmentMapper">
+    
+    <resultMap type="com.sixin.village.domain.AssetAssessment" id="AssetAssessmentResult">
+        <result property="aaid"    column="aaid"    />
+        <result property="aid"    column="aid"    />
+        <result property="grouptype"    column="grouptype"    />
+        <result property="constructionland"    column="constructionland"    />
+        <result property="imsland"    column="imsland"    />
+        <result property="businessland"    column="businessland"    />
+        <result property="homestead"    column="homestead"    />
+        <result property="publicland"    column="publicland"    />
+        <result property="twland"    column="twland"    />
+        <result property="otherland"    column="otherland"    />
+    </resultMap>
+	
+	<sql id="selectAssetAssessmentVo">
+        select aaid, aid, grouptype, constructionland, imsland, 
+        businessland, homestead, publicland, twland, otherland from asset_assessment
+    </sql>
+	
+    <select id="selectAssetAssessmentList" parameterType="com.sixin.village.domain.AssetAssessment" resultMap="AssetAssessmentResult">
+        <include refid="selectAssetAssessmentVo"/>
+        <where>  
+            <if test="aaid != null and aaid != '' "> and aaid = #{aaid}</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="grouptype != null  and grouptype != '' "> and grouptype = #{grouptype}</if>
+             <if test="constructionland != null  and constructionland != '' "> and constructionland = #{constructionland}</if>
+             <if test="imsland != null  and imsland != '' "> and imsland = #{imsland}</if>
+             <if test="businessland != null  and businessland != '' "> and businessland = #{businessland}</if>
+             <if test="homestead != null  and homestead != '' "> and homestead = #{homestead}</if>
+             <if test="publicland != null  and publicland != '' "> and publicland = #{publicland}</if>
+             <if test="twland != null  and twland != '' "> and twland = #{twland}</if>
+             <if test="otherland != null  and otherland != '' "> and otherland = #{otherland}</if>
+         </where>
+    </select>
+    
+    <select id="selectAssetAssessmentById" parameterType="Integer" resultMap="AssetAssessmentResult">
+        <include refid="selectAssetAssessmentVo"/>
+        where aaid = #{aaid}
+    </select>
+
+    <select id="selectAssetAssessmentByIds" parameterType="java.util.List" resultMap="AssetAssessmentResult">
+        <include refid="selectAssetAssessmentVo"/>
+        where aaid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+        
+    <insert id="insertAssetAssessment" parameterType="com.sixin.village.domain.AssetAssessment">
+        insert into asset_assessment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="aaid != null  ">aaid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="grouptype != null  and grouptype != ''  ">grouptype,</if>
+			<if test="constructionland != null  and constructionland != ''  ">constructionland,</if>
+			<if test="imsland != null  and imsland != ''  ">imsland,</if>
+			<if test="businessland != null  and businessland != ''  ">businessland,</if>
+			<if test="homestead != null  and homestead != ''  ">homestead,</if>
+			<if test="publicland != null  and publicland != ''  ">publicland,</if>
+			<if test="twland != null  and twland != ''  ">twland,</if>
+			<if test="otherland != null  and otherland != ''  ">otherland,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="aaid != null  ">#{aaid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="grouptype != null  and grouptype != ''  ">#{grouptype},</if>
+			<if test="constructionland != null  and constructionland != ''  ">#{constructionland},</if>
+			<if test="imsland != null  and imsland != ''  ">#{imsland},</if>
+			<if test="businessland != null  and businessland != ''  ">#{businessland},</if>
+			<if test="homestead != null  and homestead != ''  ">#{homestead},</if>
+			<if test="publicland != null  and publicland != ''  ">#{publicland},</if>
+			<if test="twland != null  and twland != ''  ">#{twland},</if>
+			<if test="otherland != null  and otherland != ''  ">#{otherland},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateAssetAssessment" parameterType="com.sixin.village.domain.AssetAssessment">
+        update asset_assessment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="grouptype != null  and grouptype != ''  ">grouptype = #{grouptype},</if>
+            <if test="constructionland != null  and constructionland != ''  ">constructionland = #{constructionland},</if>
+            <if test="imsland != null  and imsland != ''  ">imsland = #{imsland},</if>
+            <if test="businessland != null  and businessland != ''  ">businessland = #{businessland},</if>
+            <if test="homestead != null  and homestead != ''  ">homestead = #{homestead},</if>
+            <if test="publicland != null  and publicland != ''  ">publicland = #{publicland},</if>
+            <if test="twland != null  and twland != ''  ">twland = #{twland},</if>
+            <if test="otherland != null  and otherland != ''  ">otherland = #{otherland},</if>
+        </trim>
+        where aaid = #{aaid}
+    </update>
+
+	<delete id="deleteAssetAssessmentById" parameterType="Integer">
+        delete from asset_assessment where aaid = #{aaid}
+    </delete>
+	
+    <delete id="deleteAssetAssessmentByIds" parameterType="String">
+        delete from asset_assessment where aaid in 
+        <foreach item="aaid" collection="array" open="(" separator="," close=")">
+            #{aaid}
+        </foreach>
+    </delete>
+    
+</mapper>

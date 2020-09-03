@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ProreApplyMapper">
+
+    <resultMap type="com.sixin.broad.domain.ProreApply" id="ProreApplyResult">
+        <result property="paid"    column="paid"    />
+        <result property="pname"    column="pname"    />
+        <result property="userid"    column="userid"    />
+        <result property="requires"    column="requires"    />
+        <result property="isemergency"    column="isemergency"    />
+        <result property="timelimit"    column="timelimit"    />
+        <result property="filename"    column="filename"    />
+        <result property="fileurl"    column="fileurl"    />
+        <result property="submittime"    column="submittime"    />
+        <result property="iscancel"    column="iscancel"    />
+        <result property="isread"    column="isread"    />
+        <result property="isreply"    column="isreply"    />
+        <result property="replytime"    column="replytime"    />
+        <result property="replyperson"    column="replyperson"    />
+        <result property="replyprogramid"    column="replyprogramid"    />
+        <result property="islisten"    column="islisten"    />
+        <result property="nopassreason"    column="nopassreason"    />
+        <result property="listenpass"    column="listenpass"    />
+        <result property="nopasstimes"    column="nopasstimes"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.ProApplyUser" id="ProApplyUserResult">
+        <result property="requires"    column="requires"    />
+        <result property="paid"    column="paid"    />
+        <result property="pname"    column="pname"    />
+        <result property="uname"    column="uname"    />
+        <result property="isemergency"    column="isemergency"    />
+        <result property="timelimit"    column="timelimit"    />
+        <result property="submittime"    column="submittime"    />
+        <result property="iscancel"    column="iscancel"    />
+        <result property="isreply"    column="isreply"    />
+    </resultMap>
+
+    <sql id="selectProreApplyVo">
+        select paid, pname, userid, requires, isemergency, timelimit, filename, fileurl, submittime, iscancel, isread, isreply, replytime, replyperson, replyprogramid, islisten, nopassreason, listenpass, nopasstimes from prore_apply
+    </sql>
+
+    <sql id="selectProrApplyUserVo">
+        select paid, pname,userid,isemergency,timelimit,submittime,iscancel,isreply from prore_apply
+    </sql>
+
+    <select id="selectProreApplyList" parameterType="com.sixin.broad.domain.ProreApply" resultMap="ProreApplyResult">
+        <include refid="selectProreApplyVo"/>
+        <where>
+            <if test="paid != null "> and paid = #{paid}</if>
+            <if test="pname != null  and pname != '' "> and pname = #{pname}</if>
+            <if test="userid != null  and userid != '' "> and userid = #{userid}</if>
+            <if test="requires != null  and requires != '' "> and requires = #{requires}</if>
+            <if test="isemergency != null "> and isemergency = #{isemergency}</if>
+            <if test="timelimit != null  and timelimit != '' "> and timelimit = #{timelimit}</if>
+            <if test="filename != null  and filename != '' "> and filename = #{filename}</if>
+            <if test="fileurl != null  and fileurl != '' "> and fileurl = #{fileurl}</if>
+            <if test="submittime != null  and submittime != '' "> and submittime = #{submittime}</if>
+            <if test="iscancel != null "> and iscancel = #{iscancel}</if>
+            <if test="isread != null "> and isread = #{isread}</if>
+            <if test="isreply != null "> and isreply = #{isreply}</if>
+            <if test="replytime != null  and replytime != '' "> and replytime = #{replytime}</if>
+            <if test="replyperson != null  and replyperson != '' "> and replyperson = #{replyperson}</if>
+            <if test="replyprogramid != null "> and replyprogramid = #{replyprogramid}</if>
+            <if test="islisten != null "> and islisten = #{islisten}</if>
+            <if test="nopassreason != null  and nopassreason != '' "> and nopassreason = #{nopassreason}</if>
+            <if test="listenpass != null "> and listenpass = #{listenpass}</if>
+            <if test="nopasstimes != null "> and nopasstimes = #{nopasstimes}</if>
+        </where>
+        order by submittime desc
+    </select>
+
+    <select id="selectProrApplyUserList" parameterType="com.sixin.broad.domain.ProApplyUser" resultMap="ProApplyUserResult">
+        select
+        prore_apply.*,
+        `ry`.`sys_user`.user_name as uname,
+        `ry`.`sys_user`.user_id as userid
+        from
+        prore_apply,
+        `ry`.`sys_user`
+        <where>
+            prore_apply.userid = `ry`.`sys_user`.user_id
+            <if test="paid != null  and paid != '' ">and paid like CONCAT('%',#{paid},'%')</if>
+            <if test="pname != null  and pname != '' ">and pname like CONCAT('%',#{pname},'%')</if>
+            <if test="uname != null  and uname != '' ">and `ry`.`sys_user`.user_name like CONCAT('%',#{uname},'%')</if>
+            <if test="userid != null  and userid != '' ">and `ry`.`sys_user`.user_id like CONCAT('%',#{userid},'%')</if>
+            <if test="isemergency == 'true'">and isemergency = true</if>
+            <if test="isemergency == 'false'">and isemergency = false</if>
+            <if test="timelimit != null  and timelimit != '' ">and timelimit like CONCAT('%',#{timelimit},'%')</if>
+            <if test="submittime != null  and submittime != '' ">and submittime like CONCAT('%',#{submittime},'%')</if>
+            <if test="iscancel != null  and iscancel != '' ">and iscancel like CONCAT('%',#{iscancel},'%')</if>
+            <if test="isreply != null  and isreply != '' ">and isreply like CONCAT('%',#{isreply},'%')</if>
+        </where>
+        order by
+        submittime
+        desc
+    </select>
+
+
+    <select id="selectProreApplyById" parameterType="Integer" resultMap="ProreApplyResult">
+        <include refid="selectProreApplyVo"/>
+        where paid = #{paid}
+    </select>
+
+    <insert id="insertProreApply" parameterType="com.sixin.broad.domain.ProreApply">
+        insert into prore_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pname != null  and pname != ''  ">pname,</if>
+            <if test="userid != null  and userid != ''  ">userid,</if>
+            <if test="requires != null  and requires != ''  ">requires,</if>
+            <if test="isemergency != null  ">isemergency,</if>
+            <if test="timelimit != null  and timelimit != ''  ">timelimit,</if>
+            <if test="filename != null  and filename != ''  ">filename,</if>
+            <if test="fileurl != null  and fileurl != ''  ">fileurl,</if>
+            submittime,
+            <if test="iscancel != null  ">iscancel,</if>
+            <if test="isread != null  ">isread,</if>
+            <if test="isreply != null  ">isreply,</if>
+            <if test="replytime != null  and replytime != ''  ">replytime,</if>
+            <if test="replyperson != null  and replyperson != ''  ">replyperson,</if>
+            <if test="replyprogramid != null  ">replyprogramid,</if>
+            <if test="islisten != null  ">islisten,</if>
+            <if test="nopassreason != null  and nopassreason != ''  ">nopassreason,</if>
+            <if test="listenpass != null  ">listenpass,</if>
+            <if test="nopasstimes != null  ">nopasstimes,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pname != null  and pname != ''  ">#{pname},</if>
+            <if test="userid != null  and userid != ''  ">#{userid},</if>
+            <if test="requires != null  and requires != ''  ">#{requires},</if>
+            <if test="isemergency == 'true'  ">true,</if>
+            <if test="isemergency == 'false'  ">false,</if>
+            <if test="timelimit != null  and timelimit != ''  ">#{timelimit},</if>
+            <if test="filename != null  and filename != ''  ">#{filename},</if>
+            <if test="fileurl != null  and fileurl != ''  ">#{fileurl},</if>
+            NOW(),
+            <if test="iscancel != null  ">#{iscancel},</if>
+            <if test="isread != null  ">#{isread},</if>
+            <if test="isreply != null  ">#{isreply},</if>
+            <if test="replytime != null  and replytime != ''  ">#{replytime},</if>
+            <if test="replyperson != null  and replyperson != ''  ">#{replyperson},</if>
+            <if test="replyprogramid != null  ">#{replyprogramid},</if>
+            <if test="islisten != null  ">#{islisten},</if>
+            <if test="nopassreason != null  and nopassreason != ''  ">#{nopassreason},</if>
+            <if test="listenpass != null  ">#{listenpass},</if>
+            <if test="nopasstimes != null  ">#{nopasstimes},</if>
+        </trim>
+    </insert>
+
+    <update id="updateProreApply" parameterType="com.sixin.broad.domain.ProreApply">
+        update prore_apply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pname != null  and pname != ''  ">pname = #{pname},</if>
+            <if test="userid != null  and userid != ''  ">userid = #{userid},</if>
+            <if test="requires != null  and requires != ''  ">requires = #{requires},</if>
+            <if test="isemergency != null  ">isemergency = #{isemergency},</if>
+            <if test="timelimit != null  and timelimit != ''  ">timelimit = #{timelimit},</if>
+            <if test="filename != null  and filename != ''  ">filename = #{filename},</if>
+            <if test="fileurl != null  and fileurl != ''  ">fileurl = #{fileurl},</if>
+            <if test="submittime != null  and submittime != ''  ">submittime = #{submittime},</if>
+            <if test="iscancel != null  ">iscancel = #{iscancel},</if>
+            <if test="isread != null  ">isread = #{isread},</if>
+            <if test="isreply != null  ">isreply = #{isreply},</if>
+            replytime = now(),
+            <if test="replyperson != null  and replyperson != ''  ">replyperson = #{replyperson},</if>
+            <if test="replyprogramid != null  ">replyprogramid = #{replyprogramid},</if>
+            <if test="islisten != null  ">islisten = #{islisten},</if>
+            <if test="nopassreason != null  and nopassreason != ''  ">nopassreason = #{nopassreason},</if>
+            <if test="listenpass != null  ">listenpass = #{listenpass},</if>
+            <if test="nopasstimes != null  ">nopasstimes = #{nopasstimes},</if>
+        </trim>
+        where paid = #{paid}
+    </update>
+
+    <delete id="deleteProreApplyById" parameterType="Integer">
+        delete from prore_apply where paid = #{paid}
+    </delete>
+
+    <delete id="deleteProreApplyByIds" parameterType="String">
+        delete from prore_apply where paid in
+        <foreach item="paid" collection="array" open="(" separator="," close=")">
+            #{paid}
+        </foreach>
+    </delete>
+
+    <update id="recall">
+        update prore_apply set iscancel=b'1'
+        where paid=#{fid}
+    </update>
+
+</mapper>

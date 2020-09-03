@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.PartymemberMapper">
+    
+    <resultMap type="com.sixin.village.domain.Partymember" id="PartymemberResult">
+        <result property="pid"    column="pid"    />
+        <result property="aid"    column="aid"    />
+        <result property="grouptype"    column="grouptype"    />
+        <result property="uname"    column="uname"    />
+        <result property="sex"    column="sex"    />
+        <result property="nations"    column="nations"    />
+        <result property="idcard"    column="idcard"    />
+        <result property="edulevel"    column="edulevel"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="partyjoindate"    column="partyjoindate"    />
+        <result property="phone"    column="phone"    />
+        <result property="address"    column="address"    />
+        <result property="notes"    column="notes"    />
+        <result property="uid"    column="uid"    />
+        <result property="wcid"    column="wcid"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.village.domain.Pmcount" id="PmcountResult">
+        <result property="aid" column="aid"/>
+        <result property="parea"    column="parea"    />
+        <result property="psum"    column="psum"    />
+        <result property="man"    column="man"    />
+        <result property="woman"    column="woman"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.village.domain.Pedulevel" id="PedulevelResult">
+        <result property="edulevel"    column="edulevel"    />
+        <result property="psum"    column="psum"    />
+    </resultMap>
+	
+	<sql id="selectPartymemberVo">
+        select pid, aid, grouptype, uname, sex, nations, idcard, edulevel, birthday, partyjoindate, phone, address, notes, uid, wcid from myc_partymember
+    </sql>
+
+    <select id="countbygroup" parameterType="String" resultMap="PmcountResult">
+        select
+            grouptype as parea,
+            count(pid) as psum,
+            count(sex = '男' or null ) as man,
+            count(sex = '女' or null ) as woman
+        from myc_partymember
+        where 1=1
+        <if test="aid != null and aid !=''">
+            and aid=#{aid} or aid in (select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{aid},ancestors))
+        </if>
+        group by grouptype
+    </select>
+
+    <select id="countbyedulevel" resultMap="PedulevelResult">
+        select
+            edulevel as edulevel,
+            count(pid) as psum
+            from myc_partymember
+            group by edulevel
+    </select>
+
+    <select id="selectPartymemberList" parameterType="com.sixin.village.domain.Partymember" resultMap="PartymemberResult">
+        <include refid="selectPartymemberVo"/>
+        <where>  
+            <if test="pid != null "> and pid = #{pid}</if>
+             <if test="grouptype != null  and grouptype != '' "> and grouptype LIKE CONCAT(CONCAT('%', #{grouptype}),'%')</if>
+             <if test="uname != null  and uname != '' "> and uname  LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+             <if test="sex != null  and sex != '' "> and sex  LIKE CONCAT(CONCAT('%', #{sex}),'%')}</if>
+             <if test="nations != null  and nations != '' "> and nations  LIKE CONCAT(CONCAT('%', #{nations}),'%')</if>
+             <if test="idcard != null  and idcard != '' "> and idcard  LIKE CONCAT(CONCAT('%', #{idcard}),'%')</if>
+             <if test="edulevel != null  and edulevel != '' "> and edulevel  LIKE CONCAT(CONCAT('%', #{edulevel}),'%')</if>
+             <if test="birthday != null  and birthday != '' "> and birthday  LIKE CONCAT(CONCAT('%', #{birthday}),'%')</if>
+             <if test="partyjoindate != null  and partyjoindate != '' "> and partyjoindate  LIKE CONCAT(CONCAT('%', #{partyjoindate}),'%')</if>
+             <if test="phone != null  and phone != '' "> and phone  LIKE CONCAT(CONCAT('%', #{phone}),'%')</if>
+             <if test="address != null  and address != '' "> and address  LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+             <if test="notes != null  and notes != '' "> and notes  LIKE CONCAT(CONCAT('%', #{notes}),'%')</if>
+             <if test="uid != null "> and uid  LIKE CONCAT(CONCAT('%', #{uid}),'%')</if>
+             <if test="wcid != null  and wcid != '' "> and wcid  LIKE CONCAT(CONCAT('%', #{wcid}),'%')</if>
+         </where>
+    </select>
+    
+    <select id="selectPartymemberById" parameterType="Integer" resultMap="PartymemberResult">
+        <include refid="selectPartymemberVo"/>
+        where pid = #{pid}
+    </select>
+
+    <select id="selectPartymemberByIds" parameterType="java.util.List" resultMap="PartymemberResult">
+        <include refid="selectPartymemberVo"/>
+        where pid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+        
+    <insert id="insertPartymember" parameterType="com.sixin.village.domain.Partymember">
+        insert into myc_partymember
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null  ">pid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="grouptype != null  and grouptype != ''  ">grouptype,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="sex != null  and sex != ''  ">sex,</if>
+			<if test="nations != null  and nations != ''  ">nations,</if>
+			<if test="idcard != null  and idcard != ''  ">idcard,</if>
+			<if test="edulevel != null  and edulevel != ''  ">edulevel,</if>
+			<if test="birthday != null  and birthday != ''  ">birthday,</if>
+			<if test="partyjoindate != null  and partyjoindate != ''  ">partyjoindate,</if>
+			<if test="phone != null  and phone != ''  ">phone,</if>
+			<if test="address != null  and address != ''  ">address,</if>
+			<if test="notes != null  and notes != ''  ">notes,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="wcid != null  and wcid != ''  ">wcid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null  ">#{pid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="grouptype != null  and grouptype != ''  ">#{grouptype},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="sex != null  and sex != ''  ">#{sex},</if>
+			<if test="nations != null  and nations != ''  ">#{nations},</if>
+			<if test="idcard != null  and idcard != ''  ">#{idcard},</if>
+			<if test="edulevel != null  and edulevel != ''  ">#{edulevel},</if>
+			<if test="birthday != null  and birthday != ''  ">#{birthday},</if>
+			<if test="partyjoindate != null  and partyjoindate != ''  ">#{partyjoindate},</if>
+			<if test="phone != null  and phone != ''  ">#{phone},</if>
+			<if test="address != null  and address != ''  ">#{address},</if>
+			<if test="notes != null  and notes != ''  ">#{notes},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="wcid != null  and wcid != ''  ">#{wcid},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePartymember" parameterType="com.sixin.village.domain.Partymember">
+        update myc_partymember
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="grouptype != null  and grouptype != ''  ">grouptype = #{grouptype},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="sex != null  and sex != ''  ">sex = #{sex},</if>
+            <if test="nations != null  and nations != ''  ">nations = #{nations},</if>
+            <if test="idcard != null  and idcard != ''  ">idcard = #{idcard},</if>
+            <if test="edulevel != null  and edulevel != ''  ">edulevel = #{edulevel},</if>
+            <if test="birthday != null  and birthday != ''  ">birthday = #{birthday},</if>
+            <if test="partyjoindate != null  and partyjoindate != ''  ">partyjoindate = #{partyjoindate},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="notes != null  and notes != ''  ">notes = #{notes},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="wcid != null  and wcid != ''  ">wcid = #{wcid},</if>
+        </trim>
+        where pid = #{pid}
+    </update>
+
+	<delete id="deletePartymemberById" parameterType="Integer">
+        delete from myc_partymember where pid = #{pid}
+    </delete>
+	
+    <delete id="deletePartymemberByIds" parameterType="String">
+        delete from myc_partymember where pid in 
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+    <select id="selectGrouplist" parameterType="com.sixin.village.domain.pubObjApi" resultMap="PartymemberResult">
+       select DISTINCT grouptype
+      from myc_partymember
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+        </where>
+      ORDER BY grouptype asc
+      limit #{pageSize} offset #{pageIndex}
+    </select>
+    <select id="selectPartymemberListBytype" parameterType="com.sixin.village.domain.pubObjApi" resultMap="PartymemberResult">
+        <include refid="selectPartymemberVo"/>
+        <where>
+            <if test="state != null  and state != ''  ">grouptype = #{state}</if>
+            <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+        </where>
+        ORDER BY uname asc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

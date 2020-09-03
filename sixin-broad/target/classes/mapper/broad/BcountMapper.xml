@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.BcountMapper">
+
+    <resultMap type="com.sixin.broad.domain.BroadCount" id="BroadCountResult">
+        <result property="uname" column="uname"/>
+        <result property="sfid" column="sfid"/>
+        <result property="count" column="count"/>
+        <result property="broaddate" column="broaddate"/>
+        <result property="deptId"  column="dept_id"/>
+        <association property="dept"    column="dept_id" javaType="com.sixin.system.domain.SysDept" resultMap="deptResult" />
+    </resultMap>
+
+    <resultMap id="deptResult" type="com.sixin.system.domain.SysDept">
+        <id     property="deptId"   column="dept_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="deptName" column="dept_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
+    </resultMap>
+
+    <select id="select" parameterType="com.sixin.broad.domain.BroadCount" resultMap="BroadCountResult">
+        select
+          a.sfid,
+          a.createtime as broaddate,
+          b.uname,
+          (
+            select count(c.Pid)
+            from pro_list as c
+            where
+              c.Pid = a.sfid
+          )as count,
+          d.dept_id,d.parent_id,d.dept_name
+        from
+          pro_sinmanage as a
+        left join userinfo as b on a.userid = b.userid
+        left join ry.sys_dept as d on a.dept_id=d.dept_id
+        <where>1=1
+            <if test="uname != null  and uname != '' "> and uname = #{uname}</if>
+            <if test="sfid != null  and sfid != '' "> and sfid = #{sfid}</if>
+            <if test="count != null  and count != '' "> and count = #{count}</if>
+            <if test="broaddate != null  and broaddate != '' "> and broaddate = #{broaddate}</if>
+            <if test="deptId !=null and deptId != ''">
+                 and a.dept_id=#{deptId} or a.dept_id in (select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors))
+            </if>
+        </where>
+        order by
+        broaddate desc
+    </select>
+
+</mapper>

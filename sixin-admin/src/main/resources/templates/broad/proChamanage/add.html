@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-proChamanage-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">节目名称：</label>
+				<div class="col-sm-8">
+					<input id="cname" name="cname" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">频道：</label>
+				<div class="col-sm-8">
+					<input id="frequencies" name="frequencies" class="form-control" type="text">
+				</div>
+			</div>
+<!--			<div class="form-group">-->
+<!--				<label class="col-sm-3 control-label">所属用户：</label>-->
+<!--				<div class="col-sm-8">-->
+<!--					<select class="form-control" id="userinfo" name="userid">-->
+<!--						<option value="">&#45;&#45;请选择所属用户&#45;&#45;</option>-->
+<!--					</select>-->
+<!--				</div>-->
+<!--			</div>-->
+			<div class="form-group">
+				<label class="col-sm-3 control-label">发射电台地址：</label>
+				<div class="col-sm-8">
+					<input id="pronote" name="pronote" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">电台名称：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "broad/proChamanage"
+		$("#form-proChamanage-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-proChamanage-add').serialize());
+	        }
+	    }
+		// 新增特殊分组弹窗人员下拉框调取人员信息组件
+		$(function getUserInfo(ele,msg) {
+			$.get("/broad/dto/userinfos",function getmsg(params1,params2) {
+				for (let index = 0; index < params1.length; index++) {
+					let text = params1[index].uname;
+					let value1 = params1[index].userid;
+					$("#userinfo").append("<option value='"+value1+"'>"+text+"</option>")
+					$("#userinfo1").append("<option value='"+value1+"'>"+text+"</option>")
+				}
+			});
+		})
+	</script>
+</body>
+</html>

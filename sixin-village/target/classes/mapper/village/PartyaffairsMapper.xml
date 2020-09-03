@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.PartyaffairsMapper">
+    
+    <resultMap type="com.sixin.village.domain.Partyaffairs" id="PartyaffairsResult">
+        <result property="dwid"    column="dwid"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="adddate"    column="adddate"    />
+        <result property="pic"    column="pic"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="aid"    column="aid"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectPartyaffairsVo">
+        select dwid, title, content, adddate, pic, uid, uname, aid, remark from tb_partyaffairs
+    </sql>
+	
+    <select id="selectPartyaffairsList" parameterType="com.sixin.village.domain.Partyaffairs" resultMap="PartyaffairsResult">
+        <include refid="selectPartyaffairsVo"/>
+        <where>  
+            <if test="dwid != null "> and dwid = #{dwid}</if>
+             <if test="title != null  and title != '' "> and title LIKE CONCAT(CONCAT('%', #{title}),'%')</if>
+             <if test="content != null  and content != '' "> and content LIKE CONCAT(CONCAT('%', #{content}),'%')</if>
+             <if test="adddate != null  and adddate != '' "> and adddate LIKE CONCAT(CONCAT('%', #{adddate}),'%')</if>
+             <if test="pic != null  and pic != '' "> and pic LIKE CONCAT(CONCAT('%', #{pic}),'%')</if>
+             <if test="uid != null "> and uid LIKE CONCAT(CONCAT('%', #{uid}),'%')</if>
+             <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="remark != null  and remark != '' "> and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')</if>
+         </where>
+        ORDER BY dwid desc
+    </select>
+    
+    <select id="selectPartyaffairsById" parameterType="Integer" resultMap="PartyaffairsResult">
+        <include refid="selectPartyaffairsVo"/>
+        where dwid = #{dwid}
+    </select>
+        
+    <insert id="insertPartyaffairs" parameterType="com.sixin.village.domain.Partyaffairs">
+        insert into tb_partyaffairs
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="dwid != null  ">dwid,</if>
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="adddate != null  and adddate != ''  ">adddate,</if>
+			<if test="pic != null  and pic != ''  ">pic,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="dwid != null  ">#{dwid},</if>
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="adddate != null  and adddate != ''  ">#{adddate},</if>
+			<if test="pic != null  and pic != ''  ">#{pic},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePartyaffairs" parameterType="com.sixin.village.domain.Partyaffairs">
+        update tb_partyaffairs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null  and title != ''  ">title = #{title},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="adddate != null  and adddate != ''  ">adddate = #{adddate},</if>
+            <if test="pic != null  and pic != ''  ">pic = #{pic},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where dwid = #{dwid}
+    </update>
+
+	<delete id="deletePartyaffairsById" parameterType="Integer">
+        delete from tb_partyaffairs where dwid = #{dwid}
+    </delete>
+	
+    <delete id="deletePartyaffairsByIds" parameterType="String">
+        delete from tb_partyaffairs where dwid in 
+        <foreach item="dwid" collection="array" open="(" separator="," close=")">
+            #{dwid}
+        </foreach>
+    </delete>
+    
+</mapper>

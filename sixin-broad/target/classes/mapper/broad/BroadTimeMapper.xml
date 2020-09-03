@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.BroadTimeMapper">
+
+    <resultMap type="com.sixin.broad.domain.BroadTime" id="BroadTimeResult">
+        <result property="broadDate" column="broadDate"/>
+        <result property="bcount" column="bcount"/>
+        <result property="scategory" column="scategory"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+    <select id="selectList" parameterType="Long" resultMap="BroadTimeResult">
+        select
+          broaddate,
+          count(broaddate) as bcount
+        from
+          pro_sinmanage a
+        where 1=1
+        <if test="deptId != null and deptId != ''">
+            and (a.dept_id = #{deptId} OR a.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        group by broaddate
+        order by broaddate DESC
+        limit 30
+    </select>
+
+    <select id="selectListByDate" parameterType="Long" resultMap="BroadTimeResult">
+        select
+          broaddate,
+          count(broaddate) as bcount
+        from
+          broad.pro_sinmanage a
+        where 1=1
+        <if test="deptId != null and deptId != ''">
+            and (a.dept_id = #{deptId} OR a.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        group by broaddate
+        order by count(broaddate) DESC
+        limit 30
+    </select>
+
+    <select id="selectListByScategory" parameterType="Long" resultMap="BroadTimeResult">
+        select
+          scategory,
+          count(scategory) as bcount
+        from
+          broad.pro_sinmanage a
+        where 1=1
+        <if test="deptId != null and deptId != ''">
+            and (a.dept_id = #{deptId} OR a.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        group by scategory
+        order by count(scategory) DESC
+        limit 30
+    </select>
+
+</mapper>

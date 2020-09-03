@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <form id="user-form">
+                <li>
+                    <input type="hidden" name="aid"  id="aid" style="width: 100px"/>
+                </li>
+            </form>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <a class="btn btn-success btn-del disabled" onclick="addProIdAll()">
+                <i class="fa fa-edit"></i> 节目终端选择
+            </a>
+        </div>
+    <div>
+        <input id="org" name="org"  width="50%" placeholder="">
+        <input id="tname" type="hidden" name="tname"  width="50%" placeholder="">
+    </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "broad/organization";
+
+    $(function() {
+        $('body').layout({ west__size: 185 });
+        queryAreaList();
+        queryAreaTree();
+    });
+
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/listProBroad",
+            modalName: "终端管理",
+            search: false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field : 'tid',
+                    title : '终端设备IMEI',
+                    visible: true
+                },
+                {
+                    field : 'tname',
+                    title : '终端设备名称',
+                    sortable: true
+                },
+                {
+                    field : 'aid',
+                    title : '区域编号',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    };
+
+    function queryAreaTree(){
+        var url = ctx + "broad/area/treeData";
+        var options = {
+            url: url,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            aid1 = treeNode.id;
+            $("#aid").val(treeNode.id);
+            $.table.search();
+        }
+        $.tree.init(options);
+    }
+
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    // 获取所选择终端IMEI号的方法
+     function addProIdAll() {
+       /*在选择终端前先获取一次文本框的值，为的是可以选择多个小组的终端*/
+        var originalValue = document.getElementById("org").value;
+        var originalName = document.getElementById("tname").value;
+        /*通过选择框去获取终端的IMEI号*/
+        var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+        var rowsName = $.table.selectColumns('tname');
+        var data = { "ids": rows.join() };
+        var dataName = {"tnames":rowsName.join()};
+        var test = data;
+        var testName = dataName;
+        var i;
+        console.log("test:" + test);
+        /*js for in循环遍历对象，获取key:value值*/
+        for(i in test){
+            console.log("IMEI:",test[i]);/*这里test[i]是所选择终端的IMEI号的字符串ps：111,222*/
+        }
+        var j;
+        for(j in testName) {
+            console.log("imeiName:", testName[j]);
+        }
+        var selectValue = test[i] + "," + originalValue ;
+        document.getElementById("org").value = selectValue;
+        var selectName = testName[j] + ',' + originalName;
+        document.getElementById("tname").value = selectName;
+         /*这里显示的是所选择终端的IMEI号的json ps：{"ids":"111,222"}*/
+         /*alert(JSON.stringify(data));*/
+         var str = '';
+         var test1 = String(document.getElementById("org").value).split(',');
+         var test2 = String(document.getElementById("tname").value).split(',');
+         var buttonStyle = ["btn btn-primary","btn btn-success","btn btn-info","btn btn-warning","btn btn-danger"];
+         for(i = 0; i <  test1.length; i++) {
+             if (test1[i] != '' && test1[i] != null) {
+                 str += '<button class="'+buttonStyle[i%5] + '" onclick="' +
+                     'imeiYes('+test1[i]+')" style="margin: 2px 2px;color: white"> 终端名称:'+test2[i]+'<br>IMEI:'+test1[i]+'</button>';
+             }
+         }
+         parent.document.getElementById("treeId").value = test1;
+         parent.document.getElementById("tname").value = test2;
+         parent.$('#imea').html(str);
+     }
+
+     //提供给父页面获取选中的值
+     function callback() {
+         /*在选择终端前先获取一次文本框的值，为的是可以选择多个小组的终端*/
+         var originalValue = document.getElementById("org").value;
+         /*通过选择框去获取终端的IMEI号*/
+         var rows = $.common.isEmpty($.table._option.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns($.table._option.uniqueId);
+         var data = { "ids": rows.join() };
+         var test = data;
+         var i;
+         /*js for in循环遍历对象，获取key:value值*/
+         // for(i in test){
+         //     console.log("adsdsd",test[i]);/*这里test[i]是所选择终端的IMEI号的字符串ps：111,222*/
+         // }
+         datas = {  //调用它的父页面A的input这个function
+             data_role:data  //把data传入父页面A中的data_role，这里cllbackdata()是我另外计算data的一个函数，可以忽略
+         };
+         return datas;
+     }
+</script>
+</body>
+</html>

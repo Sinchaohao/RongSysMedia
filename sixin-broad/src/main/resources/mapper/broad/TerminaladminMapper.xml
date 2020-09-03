@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.TerminaladminMapper">
+
+    <resultMap type="Terminaladmin" id="TerminaladminResult">
+        <result property="pid" column="pid"/>
+        <result property="phone" column="phone"/>
+        <result property="uid" column="uid"/>
+        <result property="uname" column="uname"/>
+        <result property="deptid" column="deptid"/>
+        <result property="rolecode" column="rolecode"/>
+        <result property="allowid" column="allowid"/>
+        <result property="allowname" column="allowname"/>
+        <result property="allowdate" column="allowdate"/>
+        <result property="reallowid" column="reallowid"/>
+        <result property="reallowname" column="reallowname"/>
+        <result property="allowpic" column="allowpic"/>
+        <result property="demo" column="demo"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <sql id="selectTerminaladminVo">
+        select a.pid, a.phone, uid, uname, deptid,rolecode, allowid, allowname, allowdate, reallowid, reallowname, allowpic, demo, u.user_name,a.remark from sys_phonemanage a
+
+         inner join ry.sys_user u on a.uid=u.user_id
+				 and u.user_name = uname
+    </sql>
+
+    <select id="selectTerminaladminList" parameterType="Terminaladmin" resultMap="TerminaladminResult">
+        <include refid="selectTerminaladminVo"/>
+        <where>
+            <if test="pid != null ">and pid = #{pid}</if>
+            <if test="phone != null  and phone != '' ">and phone = #{phone} </if>
+            <if test="uid != null ">and uid = #{uid}  </if>
+            <if test="uname != null  and uname != '' ">and uname = #{uname}</if>
+            <if test="deptid != null  and deptid != '' "> and deptid LIKE CONCAT(CONCAT('%', #{deptid}),'%')</if>
+            <if test="rolecode != null  and rolecode != '' ">and rolecode = #{rolecode}</if>
+            <if test="allowid != null ">and allowid = #{allowid}</if>
+            <if test="allowname != null  and allowname != '' ">and allowname = #{allowname}</if>
+            <if test="allowdate != null ">and allowdate = #{allowdate}</if>
+            <if test="reallowid != null ">and reallowid = #{reallowid}</if>
+            <if test="reallowname != null  and reallowname != '' ">and reallowname = #{reallowname}</if>
+            <if test="allowpic != null  and allowpic != '' ">and allowpic = #{allowpic}</if>
+            <if test="demo != null  and demo != '' ">and demo = #{demo}</if>
+            <if test="remark != null ">and remark = #{remark}</if>
+        </where>
+    </select>
+
+    <select id="selectTerminaladminById" parameterType="Long" resultMap="TerminaladminResult">
+        <include refid="selectTerminaladminVo"/>
+        where pid = #{pid}
+    </select>
+
+    <select id="selectTerminaladminByIds" parameterType="java.util.List" resultMap="TerminaladminResult">
+        <include refid="selectTerminaladminVo"/>
+        where pid in
+        <foreach collection="list" item="sfids" open="(" close=")" separator=",">
+            #{sfids}
+        </foreach>
+    </select>
+
+    <insert id="insertTerminaladmin" parameterType="Terminaladmin">
+        insert into sys_phonemanage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null  ">pid,
+            </if>
+            <if test="phone != null  and phone != ''  ">phone,
+            </if>
+            <if test="uid != null  ">uid,
+            </if>
+            <if test="uname != null  and uname != ''  ">uname,
+            </if>
+            <if test="deptid != null  ">deptid,
+            </if>
+            <if test="rolecode != null  and rolecode != ''  ">rolecode,
+            </if>
+            <if test="allowid != null  ">allowid,
+            </if>
+            <if test="allowname != null  and allowname != ''  ">allowname,
+            </if>
+            <if test="allowdate != null  ">allowdate,
+            </if>
+            <if test="reallowid != null  ">reallowid,
+            </if>
+            <if test="reallowname != null  and reallowname != ''  ">reallowname,
+            </if>
+            <if test="allowpic != null  and allowpic != ''  ">allowpic,
+            </if>
+            <if test="demo != null  and demo != ''  ">demo,
+            </if>
+            <if test="remark != null  ">remark,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null  ">#{pid},
+            </if>
+            <if test="phone != null  and phone != ''  ">#{phone},
+            </if>
+            <if test="uid != null  ">#{uid},
+            </if>
+            <if test="uname != null  and uname != ''  ">#{uname},
+            </if>
+            <if test="deptid != null  ">#{deptid},
+            </if>
+            <if test="rolecode != null  and rolecode != ''  ">#{rolecode},
+            </if>
+            <if test="allowid != null  ">#{allowid},
+            </if>
+            <if test="allowname != null  and allowname != ''  ">#{allowname},
+            </if>
+            <if test="allowdate != null  ">#{allowdate},
+            </if>
+            <if test="reallowid != null  ">#{reallowid},
+            </if>
+            <if test="reallowname != null  and reallowname != ''  ">#{reallowname},
+            </if>
+            <if test="allowpic != null  and allowpic != ''  ">#{allowpic},
+            </if>
+            <if test="demo != null  and demo != ''  ">#{demo},
+            </if>
+            <if test="remark != null  ">#{remark},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateTerminaladmin" parameterType="Terminaladmin">
+        update sys_phonemanage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="phone != null  and phone != ''  ">phone = #{phone},
+            </if>
+            <if test="uid != null  ">uid = #{uid},
+            </if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},
+            </if>
+            <if test="deptid != null  ">deptid=  #{deptid},
+            </if>
+            <if test="rolecode != null  and rolecode != ''  ">rolecode = #{rolecode},
+            </if>
+            <if test="allowid != null  ">allowid = #{allowid},
+            </if>
+            <if test="allowname != null  and allowname != ''  ">allowname = #{allowname},
+            </if>
+            <if test="allowdate != null  ">allowdate = #{allowdate},
+            </if>
+            <if test="reallowid != null  ">reallowid = #{reallowid},
+            </if>
+            <if test="reallowname != null  and reallowname != ''  ">reallowname = #{reallowname},
+            </if>
+            <if test="allowpic != null  and allowpic != ''  ">allowpic = #{allowpic},
+            </if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},
+            </if>
+            <if test="remark != null  ">remark = #{remark},
+            </if>
+        </trim>
+        where pid = #{pid}
+    </update>
+
+    <delete id="deleteTerminaladminById" parameterType="Long">
+        delete from sys_phonemanage where pid = #{pid}
+    </delete>
+
+    <delete id="deleteTerminaladminByIds" parameterType="String">
+        delete from sys_phonemanage where pid in
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+
+</mapper>

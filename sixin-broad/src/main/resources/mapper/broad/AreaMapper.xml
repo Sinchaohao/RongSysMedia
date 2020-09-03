@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.AreaMapper">
+    
+    <resultMap type="com.sixin.broad.domain.Area" id="AreaResult">
+        <result property="aid"    column="aid"    />
+        <result property="parentaid"    column="parentaid"    />
+        <result property="aname"    column="aname"    />
+        <result property="note"    column="note"    />
+    </resultMap>
+	
+	<sql id="selectAreaVo">
+        select aid, parentaid, aname, note from area
+    </sql>
+	
+    <select id="selectAreaList" parameterType="com.sixin.broad.domain.Area" resultMap="AreaResult">
+        <include refid="selectAreaVo"/>
+        <where>  
+            <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+             <if test="parentaid != null  and parentaid != '' "> and parentaid = #{parentaid}</if>
+             <if test="aname != null  and aname != '' "> and aname = #{aname}</if>
+             <if test="note != null  and note != '' "> and note = #{note}</if>
+         </where>
+    </select>
+
+    <select id="chooseAreaList" parameterType="com.sixin.broad.domain.Area" resultMap="AreaResult">
+        select aid, parentaid, aname, note from area
+        <where>
+            <if test="aid != null  and aid != '' ">aid = #{aid} or parentaid = #{aid}</if>
+        </where>
+    </select>
+
+    <select id="selectAreaById" parameterType="Long" resultMap="AreaResult">
+        <include refid="selectAreaVo"/>
+        where aid = #{aid}
+    </select>
+        
+    <insert id="insertArea" parameterType="com.sixin.broad.domain.Area">
+        insert into area
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="parentaid != null  and parentaid != ''  ">parentaid,</if>
+			<if test="aname != null  and aname != ''  ">aname,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="parentaid != null  and parentaid != ''  ">#{parentaid},</if>
+			<if test="aname != null  and aname != ''  ">#{aname},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateArea" parameterType="com.sixin.broad.domain.Area">
+        update area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentaid != null  and parentaid != ''  ">parentaid = #{parentaid},</if>
+            <if test="aname != null  and aname != ''  ">aname = #{aname},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+        </trim>
+        where aid = #{aid}
+    </update>
+
+	<delete id="deleteAreaById" parameterType="Long">
+        delete from area where aid = #{aid}
+    </delete>
+	
+    <delete id="deleteAreaByIds" parameterType="Long">
+        delete from area where aid in 
+        <foreach item="aid" collection="array" open="(" separator="," close=")">
+            #{aid}
+        </foreach>
+    </delete>
+
+
+    <select id="selectAllArea" resultMap="AreaResult">
+        <include refid="selectAreaVo"/>
+    </select>
+</mapper>

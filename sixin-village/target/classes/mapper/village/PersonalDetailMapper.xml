@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.PersonalDetailMapper">
+    
+    <resultMap type="com.sixin.village.domain.PersonalDetail" id="PersonalDetailResult">
+        <result property="pdid"    column="pdid"    />
+        <result property="aid"    column="aid"    />
+        <result property="vname"    column="vname"    />
+        <result property="personpic"    column="personpic"    />
+        <result property="idcard"    column="idcard"    />
+        <result property="idcardpic"    column="idcardpic"    />
+        <result property="carnum"    column="carnum"    />
+        <result property="carpic"    column="carpic"    />
+    </resultMap>
+	
+	<sql id="selectPersonalDetailVo">
+        select pdid, aid, vname, personpic, idcard, idcardpic, carnum, carpic from personal_detail
+    </sql>
+	
+    <select id="selectPersonalDetailList" parameterType="com.sixin.village.domain.PersonalDetail" resultMap="PersonalDetailResult">
+        <include refid="selectPersonalDetailVo"/>
+        <where>  
+            <if test="pdid != null "> and pdid = #{pdid}</if>
+             <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+             <if test="vname != null  and vname != '' "> and vname = #{vname}</if>
+             <if test="personpic != null  and personpic != '' "> and personpic = #{personpic}</if>
+             <if test="idcard != null  and idcard != '' "> and idcard = #{idcard}</if>
+             <if test="idcardpic != null  and idcardpic != '' "> and idcardpic = #{idcardpic}</if>
+             <if test="carnum != null  and carnum != '' "> and carnum = #{carnum}</if>
+             <if test="carpic != null  and carpic != '' "> and carpic = #{carpic}</if>
+         </where>
+    </select>
+    
+    <select id="selectPersonalDetailById" parameterType="Integer" resultMap="PersonalDetailResult">
+        <include refid="selectPersonalDetailVo"/>
+        where pdid = #{pdid}
+    </select>
+        
+    <insert id="insertPersonalDetail" parameterType="com.sixin.village.domain.PersonalDetail">
+        insert into personal_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pdid != null  ">pdid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="vname != null  and vname != ''  ">vname,</if>
+			<if test="personpic != null  and personpic != ''  ">personpic,</if>
+			<if test="idcard != null  and idcard != ''  ">idcard,</if>
+			<if test="idcardpic != null  and idcardpic != ''  ">idcardpic,</if>
+			<if test="carnum != null  and carnum != ''  ">carnum,</if>
+			<if test="carpic != null  and carpic != ''  ">carpic,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pdid != null  ">#{pdid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="vname != null  and vname != ''  ">#{vname},</if>
+			<if test="personpic != null  and personpic != ''  ">#{personpic},</if>
+			<if test="idcard != null  and idcard != ''  ">#{idcard},</if>
+			<if test="idcardpic != null  and idcardpic != ''  ">#{idcardpic},</if>
+			<if test="carnum != null  and carnum != ''  ">#{carnum},</if>
+			<if test="carpic != null  and carpic != ''  ">#{carpic},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updatePersonalDetail" parameterType="com.sixin.village.domain.PersonalDetail">
+        update personal_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="vname != null  and vname != ''  ">vname = #{vname},</if>
+            <if test="personpic != null  and personpic != ''  ">personpic = #{personpic},</if>
+            <if test="idcard != null  and idcard != ''  ">idcard = #{idcard},</if>
+            <if test="idcardpic != null  and idcardpic != ''  ">idcardpic = #{idcardpic},</if>
+            <if test="carnum != null  and carnum != ''  ">carnum = #{carnum},</if>
+            <if test="carpic != null  and carpic != ''  ">carpic = #{carpic},</if>
+        </trim>
+        where pdid = #{pdid}
+    </update>
+
+	<delete id="deletePersonalDetailById" parameterType="Integer">
+        delete from personal_detail where pdid = #{pdid}
+    </delete>
+	
+    <delete id="deletePersonalDetailByIds" parameterType="String">
+        delete from personal_detail where pdid in 
+        <foreach item="pdid" collection="array" open="(" separator="," close=")">
+            #{pdid}
+        </foreach>
+    </delete>
+    
+</mapper>

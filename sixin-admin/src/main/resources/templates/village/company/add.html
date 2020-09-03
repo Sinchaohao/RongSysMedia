@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+
+<head th:include="include :: header"></head>
+
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-company-add">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">地域编号：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" id="aid" name="aid" onclick="selectAidTree()"
+						readonly="true" placeholder="点击选择区域">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">企业名称：</label>
+				<div class="col-sm-8">
+					<input id="cname" name="cname" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">社会信用代码：</label>
+				<div class="col-sm-8">
+					<input id="scode" name="scode" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">负责人姓名：</label>
+				<div class="col-sm-8">
+					<input id="pname" name="pname" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">电话：</label>
+				<div class="col-sm-8">
+					<input id="phone" name="phone" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">企业地址：</label>
+				<div class="col-sm-8">
+					<input id="address" name="address" class="form-control" type="text">
+				</div>
+			</div>
+
+
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label">状态：</label>
+				<div class="col-sm-8">
+					<div class="onoffswitch">
+						<input type="checkbox" class="onoffswitch-checkbox" id="ctype1" name="ctype1"
+							onclick="changevalue();" />
+						<label class="onoffswitch-label" for="ctype1">
+							<span class="onoffswitch-inner"></span>
+							<span class="onoffswitch-switch"></span>
+						</label>
+
+					</div>
+				</div>
+			</div>
+			<input id="ctype" name="ctype" value="0" class="form-control" type="hidden">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">删除标识：</label>
+				<div class="col-sm-8">
+					<div class="onoffswitch">
+						<input type="checkbox" class="onoffswitch-checkbox" id="dflag1" name="dflag1"
+							onclick="changevalue2();" />
+						<label class="onoffswitch-label" for="dflag1">
+							<span class="onoffswitch-inner"></span>
+							<span class="onoffswitch-switch"></span>
+						</label>
+					</div>
+				</div>
+			</div>
+			<input id="dflag" name="dflag" value="0" class="form-control" type="hidden">
+			<div class="form-group">
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+		function changevalue() {
+			var ctype2 = document.getElementsByName("ctype1");
+			if (ctype2.checked == true) {
+				$("#ctype").val("0");
+			} else {
+				$("#ctype").val("1");
+			}
+
+		}
+
+		function changevalue2() {
+			var dflag2 = document.getElementsByName("dflag1");
+			if (dflag2.checked == true) {
+				$("#dflag").val("0");
+			} else {
+				$("#dflag").val("1");
+			}
+
+		}
+		/*企业管理-新增-选择企业所属区域树*/
+		function selectAidTree() {
+			var url = "/village/company/selectAidTree";
+			var options = {
+				title: '选择区域',
+				width: "380",
+				url: "/village/company/selectAidTree",
+				callBack: doSubmitAid
+			};
+			$.modal.openOptions(options);
+		}
+		/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+		function doSubmitAid(index, layero) {
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#aid").val(body.find('#treeId').val());
+				$("#address").val(body.find('#treeName').val());
+				/*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+				layer.close(index);
+			}
+		}
+
+
+
+		var prefix = ctx + "village/company"
+		$().ready(function () {
+			// 在键盘按下并释放及提交后验证提交表单
+			$("#form-company-add").validate({
+				rules: {
+					aid: {
+						required: true,
+						minlength: 2
+					},
+					phone: {
+						required: true,
+
+					},
+					cname: {
+						required: true,
+						minlength: 2
+					},
+					scode: {
+						required: true,
+						minlength: 18
+					},
+					pname: {
+						required: true,
+						minlength: 2
+					}
+				},
+				messages: {
+					aid: {
+						required: "请输入地域编号",
+						minlength: "地域编号不能小于2个字符"
+					},
+					phone: {
+						required: "请输入手机号码",
+						minlength: "号码长度不能小于11位"
+					},
+					cname: {
+						required: "请输入企业名称",
+						minlength: "企业名称不能小于2个字符"
+					},
+					scode: {
+						required: "请输入社会信用代码",
+						minlength: "社会信用代码不能小于18个字符"
+					},
+					pname: {
+						required: "请输入负责人姓名",
+						minlength: "负责人姓名不能小于2个字符"
+					}
+				}
+			})
+		});
+
+
+		/*jQuery.validator.addMethod("cname", function(value, element) {
+        return this.optional(element) || /^[\u0391-\uFFE5\w]+$/.test(value);
+    }*/
+
+		function submitHandler() {
+			if ($.validate.form()) {
+				$.operate.save(prefix + "/add", $('#form-company-add').serialize());
+			}
+		}
+	</script>
+</body>
+
+</html>

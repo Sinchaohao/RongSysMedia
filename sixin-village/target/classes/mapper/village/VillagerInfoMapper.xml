@@ -1,0 +1,735 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.VillagerInfoMapper">
+
+    <resultMap type="com.sixin.village.domain.VillagerInfo" id="VillagerInfoResult">
+        <result property="vid"    column="vid"    />
+        <result property="aid"    column="aid"    />
+        <result property="vname"    column="vname"    />
+        <result property="age"    column="age"    />
+        <result property="sex"    column="sex"    />
+        <result property="nativeplace"    column="nativeplace"    />
+        <result property="nation"    column="nation"    />
+        <result property="politics"    column="politics"    />
+        <result property="partyjoindate"    column="partyjoindate"    />
+        <result property="edulevel"    column="edulevel"    />
+        <result property="marital"    column="marital"    />
+        <result property="idcard"    column="idcard"    />
+        <result property="phone"    column="phone"    />
+        <result property="health"    column="health"    />
+        <result property="special"    column="special"    />
+        <result property="entitle"    column="entitle"    />
+        <result property="familyplan"    column="familyplan"    />
+        <result property="medical"    column="medical"    />
+        <result property="subsidy"    column="subsidy"    />
+        <result property="insurance"    column="insurance"    />
+        <result property="criminal"    column="criminal"    />
+        <result property="drug"    column="drug"    />
+        <result property="drive"    column="drive"    />
+        <result property="car"    column="car"    />
+        <result property="vtype"    column="vtype"    />
+        <result property="carnum"    column="carnum"    />
+        <result property="job"    column="job"    />
+        <result property="company"    column="company"    />
+        <result property="pra"    column="pra"    />
+        <result property="home"    column="home"    />
+        <result property="grouptype"    column="grouptype"    />
+        <result property="house"    column="house"    />
+        <result property="height"    column="height"    />
+        <result property="hhdnum"    column="hhdnum"    />
+        <result property="hhd"    column="hhd"    />
+        <result property="hhdidcard"    column="hhdidcard"    />
+        <result property="hhdrelation"    column="hhdrelation"    />
+        <result property="jobrank"    column="jobrank"    />
+        <result property="hobby"    column="hobby"    />
+        <result property="trend"    column="trend"    />
+        <result property="jobstate"    column="jobstate"    />
+        <result property="pr"    column="pr"    />
+        <result property="medinsur"    column="medinsur"    />
+        <result property="fmi"    column="fmi"    />
+        <result property="fmistate"    column="fmistate"    />
+        <result property="security"    column="security"    />
+        <result property="bsecurity"    column="bsecurity"    />
+        <result property="subsis"    column="subsis"    />
+        <result property="fiveinsur"    column="fiveinsur"    />
+        <result property="poor"    column="poor"    />
+        <result property="drivenum"    column="drivenum"    />
+        <result property="techtype"    column="techtype"    />
+        <result property="techgrade"    column="techgrade"    />
+        <result property="titgrade"    column="titgrade"    />
+        <result property="prt"    column="prt"    />
+        <result property="move"    column="move"    />
+        <result property="fieldarea"    column="fieldarea"    />
+        <result property="forestarea"    column="forestarea"    />
+        <result property="poolarea"    column="poolarea"    />
+        <result property="income"    column="income"    />
+        <result property="totalppt"    column="totalppt"    />
+        <result property="mincome"    column="mincome"    />
+        <result property="yincome"    column="yincome"    />
+        <result property="bank"    column="bank"    />
+        <result property="bankcardnum"    column="bankcardnum"    />
+        <result property="landowner"    column="landowner"    />
+        <result property="control"    column="control"    />
+        <result property="housearea"    column="housearea"    />
+        <result property="loginname"    column="loginname"    />
+        <result property="selfmanage"    column="selfmanage"    />
+        <result property="managetype"    column="managetype"    />
+        <result property="cost"    column="cost"    />
+        <result property="mmincome"    column="mmincome"    />
+        <result property="myincome"    column="myincome"    />
+        <result property="organization"    column="organization"    />
+        <result property="landtransfer"    column="landtransfer"    />
+        <result property="landincome"    column="landincome"    />
+        <result property="foresttransfer"    column="foresttransfer"    />
+        <result property="forestincome"    column="forestincome"    />
+        <result property="levy"    column="levy"    />
+        <result property="rent"    column="rent"    />
+        <result property="housestate"    column="housestate"    />
+        <result property="psa"    column="psa"    />
+        <result property="ca"    column="ca"    />
+        <result property="woban"    column="woban"    />
+        <result property="water"    column="water"    />
+        <result property="ssa"    column="ssa"    />
+        <result property="gfs"    column="gfs"    />
+        <result property="wdr"    column="wdr"    />
+        <result property="rth"    column="rth"    />
+        <result property="iscadre"    column="iscadre"    />
+        <result property="cadrelevel"    column="cadrelevel"    />
+        <result property="islowincome"    column="islowincome"    />
+        <result property="getlowdate"    column="getlowdate"    />
+        <result property="isdemob"    column="isdemob"    />
+        <result property="demobdate"    column="demobdate"    />
+        <result property="winaward"    column="winaward"    />
+        <result property="punish"    column="punish"    />
+        <result property="personphoto"    column="personphoto"    />
+        <result property="hkphoto"    column="hkphoto"    />
+        <result property="idphoto"    column="idphoto"    />
+        <result property="carphoto"    column="carphoto"    />
+        <result property="housephoto"    column="housephoto"    />
+        <result property="isuse"    column="isuse"    />
+        <result property="password"    column="password"    />
+    </resultMap>
+    <resultMap type="com.sixin.village.domain.Mcount" id="mcountResult">
+        <result property="marea"    column="marea"    />
+        <result property="msum"    column="msum"    />
+        <result property="man"    column="man"    />
+        <result property="woman"    column="woman"    />
+        <result property="sum2"    column="sum2"    />
+        <result property="sum3"    column="sum3"    />
+    </resultMap>
+
+
+
+    <sql id="selectVillagerInfoVo">
+        select vid, aid, vname, age, sex, nativeplace, nation, politics, partyjoindate, edulevel, marital, idcard, phone, health, special, entitle, familyplan, medical, subsidy, insurance, criminal, drug, drive, car, vtype, carnum, job, company, pra, home, grouptype, house, height, hhdnum, hhd, hhdidcard, hhdrelation, jobrank, hobby, trend, jobstate, pr, medinsur, fmi, fmistate, security, bsecurity, subsis, fiveinsur, poor, drivenum, techtype, techgrade, titgrade, prt, move, fieldarea, forestarea, poolarea, income, totalppt, mincome, yincome, bank, bankcardnum, landowner, control, housearea, loginname, selfmanage, managetype, cost, mmincome, myincome, organization, landtransfer, landincome, foresttransfer, forestincome, levy, rent, housestate, psa, ca, woban, water, ssa, gfs, wdr, rth, iscadre, cadrelevel, islowincome, getlowdate, isdemob, demobdate, winaward, punish, personphoto, hkphoto, idphoto, carphoto, housephoto, isuse, password from villager_info
+    </sql>
+
+    <select id="selectVillagerInfoBygrouptype" parameterType="String" resultMap="VillagerInfoResult">
+        <include refid="selectVillagerInfoVo"/>
+        <where>
+            <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+        </where>
+    </select>
+
+    <select id="selectVillagerInfoList" parameterType="com.sixin.village.domain.VillagerInfo" resultMap="VillagerInfoResult">
+        <include refid="selectVillagerInfoVo"/>
+        <where>
+            <if test="vid != null "> and vid = #{vid}</if>
+            <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+            <if test="vname != null  and vname != '' "> and vname = #{vname}</if>
+            <if test="age != null "> and age = #{age}</if>
+            <if test="sex != null  and sex != '' "> and sex = #{sex}</if>
+            <if test="nativeplace != null  and nativeplace != '' "> and nativeplace = #{nativeplace}</if>
+            <if test="nation != null  and nation != '' "> and nation = #{nation}</if>
+            <if test="politics != null  and politics != '' "> and politics = #{politics}</if>
+            <if test="partyjoindate != null  and partyjoindate != '' "> and partyjoindate = #{partyjoindate}</if>
+            <if test="edulevel != null  and edulevel != '' "> and edulevel = #{edulevel}</if>
+            <if test="marital != null  and marital != '' "> and marital = #{marital}</if>
+            <if test="idcard != null  and idcard != '' "> and idcard = #{idcard}</if>
+            <if test="password != null  and pwssword != '' "> and password = #{password}</if>
+            <if test="phone != null  and phone != '' "> and phone = #{phone}</if>
+            <if test="health != null  and health != '' "> and health = #{health}</if>
+            <if test="special != null  and special != '' "> and special = #{special}</if>
+            <if test="entitle != null  and entitle != '' "> and entitle = #{entitle}</if>
+            <if test="familyplan != null  and familyplan != '' "> and familyplan = #{familyplan}</if>
+            <if test="medical != null  and medical != '' "> and medical = #{medical}</if>
+            <if test="subsidy != null  and subsidy != '' "> and subsidy = #{subsidy}</if>
+            <if test="insurance != null  and insurance != '' "> and insurance = #{insurance}</if>
+            <if test="criminal != null  and criminal != '' "> and criminal = #{criminal}</if>
+            <if test="drug != null  and drug != '' "> and drug = #{drug}</if>
+            <if test="drive != null  and drive != '' "> and drive = #{drive}</if>
+            <if test="car != null  and car != '' "> and car = #{car}</if>
+            <if test="vtype != null  and vtype != '' "> and vtype = #{vtype}</if>
+            <if test="carnum != null  and carnum != '' "> and carnum = #{carnum}</if>
+            <if test="job != null  and job != '' "> and job = #{job}</if>
+            <if test="company != null  and company != '' "> and company = #{company}</if>
+            <if test="pra != null  and pra != '' "> and pra = #{pra}</if>
+            <if test="home != null  and home != '' "> and home = #{home}</if>
+            <if test="grouptype != null  and grouptype != '' "> and grouptype = #{grouptype}</if>
+            <if test="house != null  and house != '' "> and house = #{house}</if>
+            <if test="height != null  and height != '' "> and height = #{height}</if>
+            <if test="hhdnum != null  and hhdnum != '' "> and hhdnum = #{hhdnum}</if>
+            <if test="hhd != null  and hhd != '' "> and hhd = #{hhd}</if>
+            <if test="hhdidcard != null  and hhdidcard != '' "> and hhdidcard = #{hhdidcard}</if>
+            <if test="hhdrelation != null  and hhdrelation != '' "> and hhdrelation = #{hhdrelation}</if>
+            <if test="jobrank != null  and jobrank != '' "> and jobrank = #{jobrank}</if>
+            <if test="hobby != null  and hobby != '' "> and hobby = #{hobby}</if>
+            <if test="trend != null  and trend != '' "> and trend = #{trend}</if>
+            <if test="jobstate != null  and jobstate != '' "> and jobstate = #{jobstate}</if>
+            <if test="pr != null  and pr != '' "> and pr = #{pr}</if>
+            <if test="medinsur != null  and medinsur != '' "> and medinsur = #{medinsur}</if>
+            <if test="fmi != null  and fmi != '' "> and fmi = #{fmi}</if>
+            <if test="fmistate != null  and fmistate != '' "> and fmistate = #{fmistate}</if>
+            <if test="security != null  and security != '' "> and security = #{security}</if>
+            <if test="bsecurity != null  and bsecurity != '' "> and bsecurity = #{bsecurity}</if>
+            <if test="subsis != null  and subsis != '' "> and subsis = #{subsis}</if>
+            <if test="fiveinsur != null  and fiveinsur != '' "> and fiveinsur = #{fiveinsur}</if>
+            <if test="poor != null  and poor != '' "> and poor = #{poor}</if>
+            <if test="drivenum != null  and drivenum != '' "> and drivenum = #{drivenum}</if>
+            <if test="techtype != null  and techtype != '' "> and techtype = #{techtype}</if>
+            <if test="techgrade != null  and techgrade != '' "> and techgrade = #{techgrade}</if>
+            <if test="titgrade != null  and titgrade != '' "> and titgrade = #{titgrade}</if>
+            <if test="prt != null  and prt != '' "> and prt = #{prt}</if>
+            <if test="move != null "> and move = #{move}</if>
+            <if test="fieldarea != null "> and fieldarea = #{fieldarea}</if>
+            <if test="forestarea != null "> and forestarea = #{forestarea}</if>
+            <if test="poolarea != null "> and poolarea = #{poolarea}</if>
+            <if test="income != null "> and income = #{income}</if>
+            <if test="totalppt != null "> and totalppt = #{totalppt}</if>
+            <if test="mincome != null "> and mincome = #{mincome}</if>
+            <if test="yincome != null "> and yincome = #{yincome}</if>
+            <if test="bank != null  and bank != '' "> and bank = #{bank}</if>
+            <if test="bankcardnum != null  and bankcardnum != '' "> and bankcardnum = #{bankcardnum}</if>
+            <if test="landowner != null  and landowner != '' "> and landowner = #{landowner}</if>
+            <if test="control != null  and control != '' "> and control = #{control}</if>
+            <if test="housearea != null "> and housearea = #{housearea}</if>
+            <if test="loginname != null  and loginname != '' "> and loginname = #{loginname}</if>
+            <if test="selfmanage != null  and selfmanage != '' "> and selfmanage = #{selfmanage}</if>
+            <if test="managetype != null  and managetype != '' "> and managetype = #{managetype}</if>
+            <if test="cost != null "> and cost = #{cost}</if>
+            <if test="mmincome != null "> and mmincome = #{mmincome}</if>
+            <if test="myincome != null "> and myincome = #{myincome}</if>
+            <if test="organization != null  and organization != '' "> and organization = #{organization}</if>
+            <if test="landtransfer != null "> and landtransfer = #{landtransfer}</if>
+            <if test="landincome != null "> and landincome = #{landincome}</if>
+            <if test="foresttransfer != null "> and foresttransfer = #{foresttransfer}</if>
+            <if test="forestincome != null "> and forestincome = #{forestincome}</if>
+            <if test="levy != null "> and levy = #{levy}</if>
+            <if test="rent != null "> and rent = #{rent}</if>
+            <if test="housestate != null  and housestate != '' "> and housestate = #{housestate}</if>
+            <if test="psa != null "> and psa = #{psa}</if>
+            <if test="ca != null "> and ca = #{ca}</if>
+            <if test="woban != null "> and woban = #{woban}</if>
+            <if test="water != null "> and water = #{water}</if>
+            <if test="ssa != null "> and ssa = #{ssa}</if>
+            <if test="gfs != null "> and gfs = #{gfs}</if>
+            <if test="wdr != null "> and wdr = #{wdr}</if>
+            <if test="rth != null "> and rth = #{rth}</if>
+            <if test="iscadre != null "> and iscadre = #{iscadre}</if>
+            <if test="cadrelevel != null  and cadrelevel != '' "> and cadrelevel = #{cadrelevel}</if>
+            <if test="islowincome != null "> and islowincome = #{islowincome}</if>
+            <if test="getlowdate != null "> and getlowdate = #{getlowdate}</if>
+            <if test="isdemob != null "> and isdemob = #{isdemob}</if>
+            <if test="demobdate != null "> and demobdate = #{demobdate}</if>
+            <if test="winaward != null  and winaward != '' "> and winaward = #{winaward}</if>
+            <if test="punish != null  and punish != '' "> and punish = #{punish}</if>
+            <if test="personphoto != null  and personphoto != '' "> and personphoto = #{personphoto}</if>
+            <if test="hkphoto != null  and hkphoto != '' "> and hkphoto = #{hkphoto}</if>
+            <if test="idphoto != null  and idphoto != '' "> and idphoto = #{idphoto}</if>
+            <if test="carphoto != null  and carphoto != '' "> and carphoto = #{carphoto}</if>
+            <if test="housephoto != null  and housephoto != '' "> and housephoto = #{housephoto}</if>
+            <if test="isuse != null "> and isuse = #{isuse}</if>
+        </where>
+    </select>
+
+    <select id="selectVillagerInfoById" parameterType="Integer" resultMap="VillagerInfoResult">
+        <include refid="selectVillagerInfoVo"/>
+        where vid = #{vid}
+    </select>
+
+    <select id="findByIdcardAndPassword" parameterType="String" resultMap="VillagerInfoResult">
+        select * from villager_info where idcard = #{idcard};
+    </select>
+
+    <insert id="insertVillagerInfo" parameterType="com.sixin.village.domain.VillagerInfo">
+        insert into villager_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="vid != null  ">vid,</if>
+            <if test="aid != null  and aid != ''  ">aid,</if>
+            <if test="vname != null  and vname != ''  ">vname,</if>
+            <if test="age != null  ">age,</if>
+            <if test="sex != null  and sex != ''  ">sex,</if>
+            <if test="nativeplace != null  and nativeplace != ''  ">nativeplace,</if>
+            <if test="nation != null  and nation != ''  ">nation,</if>
+            <if test="politics != null  and politics != ''  ">politics,</if>
+            <if test="partyjoindate != null  and partyjoindate != ''  ">partyjoindate,</if>
+            <if test="edulevel != null  and edulevel != ''  ">edulevel,</if>
+            <if test="marital != null  and marital != ''  ">marital,</if>
+            <if test="idcard != null  and idcard != ''  ">idcard,</if>
+            <if test="password != null  and password != ''  ">password,</if>
+            <if test="phone != null  and phone != ''  ">phone,</if>
+            <if test="health != null  and health != ''  ">health,</if>
+            <if test="special != null  and special != ''  ">special,</if>
+            <if test="entitle != null  and entitle != ''  ">entitle,</if>
+            <if test="familyplan != null  and familyplan != ''  ">familyplan,</if>
+            <if test="medical != null  and medical != ''  ">medical,</if>
+            <if test="subsidy != null  and subsidy != ''  ">subsidy,</if>
+            <if test="insurance != null  and insurance != ''  ">insurance,</if>
+            <if test="criminal != null  and criminal != ''  ">criminal,</if>
+            <if test="drug != null  and drug != ''  ">drug,</if>
+            <if test="drive != null  and drive != ''  ">drive,</if>
+            <if test="car != null  and car != ''  ">car,</if>
+            <if test="vtype != null  and vtype != ''  ">vtype,</if>
+            <if test="carnum != null  and carnum != ''  ">carnum,</if>
+            <if test="job != null  and job != ''  ">job,</if>
+            <if test="company != null  and company != ''  ">company,</if>
+            <if test="pra != null  and pra != ''  ">pra,</if>
+            <if test="home != null  and home != ''  ">home,</if>
+            <if test="grouptype != null  and grouptype != ''  ">grouptype,</if>
+            <if test="house != null  and house != ''  ">house,</if>
+            <if test="height != null  and height != ''  ">height,</if>
+            <if test="hhdnum != null  and hhdnum != ''  ">hhdnum,</if>
+            <if test="hhd != null  and hhd != ''  ">hhd,</if>
+            <if test="hhdidcard != null  and hhdidcard != ''  ">hhdidcard,</if>
+            <if test="hhdrelation != null  and hhdrelation != ''  ">hhdrelation,</if>
+            <if test="jobrank != null  and jobrank != ''  ">jobrank,</if>
+            <if test="hobby != null  and hobby != ''  ">hobby,</if>
+            <if test="trend != null  and trend != ''  ">trend,</if>
+            <if test="jobstate != null  and jobstate != ''  ">jobstate,</if>
+            <if test="pr != null  and pr != ''  ">pr,</if>
+            <if test="medinsur != null  and medinsur != ''  ">medinsur,</if>
+            <if test="fmi != null  and fmi != ''  ">fmi,</if>
+            <if test="fmistate != null  and fmistate != ''  ">fmistate,</if>
+            <if test="security != null  and security != ''  ">security,</if>
+            <if test="bsecurity != null  and bsecurity != ''  ">bsecurity,</if>
+            <if test="subsis != null  and subsis != ''  ">subsis,</if>
+            <if test="fiveinsur != null  and fiveinsur != ''  ">fiveinsur,</if>
+            <if test="poor != null  and poor != ''  ">poor,</if>
+            <if test="drivenum != null  and drivenum != ''  ">drivenum,</if>
+            <if test="techtype != null  and techtype != ''  ">techtype,</if>
+            <if test="techgrade != null  and techgrade != ''  ">techgrade,</if>
+            <if test="titgrade != null  and titgrade != ''  ">titgrade,</if>
+            <if test="prt != null  and prt != ''  ">prt,</if>
+            <if test="move != null  ">move,</if>
+            <if test="fieldarea != null  ">fieldarea,</if>
+            <if test="forestarea != null  ">forestarea,</if>
+            <if test="poolarea != null  ">poolarea,</if>
+            <if test="income != null  ">income,</if>
+            <if test="totalppt != null  ">totalppt,</if>
+            <if test="mincome != null  ">mincome,</if>
+            <if test="yincome != null  ">yincome,</if>
+            <if test="bank != null  and bank != ''  ">bank,</if>
+            <if test="bankcardnum != null  and bankcardnum != ''  ">bankcardnum,</if>
+            <if test="landowner != null  and landowner != ''  ">landowner,</if>
+            <if test="control != null  and control != ''  ">control,</if>
+            <if test="housearea != null  ">housearea,</if>
+            <if test="loginname != null  and loginname != ''  ">loginname,</if>
+            <if test="selfmanage != null  and selfmanage != ''  ">selfmanage,</if>
+            <if test="managetype != null  and managetype != ''  ">managetype,</if>
+            <if test="cost != null  ">cost,</if>
+            <if test="mmincome != null  ">mmincome,</if>
+            <if test="myincome != null  ">myincome,</if>
+            <if test="organization != null  and organization != ''  ">organization,</if>
+            <if test="landtransfer != null  ">landtransfer,</if>
+            <if test="landincome != null  ">landincome,</if>
+            <if test="foresttransfer != null  ">foresttransfer,</if>
+            <if test="forestincome != null  ">forestincome,</if>
+            <if test="levy != null  ">levy,</if>
+            <if test="rent != null  ">rent,</if>
+            <if test="housestate != null  and housestate != ''  ">housestate,</if>
+            <if test="psa != null  ">psa,</if>
+            <if test="ca != null  ">ca,</if>
+            <if test="woban != null  ">woban,</if>
+            <if test="water != null  ">water,</if>
+            <if test="ssa != null  ">ssa,</if>
+            <if test="gfs != null  ">gfs,</if>
+            <if test="wdr != null  ">wdr,</if>
+            <if test="rth != null  ">rth,</if>
+            <if test="iscadre != null  ">iscadre,</if>
+            <if test="cadrelevel != null  and cadrelevel != ''  ">cadrelevel,</if>
+            <if test="islowincome != null  ">islowincome,</if>
+            <if test="getlowdate != null  ">getlowdate,</if>
+            <if test="isdemob != null  ">isdemob,</if>
+            <if test="demobdate != null  ">demobdate,</if>
+            <if test="winaward != null  and winaward != ''  ">winaward,</if>
+            <if test="punish != null  and punish != ''  ">punish,</if>
+            <if test="personphoto != null  and personphoto != ''  ">personphoto,</if>
+            <if test="hkphoto != null  and hkphoto != ''  ">hkphoto,</if>
+            <if test="idphoto != null  and idphoto != ''  ">idphoto,</if>
+            <if test="carphoto != null  and carphoto != ''  ">carphoto,</if>
+            <if test="housephoto != null  and housephoto != ''  ">housephoto,</if>
+            <if test="isuse != null  ">isuse,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="vid != null  ">#{vid},</if>
+            <if test="aid != null  and aid != ''  ">#{aid},</if>
+            <if test="vname != null  and vname != ''  ">#{vname},</if>
+            <if test="age != null  ">#{age},</if>
+            <if test="sex != null  and sex != ''  ">#{sex},</if>
+            <if test="nativeplace != null  and nativeplace != ''  ">#{nativeplace},</if>
+            <if test="nation != null  and nation != ''  ">#{nation},</if>
+            <if test="politics != null  and politics != ''  ">#{politics},</if>
+            <if test="partyjoindate != null  and partyjoindate != ''  ">#{partyjoindate},</if>
+            <if test="edulevel != null  and edulevel != ''  ">#{edulevel},</if>
+            <if test="marital != null  and marital != ''  ">#{marital},</if>
+            <if test="idcard != null  and idcard != ''  ">#{idcard},</if>
+            <if test="password != null  and password != ''  ">#{password},</if>
+            <if test="phone != null  and phone != ''  ">#{phone},</if>
+            <if test="health != null  and health != ''  ">#{health},</if>
+            <if test="special != null  and special != ''  ">#{special},</if>
+            <if test="entitle != null  and entitle != ''  ">#{entitle},</if>
+            <if test="familyplan != null  and familyplan != ''  ">#{familyplan},</if>
+            <if test="medical != null  and medical != ''  ">#{medical},</if>
+            <if test="subsidy != null  and subsidy != ''  ">#{subsidy},</if>
+            <if test="insurance != null  and insurance != ''  ">#{insurance},</if>
+            <if test="criminal != null  and criminal != ''  ">#{criminal},</if>
+            <if test="drug != null  and drug != ''  ">#{drug},</if>
+            <if test="drive != null  and drive != ''  ">#{drive},</if>
+            <if test="car != null  and car != ''  ">#{car},</if>
+            <if test="vtype != null  and vtype != ''  ">#{vtype},</if>
+            <if test="carnum != null  and carnum != ''  ">#{carnum},</if>
+            <if test="job != null  and job != ''  ">#{job},</if>
+            <if test="company != null  and company != ''  ">#{company},</if>
+            <if test="pra != null  and pra != ''  ">#{pra},</if>
+            <if test="home != null  and home != ''  ">#{home},</if>
+            <if test="grouptype != null  and grouptype != ''  ">#{grouptype},</if>
+            <if test="house != null  and house != ''  ">#{house},</if>
+            <if test="height != null  and height != ''  ">#{height},</if>
+            <if test="hhdnum != null  and hhdnum != ''  ">#{hhdnum},</if>
+            <if test="hhd != null  and hhd != ''  ">#{hhd},</if>
+            <if test="hhdidcard != null  and hhdidcard != ''  ">#{hhdidcard},</if>
+            <if test="hhdrelation != null  and hhdrelation != ''  ">#{hhdrelation},</if>
+            <if test="jobrank != null  and jobrank != ''  ">#{jobrank},</if>
+            <if test="hobby != null  and hobby != ''  ">#{hobby},</if>
+            <if test="trend != null  and trend != ''  ">#{trend},</if>
+            <if test="jobstate != null  and jobstate != ''  ">#{jobstate},</if>
+            <if test="pr != null  and pr != ''  ">#{pr},</if>
+            <if test="medinsur != null  and medinsur != ''  ">#{medinsur},</if>
+            <if test="fmi != null  and fmi != ''  ">#{fmi},</if>
+            <if test="fmistate != null  and fmistate != ''  ">#{fmistate},</if>
+            <if test="security != null  and security != ''  ">#{security},</if>
+            <if test="bsecurity != null  and bsecurity != ''  ">#{bsecurity},</if>
+            <if test="subsis != null  and subsis != ''  ">#{subsis},</if>
+            <if test="fiveinsur != null  and fiveinsur != ''  ">#{fiveinsur},</if>
+            <if test="poor != null  and poor != ''  ">#{poor},</if>
+            <if test="drivenum != null  and drivenum != ''  ">#{drivenum},</if>
+            <if test="techtype != null  and techtype != ''  ">#{techtype},</if>
+            <if test="techgrade != null  and techgrade != ''  ">#{techgrade},</if>
+            <if test="titgrade != null  and titgrade != ''  ">#{titgrade},</if>
+            <if test="prt != null  and prt != ''  ">#{prt},</if>
+            <if test="move != null  ">#{move},</if>
+            <if test="fieldarea != null  ">#{fieldarea},</if>
+            <if test="forestarea != null  ">#{forestarea},</if>
+            <if test="poolarea != null  ">#{poolarea},</if>
+            <if test="income != null  ">#{income},</if>
+            <if test="totalppt != null  ">#{totalppt},</if>
+            <if test="mincome != null  ">#{mincome},</if>
+            <if test="yincome != null  ">#{yincome},</if>
+            <if test="bank != null  and bank != ''  ">#{bank},</if>
+            <if test="bankcardnum != null  and bankcardnum != ''  ">#{bankcardnum},</if>
+            <if test="landowner != null  and landowner != ''  ">#{landowner},</if>
+            <if test="control != null  and control != ''  ">#{control},</if>
+            <if test="housearea != null  ">#{housearea},</if>
+            <if test="loginname != null  and loginname != ''  ">#{loginname},</if>
+            <if test="selfmanage != null  and selfmanage != ''  ">#{selfmanage},</if>
+            <if test="managetype != null  and managetype != ''  ">#{managetype},</if>
+            <if test="cost != null  ">#{cost},</if>
+            <if test="mmincome != null  ">#{mmincome},</if>
+            <if test="myincome != null  ">#{myincome},</if>
+            <if test="organization != null  and organization != ''  ">#{organization},</if>
+            <if test="landtransfer != null  ">#{landtransfer},</if>
+            <if test="landincome != null  ">#{landincome},</if>
+            <if test="foresttransfer != null  ">#{foresttransfer},</if>
+            <if test="forestincome != null  ">#{forestincome},</if>
+            <if test="levy != null  ">#{levy},</if>
+            <if test="rent != null  ">#{rent},</if>
+            <if test="housestate != null  and housestate != ''  ">#{housestate},</if>
+            <if test="psa != null  ">#{psa},</if>
+            <if test="ca != null  ">#{ca},</if>
+            <if test="woban != null  ">#{woban},</if>
+            <if test="water != null  ">#{water},</if>
+            <if test="ssa != null  ">#{ssa},</if>
+            <if test="gfs != null  ">#{gfs},</if>
+            <if test="wdr != null  ">#{wdr},</if>
+            <if test="rth != null  ">#{rth},</if>
+            <if test="iscadre != null  ">#{iscadre},</if>
+            <if test="cadrelevel != null  and cadrelevel != ''  ">#{cadrelevel},</if>
+            <if test="islowincome != null  ">#{islowincome},</if>
+            <if test="getlowdate != null  ">#{getlowdate},</if>
+            <if test="isdemob != null  ">#{isdemob},</if>
+            <if test="demobdate != null  ">#{demobdate},</if>
+            <if test="winaward != null  and winaward != ''  ">#{winaward},</if>
+            <if test="punish != null  and punish != ''  ">#{punish},</if>
+            <if test="personphoto != null  and personphoto != ''  ">#{personphoto},</if>
+            <if test="hkphoto != null  and hkphoto != ''  ">#{hkphoto},</if>
+            <if test="idphoto != null  and idphoto != ''  ">#{idphoto},</if>
+            <if test="carphoto != null  and carphoto != ''  ">#{carphoto},</if>
+            <if test="housephoto != null  and housephoto != ''  ">#{housephoto},</if>
+            <if test="isuse != null  ">#{isuse},</if>
+        </trim>
+    </insert>
+
+    <update id="updateVillagerInfo" parameterType="com.sixin.village.domain.VillagerInfo">
+        update villager_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="vname != null  and vname != ''  ">vname = #{vname},</if>
+            <if test="age != null  ">age = #{age},</if>
+            <if test="sex != null  and sex != ''  ">sex = #{sex},</if>
+            <if test="nativeplace != null  and nativeplace != ''  ">nativeplace = #{nativeplace},</if>
+            <if test="nation != null  and nation != ''  ">nation = #{nation},</if>
+            <if test="politics != null  and politics != ''  ">politics = #{politics},</if>
+            <if test="partyjoindate != null  and partyjoindate != ''  ">partyjoindate = #{partyjoindate},</if>
+            <if test="edulevel != null  and edulevel != ''  ">edulevel = #{edulevel},</if>
+            <if test="marital != null  and marital != ''  ">marital = #{marital},</if>
+            <if test="idcard != null  and idcard != ''  ">idcard = #{idcard},</if>
+            <if test="password != null  and password != ''  ">password = #{password},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="health != null  and health != ''  ">health = #{health},</if>
+            <if test="special != null  and special != ''  ">special = #{special},</if>
+            <if test="entitle != null  and entitle != ''  ">entitle = #{entitle},</if>
+            <if test="familyplan != null  and familyplan != ''  ">familyplan = #{familyplan},</if>
+            <if test="medical != null  and medical != ''  ">medical = #{medical},</if>
+            <if test="subsidy != null  and subsidy != ''  ">subsidy = #{subsidy},</if>
+            <if test="insurance != null  and insurance != ''  ">insurance = #{insurance},</if>
+            <if test="criminal != null  and criminal != ''  ">criminal = #{criminal},</if>
+            <if test="drug != null  and drug != ''  ">drug = #{drug},</if>
+            <if test="drive != null  and drive != ''  ">drive = #{drive},</if>
+            <if test="car != null  and car != ''  ">car = #{car},</if>
+            <if test="vtype != null  and vtype != ''  ">vtype = #{vtype},</if>
+            <if test="carnum != null  and carnum != ''  ">carnum = #{carnum},</if>
+            <if test="job != null  and job != ''  ">job = #{job},</if>
+            <if test="company != null  and company != ''  ">company = #{company},</if>
+            <if test="pra != null  and pra != ''  ">pra = #{pra},</if>
+            <if test="home != null  and home != ''  ">home = #{home},</if>
+            <if test="grouptype != null  and grouptype != ''  ">grouptype = #{grouptype},</if>
+            <if test="house != null  and house != ''  ">house = #{house},</if>
+            <if test="height != null  and height != ''  ">height = #{height},</if>
+            <if test="hhdnum != null  and hhdnum != ''  ">hhdnum = #{hhdnum},</if>
+            <if test="hhd != null  and hhd != ''  ">hhd = #{hhd},</if>
+            <if test="hhdidcard != null  and hhdidcard != ''  ">hhdidcard = #{hhdidcard},</if>
+            <if test="hhdrelation != null  and hhdrelation != ''  ">hhdrelation = #{hhdrelation},</if>
+            <if test="jobrank != null  and jobrank != ''  ">jobrank = #{jobrank},</if>
+            <if test="hobby != null  and hobby != ''  ">hobby = #{hobby},</if>
+            <if test="trend != null  and trend != ''  ">trend = #{trend},</if>
+            <if test="jobstate != null  and jobstate != ''  ">jobstate = #{jobstate},</if>
+            <if test="pr != null  and pr != ''  ">pr = #{pr},</if>
+            <if test="medinsur != null  and medinsur != ''  ">medinsur = #{medinsur},</if>
+            <if test="fmi != null  and fmi != ''  ">fmi = #{fmi},</if>
+            <if test="fmistate != null  and fmistate != ''  ">fmistate = #{fmistate},</if>
+            <if test="security != null  and security != ''  ">security = #{security},</if>
+            <if test="bsecurity != null  and bsecurity != ''  ">bsecurity = #{bsecurity},</if>
+            <if test="subsis != null  and subsis != ''  ">subsis = #{subsis},</if>
+            <if test="fiveinsur != null  and fiveinsur != ''  ">fiveinsur = #{fiveinsur},</if>
+            <if test="poor != null  and poor != ''  ">poor = #{poor},</if>
+            <if test="drivenum != null  and drivenum != ''  ">drivenum = #{drivenum},</if>
+            <if test="techtype != null  and techtype != ''  ">techtype = #{techtype},</if>
+            <if test="techgrade != null  and techgrade != ''  ">techgrade = #{techgrade},</if>
+            <if test="titgrade != null  and titgrade != ''  ">titgrade = #{titgrade},</if>
+            <if test="prt != null  and prt != ''  ">prt = #{prt},</if>
+            <if test="move != null  ">move = #{move},</if>
+            <if test="fieldarea != null  ">fieldarea = #{fieldarea},</if>
+            <if test="forestarea != null  ">forestarea = #{forestarea},</if>
+            <if test="poolarea != null  ">poolarea = #{poolarea},</if>
+            <if test="income != null  ">income = #{income},</if>
+            <if test="totalppt != null  ">totalppt = #{totalppt},</if>
+            <if test="mincome != null  ">mincome = #{mincome},</if>
+            <if test="yincome != null  ">yincome = #{yincome},</if>
+            <if test="bank != null  and bank != ''  ">bank = #{bank},</if>
+            <if test="bankcardnum != null  and bankcardnum != ''  ">bankcardnum = #{bankcardnum},</if>
+            <if test="landowner != null  and landowner != ''  ">landowner = #{landowner},</if>
+            <if test="control != null  and control != ''  ">control = #{control},</if>
+            <if test="housearea != null  ">housearea = #{housearea},</if>
+            <if test="loginname != null  and loginname != ''  ">loginname = #{loginname},</if>
+            <if test="selfmanage != null  and selfmanage != ''  ">selfmanage = #{selfmanage},</if>
+            <if test="managetype != null  and managetype != ''  ">managetype = #{managetype},</if>
+            <if test="cost != null  ">cost = #{cost},</if>
+            <if test="mmincome != null  ">mmincome = #{mmincome},</if>
+            <if test="myincome != null  ">myincome = #{myincome},</if>
+            <if test="organization != null  and organization != ''  ">organization = #{organization},</if>
+            <if test="landtransfer != null  ">landtransfer = #{landtransfer},</if>
+            <if test="landincome != null  ">landincome = #{landincome},</if>
+            <if test="foresttransfer != null  ">foresttransfer = #{foresttransfer},</if>
+            <if test="forestincome != null  ">forestincome = #{forestincome},</if>
+            <if test="levy != null  ">levy = #{levy},</if>
+            <if test="rent != null  ">rent = #{rent},</if>
+            <if test="housestate != null  and housestate != ''  ">housestate = #{housestate},</if>
+            <if test="psa != null  ">psa = #{psa},</if>
+            <if test="ca != null  ">ca = #{ca},</if>
+            <if test="woban != null  ">woban = #{woban},</if>
+            <if test="water != null  ">water = #{water},</if>
+            <if test="ssa != null  ">ssa = #{ssa},</if>
+            <if test="gfs != null  ">gfs = #{gfs},</if>
+            <if test="wdr != null  ">wdr = #{wdr},</if>
+            <if test="rth != null  ">rth = #{rth},</if>
+            <if test="iscadre != null  ">iscadre = #{iscadre},</if>
+            <if test="cadrelevel != null  and cadrelevel != ''  ">cadrelevel = #{cadrelevel},</if>
+            <if test="islowincome != null  ">islowincome = #{islowincome},</if>
+            <if test="getlowdate != null  ">getlowdate = #{getlowdate},</if>
+            <if test="isdemob != null  ">isdemob = #{isdemob},</if>
+            <if test="demobdate != null  ">demobdate = #{demobdate},</if>
+            <if test="winaward != null  and winaward != ''  ">winaward = #{winaward},</if>
+            <if test="punish != null  and punish != ''  ">punish = #{punish},</if>
+            <if test="personphoto != null  and personphoto != ''  ">personphoto = #{personphoto},</if>
+            <if test="hkphoto != null  and hkphoto != ''  ">hkphoto = #{hkphoto},</if>
+            <if test="idphoto != null  and idphoto != ''  ">idphoto = #{idphoto},</if>
+            <if test="carphoto != null  and carphoto != ''  ">carphoto = #{carphoto},</if>
+            <if test="housephoto != null  and housephoto != ''  ">housephoto = #{housephoto},</if>
+            <if test="isuse != null  ">isuse = #{isuse},</if>
+        </trim>
+        where vid = #{vid}
+    </update>
+
+    <delete id="deleteVillagerInfoById" parameterType="Integer">
+        delete from villager_info where vid = #{vid}
+    </delete>
+
+    <delete id="deleteVillagerInfoByIds" parameterType="String">
+        delete from villager_info where vid in
+        <foreach item="vid" collection="array" open="(" separator="," close=")">
+            #{vid}
+        </foreach>
+    </delete>
+    <select id="selectPersonAllByApi" parameterType="com.sixin.village.domain.PersonApi" resultMap="VillagerInfoResult">
+        <include refid="selectVillagerInfoVo"/>
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="uname != null  and uname != ''  ">and vname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+            <if test="sex != null  and sex != '' "> and sex = #{sex}</if>
+        </where>
+        ORDER BY vname asc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+
+    <select id="selectGrouplist" parameterType="com.sixin.village.domain.PersonApi" resultMap="VillagerInfoResult">
+        select DISTINCT grouptype
+        from villager_info
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="politics != null  and politics != '' "> and politics LIKE CONCAT(CONCAT('%', #{politics}),'%')</if>
+        </where>
+        ORDER BY grouptype asc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+    <select id="selectvillagerInfoListBytype" parameterType="com.sixin.village.domain.PersonApi" resultMap="VillagerInfoResult">
+        <include refid="selectVillagerInfoVo"/>
+        <where>
+            <if test="state != null  and state != ''  ">grouptype = #{state}</if>
+            <if test="uname != null  and uname != '' "> and vname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+            <if test="politics = '%','党员'"> and politics LIKE CONCAT(CONCAT('%',  #{politics}),'%')</if>
+        </where>
+        ORDER BY vname asc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+
+    <select id="countpmBySex" parameterType="com.sixin.village.domain.PersonApi" resultMap="mcountResult">
+        select
+        count(vid) as msum,
+        count(sex = '男' or null ) as man,
+        count(sex = '女' or null ) as woman
+        from villager_info
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+        </where>
+    </select>
+    <select id="countNewPre" parameterType="com.sixin.village.domain.pubObjApi" resultMap="mcountResult">
+        select
+        count(vid) as msum,
+        count(age BETWEEN 0 and 2) as sum2
+        from villager_info
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+
+        </where>
+    </select>
+
+    <select id="selectbycadre" parameterType="com.sixin.village.domain.PersonApi" resultMap="VillagerInfoResult">
+        <include refid="selectVillagerInfoVo"/>
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="uname != null  and uname != '' "> and vname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+            <if test="sex != null  and sex != ''  ">and sex = #{sex}</if>
+            and iscadre=1
+        </where>
+        ORDER BY vname asc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+
+    <select id="countbylowincome" parameterType="com.sixin.village.domain.pubObjApi" resultMap="mcountResult">
+        select
+        count(vid) as msum,
+        count(islowincome = 1 or null ) as sum2,
+        count(islowincome = 0 or null ) as sum3
+        from villager_info
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+
+        </where>
+    </select>
+
+    <select id="countbydemob" parameterType="com.sixin.village.domain.pubObjApi" resultMap="mcountResult">
+        select
+        count(vid) as msum,
+        count(isdemob = 1 or null ) as sum2,
+        count(demobdate between #{beginTime} and #{endTime}) as sum3
+        from villager_info
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+        </where>
+    </select>
+
+    <select id="countbyagePart" parameterType="com.sixin.village.domain.PersonApi" resultMap="mcountResult">
+        select
+        count(vid) as msum,
+        count(age between #{minage} and #{maxage}  ) as sum2
+        from villager_info
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+        </where>
+    </select>
+
+    <select id="selectVillagerInfoByIds" parameterType="java.util.List" resultMap="VillagerInfoResult">
+        <include refid="selectVillagerInfoVo"/>
+        where vid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="updateIsuse">
+        update villager_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isuse != null  ">isuse = #{isuse},</if>
+        </trim>
+        where vid = #{vid}
+    </update>
+
+
+
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.FilemanagerMapper">
+    
+    <resultMap type="com.sixin.village.domain.Filemanager" id="FilemanagerResult">
+        <result property="fileid"    column="fileid"    />
+        <result property="filename"    column="filename"    />
+        <result property="uploaddate"    column="uploaddate"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="url"    column="url"    />
+        <result property="filesize"    column="filesize"    />
+        <result property="downloadnum"    column="downloadnum"    />
+        <result property="zan"    column="zan"    />
+        <result property="remark"    column="remark"    />
+        <result property="fsname"    column="fsname"    />
+        <result property="aid"    column="aid"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+	
+	<sql id="selectFilemanagerVo">
+        select fileid, filename, uploaddate, uid, uname, url, filesize, downloadnum, zan, remark, fsname, aid, type from tb_filemanager
+    </sql>
+	
+    <select id="selectFilemanagerList" parameterType="com.sixin.village.domain.Filemanager" resultMap="FilemanagerResult">
+        <include refid="selectFilemanagerVo"/>
+        <where>  
+            <if test="fileid != null "> and fileid = #{fileid}</if>
+             <if test="filename != null  and filename != '' "> and filename = #{filename}</if>
+             <if test="uploaddate != null "> and uploaddate = #{uploaddate}</if>
+             <if test="uid != null "> and uid = #{uid}</if>
+             <if test="uname != null  and uname != '' "> and uname = #{uname}</if>
+             <if test="url != null  and url != '' "> and url = #{url}</if>
+             <if test="filesize != null  and filesize != '' "> and filesize = #{filesize}</if>
+             <if test="downloadnum != null "> and downloadnum = #{downloadnum}</if>
+             <if test="zan != null "> and zan = #{zan}</if>
+             <if test="remark != null "> and remark = #{remark}</if>
+             <if test="fsname != null  and fsname != '' "> and fsname = #{fsname}</if>
+             <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+             <if test="type != null "> and type = #{type}</if>
+         </where>
+    </select>
+    
+    <select id="selectFilemanagerById" parameterType="Integer" resultMap="FilemanagerResult">
+        <include refid="selectFilemanagerVo"/>
+        where fileid = #{fileid}
+    </select>
+        
+    <insert id="insertFilemanager" parameterType="com.sixin.village.domain.Filemanager">
+        insert into tb_filemanager
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="fileid != null  ">fileid,</if>
+			<if test="filename != null  and filename != ''  ">filename,</if>
+			<if test="uploaddate != null  ">uploaddate,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="url != null  and url != ''  ">url,</if>
+			<if test="filesize != null  and filesize != ''  ">filesize,</if>
+			<if test="downloadnum != null  ">downloadnum,</if>
+			<if test="zan != null  ">zan,</if>
+			<if test="remark != null  ">remark,</if>
+			<if test="fsname != null  and fsname != ''  ">fsname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="type != null  ">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="fileid != null  ">#{fileid},</if>
+			<if test="filename != null  and filename != ''  ">#{filename},</if>
+			<if test="uploaddate != null  ">#{uploaddate},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="url != null  and url != ''  ">#{url},</if>
+			<if test="filesize != null  and filesize != ''  ">#{filesize},</if>
+			<if test="downloadnum != null  ">#{downloadnum},</if>
+			<if test="zan != null  ">#{zan},</if>
+			<if test="remark != null  ">#{remark},</if>
+			<if test="fsname != null  and fsname != ''  ">#{fsname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="type != null  ">#{type},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateFilemanager" parameterType="com.sixin.village.domain.Filemanager">
+        update tb_filemanager
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="filename != null  and filename != ''  ">filename = #{filename},</if>
+            <if test="uploaddate != null  ">uploaddate = #{uploaddate},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="url != null  and url != ''  ">url = #{url},</if>
+            <if test="filesize != null  and filesize != ''  ">filesize = #{filesize},</if>
+            <if test="downloadnum != null  ">downloadnum = #{downloadnum},</if>
+            <if test="zan != null  ">zan = #{zan},</if>
+            <if test="remark != null  ">remark = #{remark},</if>
+            <if test="fsname != null  and fsname != ''  ">fsname = #{fsname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="type != null  ">type = #{type},</if>
+        </trim>
+        where fileid = #{fileid}
+    </update>
+
+	<delete id="deleteFilemanagerById" parameterType="Integer">
+        delete from tb_filemanager where fileid = #{fileid}
+    </delete>
+	
+    <delete id="deleteFilemanagerByIds" parameterType="String">
+        delete from tb_filemanager where fileid in 
+        <foreach item="fileid" collection="array" open="(" separator="," close=")">
+            #{fileid}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-conditions-add">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">硬件版本：</label>
+				<div class="col-sm-8">
+					<input id="hversion" name="hversion" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">软件版本：</label>
+				<div class="col-sm-8">
+					<input id="sversion" name="sversion" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">内核温度：</label>
+				<div class="col-sm-8">
+					<input id="temp" name="temp" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">网络类型：</label>
+				<div class="col-sm-8">
+					<input id="nettype" name="nettype" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">信号质量：</label>
+				<div class="col-sm-8">
+					<input id="qsignal" name="qsignal" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">SD卡容量：</label>
+				<div class="col-sm-8">
+					<input id="sd" name="sd" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">MP3音量：</label>
+				<div class="col-sm-8">
+					<input id="mp3" name="mp3" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">FM音量：</label>
+				<div class="col-sm-8">
+					<input id="fm" name="fm" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">GSM音量：</label>
+				<div class="col-sm-8">
+					<input id="gsm" name="gsm" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">NULL音量：</label>
+				<div class="col-sm-8">
+					<input id="nullv" name="nullv" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">终端接入基站编号：</label>
+				<div class="col-sm-8">
+					<input id="basestation" name="basestation" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">创建时间：</label>
+				<div class="col-sm-8">
+					<input id="createtime" name="createtime" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">发射机的发射功率：</label>
+				<div class="col-sm-8">
+					<input id="transmitpower" name="transmitpower" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">反射功率：</label>
+				<div class="col-sm-8">
+					<input id="reflectedpower" name="reflectedpower" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">工作电压：</label>
+				<div class="col-sm-8">
+					<input id="workvoltage" name="workvoltage" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">FM调频发射RDS码：</label>
+				<div class="col-sm-8">
+					<input id="rds" name="rds" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">FM调频发射频率：</label>
+				<div class="col-sm-8">
+					<input id="fmfrequency" name="fmfrequency" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "broad/conditions"
+		$("#form-conditions-add").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/add", $('#form-conditions-add').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

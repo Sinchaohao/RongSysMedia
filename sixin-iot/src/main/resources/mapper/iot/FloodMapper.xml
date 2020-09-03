@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.FloodMapper">
+    <resultMap type="com.sixin.iot.domain.Flood" id="FloodResult">
+        <id property="id"    column="id"    />
+        <result property="ctype"    column="ctype"    />
+        <result property="cid"    column="cid"    />
+        <result property="vdata"    column="vdata"    />
+        <result property="vunit"    column="vunit"    />
+        <result property="colldate"    column="colldate"    />
+        <result property="collip"  column="collip"  />
+        <result property="startdate" column="startdate" />
+        <result property="exdate" column="exdate" />
+        <result property="status" column="status" />
+        <result property="deptid" column="deptid" />
+        <result property="user_name" column="user_name" />
+        <result property="uid" column="uid" />
+        <result property="demo" column="demo" />
+        <result property="delflag" column="delflag" />
+    </resultMap>
+    <select id="queryList" parameterType="com.sixin.iot.domain.Torrent" resultType="com.sixin.iot.domain.Torrent">
+        select id,imei,ctype,deptid from iotdata.tb_ioterminal a inner join ry.sys_dept d on a.deptid=d.dept_id
+        where ctype='水灾'
+        <if test="deptid != null and deptid != ''">
+            AND a.deptid like concat('%', #{deptid}, '%')
+        </if>
+    </select>
+    <!--定义selectFlood为查询整表命令-->
+    <sql id="selectFlood">
+    select a.id,a.ctype,cid,vdata,vunit,colldate,collip,a.startdate,a.exdate,a.status,a.deptid,u.user_name,a.uid,a.demo,a.delflag from iotdata.tb_collect a
+    inner join ry.sys_dept b on a.deptid=b.dept_id
+    inner join ry.sys_user u on a.uid=u.user_id
+    </sql>
+    <!--查询表的所有列表信息-->
+    <select id="selectFloodList" parameterType="com.sixin.iot.domain.Flood" resultMap="FloodResult">
+        <include refid="selectFlood"/>
+        <where>
+            a.ctype = '水灾'
+            <if test="id != null and id != ''">
+                AND a.id like concat('%', #{id}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status like concat('%', #{status}, '%')
+            </if>
+            <if test="collip != null and collip != ''">
+                AND collip like concat('%', #{collip}, '%')
+            </if>
+            <if test="vdata != null and vdata != ''">
+                AND vdata like concat('%', #{vdata}, '%')
+            </if>
+            <if test="vunit != null and vunit != ''">
+                AND vunit like concat('%', #{vunit}, '%')
+            </if>
+            <if test="ctype != null and ctype != ''">
+                AND a.ctype like concat('%', #{ctype}, '%')
+            </if>
+            <if test="cid != null and cid != ''">
+                AND cid like concat('%', #{cid}, '%')
+            </if>
+            <if test="colldate != null and colldate != ''">
+                AND colldate like concat('%', #{colldate}, '%')
+            </if>
+            <if test="startdate != null and startdate != ''">
+                AND a.startdate like concat('%', #{startdate}, '%')
+            </if>
+            <if test="exdate != null and exdate != ''">
+                AND a.exdate like concat('%', #{exdate}, '%')
+            </if>
+            <if test="deptid != null and deptid != ''">
+                AND a.deptid like concat('%', #{deptid}, '%')
+            </if>
+            <if test="uid != null and uid != ''">
+                AND a.uid like concat('%', #{uid}, '%')
+            </if>
+            <if test="demo != null and demo != ''">
+                AND a.demo like concat('%', #{demo}, '%')
+            </if>
+            <if test="delflag != null and delflag != ''">
+                AND a.delflag like concat('%', #{delflag}, '%')
+            </if>
+        </where>
+
+        <!--
+        order by id desc
+        -->
+    </select>
+
+    <select id="selectimei" parameterType="com.sixin.iot.domain.Ioterminal" resultType="Ioterminal">
+            select id,imei from tb_ioterminal
+            where ctype='水灾'
+    </select>
+    <!--根据id查询信息-->
+    <select id="selectByid" parameterType="String" resultMap="FloodResult">
+        <include refid="selectFlood"/>
+        where a.id=#{id}
+        <!-- select
+         a.id as id,
+         a.location as location,
+         a.rid as rid,
+         a.rname as rname,
+         a.econdu as econdu
+         from iot_led a
+         -->
+        <!--
+        <where>
+            <if test="id != null  and id != '' ">and a.id like CONCAT(#{id},'%')</if>
+            <if test="aname != null  and aname != '' ">and a.aname like CONCAT('%',#{aname},'%')</if>
+        </where>
+        -->
+    </select>
+    <!--向表中插入新数据-->
+    <insert id="insertFlood" parameterType="com.sixin.iot.domain.Flood">
+        insert into iotdata.tb_collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id !='' ">id,</if>
+            <if test="ctype != null  and ctype != ''  ">ctype,</if>
+            <if test="cid != null  and cid != ''  ">cid,</if>
+            <if test="vdata != null  and vdata != ''  ">vdata,</if>
+            <if test="vunit != null  and vunit != ''  ">vunit,</if>
+            <if test="colldate != null  and colldate != ''  ">colldate,</if>
+            <if test="collip != null and collip !='' ">collip,</if>
+            <if test="startdate != null and startdate != '' ">startdate,</if>
+            <if test="exdate != null and exdate !='' ">exdate,</if>
+            <if test="status !=null and status !=''">status,</if>
+            <if test="deptid !=null and deptid !=''">deptid,</if>
+            <if test="uid !=null and uid !=''">uid,</if>
+            <if test="demo !=null and demo !=''">demo,</if>
+            <if test="delflag !=null and delflag !=''">delflag,</if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id!='' ">#{id},</if>
+            <if test="ctype != null  and ctype != ''  ">#{ctype},</if>
+            <if test="cid != null  and cid != ''  ">#{cid},</if>
+            <if test="vdata != null  and vdata != ''  ">#{vdata},</if>
+            <if test="vunit != null  and vunit != ''  ">#{vunit},</if>
+            <if test="colldate != null  and colldate != ''  ">#{colldate},</if>
+            <if test="collip !=null and collip !='' ">#{collip},</if>
+            <if test="startdate !=null and startdate !='' ">#{startdate},</if>
+            <if test="exdate !=null and exdate !=''">#{exdate},</if>
+            <if test="status !=null and status !=''">#{status},</if>
+            <if test="deptid !=null and deptid !=''">#{deptid},</if>
+            <if test="uid !=null and uid !=''">#{uid},</if>
+            <if test="demo !=null and demo !=''">#{demo},</if>
+            <if test="delflag !=null and delflag !=''">#{delflag},</if>
+
+        </trim>
+    </insert>
+    <!--更新数据-->
+    <update id="updateFlood" parameterType="com.sixin.iot.domain.Flood">
+        update iotdata.tb_collect
+        <set>
+            <if test="cid != null  and cid != ''  ">cid = #{cid},</if>
+            <if test="vdata != null  and vdata != ''  ">vdata = #{vdata},</if>
+            <if test="vunit != null  and vunit != ''  ">vunit = #{vunit},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="colldate != null  and colldate != ''  ">colldate = #{colldate},</if>
+            <if test="collip != null  and collip != ''  ">collip = #{collip},</if>
+            <if test="startdate != null  and startdate != ''  ">startdate = #{startdate},</if>
+            <if test="exdate != null  and exdate != ''  ">exdate = #{exdate},</if>
+            <if test="deptid != null  and deptid != ''  ">deptid = #{deptid},</if>
+            <if test="uid!= null  and uid != ''  ">uid = #{uid},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id删除-->
+    <delete id="deleteFloodByid" parameterType="String">
+        delete from tb_collect where id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteFloodByids" parameterType="String">
+        delete from tb_collect where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+    <select id="selectFloodByids" parameterType="java.util.List" resultMap="FloodResult">
+        <include refid="selectFlood"/>
+        where id in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+    </select>
+
+</mapper>

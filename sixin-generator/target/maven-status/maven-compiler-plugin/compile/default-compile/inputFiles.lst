@@ -1,0 +1,13 @@
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\service\impl\GenTableColumnServiceImpl.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\service\IGenTableColumnService.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\domain\GenTable.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\service\impl\GenTableServiceImpl.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\domain\GenTableColumn.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\mapper\GenTableMapper.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\controller\GenController.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\config\GenConfig.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\service\IGenTableService.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\util\VelocityUtils.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\mapper\GenTableColumnMapper.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\util\GenUtils.java
+E:\atest\RongSys\sixin-generator\src\main\java\com\sixin\generator\util\VelocityInitializer.java

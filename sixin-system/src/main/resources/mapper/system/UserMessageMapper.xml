@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.system.mapper.UserMessageMapper">
+    
+    <resultMap type="UserMessage" id="UserMessageResult">
+        <result property="id"    column="id"    />
+        <result property="notifier"    column="notifier"    />
+        <result property="receiver_name" column="receiver_name"/>
+        <result property="receiver"    column="receiver"    />
+        <result property="outerid"    column="outerId"    />
+        <result property="type"    column="type"    />
+        <result property="timeCreate"    column="time_create"    />
+        <result property="status"    column="status"    />
+        <result property="notifierName"    column="notifier_name"    />
+        <result property="outerTitle"    column="outer_title"    />
+    </resultMap>
+    <sql id="selectUserMessageVo">
+        select a.id, notifier, b.user_name as receiver_name,receiver, outerId, a.`type`, a.time_create, a.status, notifier_name, outer_title
+        from user_message as a, sys_user as b
+    </sql>
+
+    <select id="selectUserMessageList" parameterType="UserMessage" resultMap="UserMessageResult">
+        <include refid="selectUserMessageVo"/>
+        <where>  
+            <if test="notifier != null "> and notifier = #{notifier}</if>
+            <if test="receiver != null "> and receiver = #{receiver}</if>
+            <if test="outerid != null "> and outerId = #{outerid}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="timeCreate != null "> and time_create = #{timeCreate}</if>
+            <if test="status != null "> and a.status = #{status}</if>
+            <if test="notifierName != null  and notifierName != ''"> and notifier_name like concat('%', #{notifierName}, '%')</if>
+            <if test="outerTitle != null  and outerTitle != ''"> and outer_title = #{outerTitle}</if>
+        </where>
+        group by a.id
+    </select>
+    
+    <select id="selectUserMessageById" parameterType="Long" resultMap="UserMessageResult">
+        <include refid="selectUserMessageVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectEnergyListByids" parameterType="java.util.List" resultMap="UserMessageResult">
+        <include refid="selectUserMessageVo"/>
+        where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <insert id="insertUserMessageList" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into user_message(notifier,receiver,outerId,`type`,notifier_name,outer_title)
+        values
+        <foreach collection="list" item="item" separator=",">
+        (#{item.notifier},#{item.receiver},#{item.outerid},#{item.type},#{item.notifierName},#{item.outerTitle})
+        </foreach>
+    </insert>
+
+    <insert id="insertUserMessage" parameterType="UserMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into user_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="notifier != null ">notifier,</if>
+            <if test="receiver != null ">receiver,</if>
+            <if test="outerid != null ">outerId,</if>
+            <if test="type != null ">type,</if>
+            <if test="timeCreate != null ">time_create,</if>
+            <if test="status != null ">status,</if>
+            <if test="notifierName != null  and notifierName != ''">notifier_name,</if>
+            <if test="outerTitle != null  and outerTitle != ''">outer_title,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="notifier != null ">#{notifier},</if>
+            <if test="receiver != null ">#{receiver},</if>
+            <if test="outerid != null ">#{outerid},</if>
+            <if test="type != null ">#{type},</if>
+            <if test="timeCreate != null ">#{timeCreate},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="notifierName != null  and notifierName != ''">#{notifierName},</if>
+            <if test="outerTitle != null  and outerTitle != ''">#{outerTitle},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserMessage" parameterType="UserMessage">
+        update user_message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="notifier != null ">notifier = #{notifier},</if>
+            <if test="receiver != null ">receiver = #{receiver},</if>
+            <if test="outerid != null ">outerId = #{outerid},</if>
+            <if test="type != null ">type = #{type},</if>
+            <if test="timeCreate != null ">time_create = #{timeCreate},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="notifierName != null  and notifierName != ''">notifier_name = #{notifierName},</if>
+            <if test="outerTitle != null  and outerTitle != ''">outer_title = #{outerTitle},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserMessageById" parameterType="Long">
+        delete from user_message where id = #{id}
+    </delete>
+
+    <delete id="deleteUserMessageByIds" parameterType="String">
+        delete from user_message where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

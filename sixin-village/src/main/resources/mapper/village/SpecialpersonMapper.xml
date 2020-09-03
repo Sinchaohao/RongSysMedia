@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.SpecialpersonMapper">
+
+    <resultMap type="com.sixin.village.domain.Specialperson" id="SpecialpersonResult">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="pid"    />
+        <result property="pname"    column="pname"    />
+        <result property="phone"    column="phone"    />
+        <result property="ptype"    column="ptype"    />
+        <result property="stationcode"    column="stationcode"    />
+        <result property="redius"    column="redius"    />
+        <result property="address"    column="address"    />
+        <result property="startdate"    column="startdate"    />
+        <result property="enddate"    column="enddate"    />
+        <result property="demo"    column="demo"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSpecialpersonVo">
+        select id,pid,pname,phone,ptype,stationcode,redius,address,startdate,enddate,demo,remark from ry.sys_specialperson
+    </sql>
+
+    <select id="selectSpecialpersonList" parameterType="com.sixin.village.domain.Specialperson" resultMap="SpecialpersonResult">
+        <include refid="selectSpecialpersonVo"/>
+        <where>
+            <if test="id !=null">and id=#{id}</if>
+            <if test="pid != null "> and pid = #{pid}</if>
+            <if test="pname != null "> and pname = #{pname}</if>
+            <if test="phone != null "> and phone = #{phone}</if>
+            <if test="ptype != null  and ptype != '' "> and ptype LIKE CONCAT(CONCAT('%', #{ptype}),'%')</if>
+            <if test="stationcode != null  and stationcode != '' "> and stationcode LIKE CONCAT(CONCAT('%', #{stationcode}),'%')</if>
+            <if test="redius != null "> and redius = #{redius}</if>
+            <if test="address != null and address != ''"> and address LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+            <if test="startdate != null  and startdate != '' "> and startdate LIKE CONCAT(CONCAT('%', #{startdate}),'%')</if>
+            <if test="enddate != null "> and enddate = #{enddate}</if>
+            <if test="demo != null "> and demo = #{demo}</if>
+            <if test="remark != null "> and remark = #{remark}</if>
+        </where>
+        ORDER BY id ASC
+    </select>
+
+    <select id="selectSpecialpersonById" parameterType="Integer" resultMap="SpecialpersonResult">
+        <include refid="selectSpecialpersonVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSpecialpersonListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="SpecialpersonResult">
+        <include refid="selectSpecialpersonVo"/>
+        <where>
+            <if test="id != null  and id != '' ">id in
+                <foreach collection="listuid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="pid != null  and pid != '' "> and pid LIKE CONCAT(CONCAT('%', #{pid}),'%')</if>
+        </where>
+        ORDER BY pid ASC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

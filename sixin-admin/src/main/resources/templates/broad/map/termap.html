@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>终端地图模块</title>
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
+    <script th:src="@{http://api.map.baidu.com/api?v=3.0&ak=68W956C0lFvh7EcBplXrEwkNAx5leb2f}"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+        body, html,#allmap {width: 100%;height: 97%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+    </style>
+</head>
+<body class="gray-bg">
+<div class="col-xs-12">
+    <form id="formId" style="display: inline-flex">
+        <select class="chosen-select form-control" name="key1" id="key1" data-placeholder="关键词" >
+            <option value="tid">终端IMEI</option>
+            <option value="tname">终端名称</option>
+            <option value="aname">所属用户</option>
+            <option value="aname">所属分组</option>
+<!--            <option value="lastaccesstime">终端最后访问日期</option>-->
+<!--            <option value="intertime">终端交互时间</option>-->
+            <option value="phone">手机号码</option>
+            <option value="address">地址</option>
+            <option value="facid">终端出厂编号</option>
+            <option value="comstand">终端接入通信网标准</option>
+            <option value="broadtel">终端接入广播电视网模式</option>
+            <option value="fmfrequency">终端可接收广播频率</option>
+            <option value="manager">终端管理员名称</option>
+            <option value="managertel">终端管理员电话</option>
+<!--            <option value="createdtime">建立日期</option>-->
+        </select>
+        <input type="text" name="tid" id="key11" style="width: 100px"/>
+        <select class="chosen-select form-control" name="key2" id="key2" data-placeholder="关键词">
+            <option value="tname">终端名称</option>
+            <option value="aname">所属用户</option>
+            <option value="aname">所属分组</option>
+<!--            <option value="lastaccesstime">终端最后访问日期</option>-->
+<!--            <option value="intertime">终端交互时间</option>-->
+            <option value="phone">手机号码</option>
+            <option value="address">地址</option>
+            <option value="facid">终端出厂编号</option>
+            <option value="comstand">终端接入通信网标准</option>
+            <option value="broadtel">终端接入广播电视网模式</option>
+            <option value="fmfrequency">终端可接收广播频率</option>
+            <option value="manager">终端管理员名称</option>
+            <option value="managertel">终端管理员电话</option>
+<!--            <option value="createdtime">建立日期</option>-->
+            <option value="tid">终端IMEI</option>
+        </select>
+        <input type="text" name="tname" id="key22" style="width: 100px"/>
+        <select class="chosen-select form-control" name="key3" id="key3" data-placeholder="关键词">
+            <option value="aname">所属用户</option>
+            <option value="aname">所属分组</option>
+<!--            <option value="lastaccesstime">终端最后访问日期</option>-->
+<!--            <option value="intertime">终端交互时间</option>-->
+            <option value="phone">手机号码</option>
+            <option value="address">地址</option>
+            <option value="facid">终端出厂编号</option>
+            <option value="comstand">终端接入通信网标准</option>
+            <option value="broadtel">终端接入广播电视网模式</option>
+            <option value="fmfrequency">终端可接收广播频率</option>
+            <option value="manager">终端管理员名称</option>
+            <option value="managertel">终端管理员电话</option>
+<!--            <option value="createdtime">建立日期</option>-->
+            <option value="tid">终端IMEI</option>
+            <option value="tname">终端名称</option>
+        </select>
+        <input type="text" name="uname" id="key33" style="width: 100px"/>
+        <select class="chosen-select form-control" name="typekey" id="typekey" data-placeholder="终端状态">
+            <option value="0">正常</option>
+            <option value="1">异常1天</option>
+            <option value="2">异常2天</option>
+            <option value="3">故障</option>
+        </select>
+        <select class="chosen-select form-control" name="isuse" id="isuse" data-placeholder="是否启用" >
+            <option value="1"> 启用</option>
+            <option value="0">停用</option>
+        </select>
+        <a class="btn btn-primary btn-rounded btn-sm" onclick="searchbtn()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+    </form>
+</div>
+<div id="allmap"></div>
+</body>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:inline="javascript">
+    var ctx = [[@{/}]];
+    var terdata = [];
+    var points = [];
+    terdata = [[${mapinfoList}]];
+    for (var i = 0; i < [[${mapinfoList.size()}]]; i++) {
+        points.push({
+            lng:terdata[i].longitude,
+            lat:terdata[i].latitude,
+            tid:terdata[i].tid,
+            aname:terdata[i].aname,
+            uname:terdata[i].uname,
+            phone:terdata[i].phone,
+            address:terdata[i].address,
+            isuse:terdata[i].isuse
+        });
+    }
+    //创建地图
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(75.98,39.47), 11);  // 设置中心点
+    map.centerAndZoom( "喀什地区");
+    map.setCurrentCity("喀什地区");          //设置为长沙
+    map.addControl(new BMap.MapTypeControl({
+        mapTypes: [
+            BMAP_NORMAL_MAP
+        ]}));
+    map.enableScrollWheelZoom(true);
+    addMarker(points);
+    function addMarker(points) {
+        //循环建立标注点
+        for(var i=0, pointsLen = points.length; i<pointsLen; i++) {
+            var point = new BMap.Point(points[i].lng, points[i].lat); //将标注点转化成地图上的点
+            var marker = new BMap.Marker(point); //将点转化成标注点
+            var stopIcon=new BMap.Icon("http://api.map.baidu.com/img/markers.png",new BMap.Size(23, 25), { imageOffset: new BMap.Size(0, 0 - 11 * 25)});//标注换颜色
+            if(points[i].isuse==false)
+            {
+                marker = new BMap.Marker(point,{icon:stopIcon});
+            }
+            map.addOverlay(marker);  //将标注点添加到地图上
+            //添加监听事件
+            (function() {
+                var thePoint = points[i];
+                marker.addEventListener("click",
+                    function() {
+                        showInfo(this,thePoint);
+                    });
+            })();
+        }
+    }
+    function showInfo(thisMarker,point) {
+        //获取点的信息
+        var thePoint=JSON.stringify(point);
+        if(point.isuse==true) {
+            var sContent = "<ul style=\"margin:0 0 5px 0;padding:0.2em 0\">" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<a style=\"width: 150px;display: inline-block;\"  href='/broad/proSinmanage/addtest/0?params="+point.tid+"'>新增节目</a>" + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">终端IEMI：</span>" + point.tid + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">分组名称：</span>" + point.aname + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">所属用户：</span>" + point.uname + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">终端电话：</span>" + point.phone + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">安装地址：</span>" + point.address + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">经度：</span>" + point.lng + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">维度：</span>" + point.lat + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 50px;display: inline-block;float:left;\">状态：</span><div class=\"onoffswitch\" style=\"float:left;\">" +
+                "<input type=\"checkbox\" checked=\"true\" class=\"onoffswitch-checkbox\" onclick='update_show(" + thePoint + ")'  id=\"status\" name=\"status\"><label class=\"onoffswitch-label\" for=\"status\"><span class=\"onoffswitch-inner\"></span><span class=\"onoffswitch-switch\" style=\"height: 20px;\"></span></label></div></li>" +
+                "</ul>";
+        }else if(point.isuse==false){
+            var sContent = "<ul style=\"margin:0 0 5px 0;padding:0.2em 0\">" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<a style=\"width: 150px;display: inline-block;\" >添加节目</a>" + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">终端IEMI：</span>" + point.tid + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">分组名称：</span>" + point.aname + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">所属用户：</span>" + point.uname + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">终端电话：</span>" + point.phone + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">安装地址：</span>" + point.address + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">经度：</span>" + point.lng + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 150px;display: inline-block;\">维度：</span>" + point.lat + "</li>" +
+                "<li style=\"line-height: 26px;font-size: 15px;\">" +
+                "<span style=\"width: 50px;display: inline-block;float:left;\">状态：</span><div class=\"onoffswitch\" style=\"float:left;\">" +
+                "<input type=\"checkbox\"  class=\"onoffswitch-checkbox\" onclick='update_show(" + thePoint + ")'  id=\"status\" name=\"status\"><label class=\"onoffswitch-label\" for=\"status\"><span class=\"onoffswitch-inner\"></span><span class=\"onoffswitch-switch\" style=\"height: 20px;\"></span></label></div></li>" +
+                "</ul>";
+        }
+        var infoWindow = new BMap.InfoWindow(sContent); //创建信息窗口对象
+        thisMarker.openInfoWindow(infoWindow); //图片加载完后重绘infoWindow
+    }
+    function  update_show(nPoint) {
+        var allOverlay = map.getOverlays();
+        for(var i = 0;i<allOverlay.length;i++) {
+            if(allOverlay[i].toString()=="[object Marker]") {
+                if (allOverlay[i].getPosition().lng == nPoint.lng && allOverlay[i].getPosition().lat == nPoint.lat) {
+                    map.removeOverlay(allOverlay[i]);
+                }
+            }
+        }
+        var status = $("input[name='status']").is(':checked') == true ? true : false;
+        nPoint.isuse=status;
+        $.ajax({
+            cache : false,
+            type : "POST",
+            url : ctx + "broad/organization/isuseSet",
+            data : {
+                "tid": nPoint.tid,
+                "isuse": status,
+            },
+            error : function(request) {
+                $.modal.alertError("系统错误");
+            }
+        });
+        if($("input[name='status']").is(':checked')==true){
+            console.log($("input[name='status']").is(':checked'));
+            var point = new BMap.Point(nPoint.lng, nPoint.lat); //将标注点转化成地图上的点
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+            //添加监听事件
+            (function() {
+                var thePoint = nPoint;
+                marker.addEventListener("click",
+                    function() {
+                        showInfo(this,thePoint);
+                    });
+            })();
+        }else{
+            var point = new BMap.Point(nPoint.lng, nPoint.lat); //将标注点转化成地图上的点
+            var stopIcon=new BMap.Icon("http://api.map.baidu.com/img/markers.png",new BMap.Size(23, 25), {offset: new BMap.Size(12, 25), imageOffset: new BMap.Size(0, 0 - 10 * 25)});//标注换颜色
+            var marker = new BMap.Marker(point,{icon:stopIcon});
+            map.addOverlay(marker);
+            //添加监听事件
+            (function() {
+                var thePoint = nPoint;
+                marker.addEventListener("click",
+                    function() {
+                        showInfo(this,thePoint);
+                    });
+            })();
+        }
+    }
+
+    $('#key1').on('change', function (e) {
+        $("#key11").attr("name",$("#key1").val())
+    });
+    $('#key2').on('change', function (e) {
+        $("#key22").attr("name",$("#key2").val())
+    });
+    $('#key3').on('change', function (e) {
+        $("#key33").attr("name",$("#key3").val())
+    });
+
+    function searchbtn() {
+        var params = $("#formId").serializeArray();
+        var  paramsa = {}
+        params.forEach(function (item){
+            var temp = {}
+            if(item.name&&item.name!="key1"&&item.name!="key2"&&item.name!="key3"){
+                paramsa[item.name] = item.value
+            }
+        });
+        var params = urlencode(paramsa);
+        var prefix = ctx + "broad/map/list?"+params;
+        window.location.replace(prefix)
+    }
+
+    function urlencode(data){
+        var _result = [];
+        for (var key in data){
+            var value = data[key];
+            if (value.constructor == Array){
+                value.forEach(function(_value){
+                    _result.push(key + "=" + _value);
+                });
+            }else{
+                _result.push(key + '=' + value);
+            }
+        }
+        return _result.join('&');
+    }
+
+</script>
+</html>

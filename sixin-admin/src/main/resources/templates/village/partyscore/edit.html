@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-partyscore-edit" th:object="${partyscore}">
+            <input id="sfid" name="sfid" th:field="*{sfid}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">被评价党员姓名：</label>
+				<div class="col-sm-8">
+					<input id="pname" name="pname" th:field="*{pname}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">性别：</label>
+				<div class="col-sm-8">
+					<input id="sex" name="sex" th:field="*{sex}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">出生年月：</label>
+				<div class="col-sm-8">
+					<input id="birthday" name="birthday" th:field="*{birthday}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">入党时间：</label>
+				<div class="col-sm-8">
+					<input id="partyjoindate" name="partyjoindate" th:field="*{partyjoindate}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">优秀：</label>
+				<div class="col-sm-8">
+					<input id="excellent" name="excellent" th:field="*{excellent}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">合格：</label>
+				<div class="col-sm-8">
+					<input id="fine" name="fine" th:field="*{fine}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">基本合格：</label>
+				<div class="col-sm-8">
+					<input id="qualified" name="qualified" th:field="*{qualified}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">不合格：</label>
+				<div class="col-sm-8">
+					<input id="unqualified" name="unqualified" th:field="*{unqualified}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">评分备注：</label>
+				<div class="col-sm-8">
+					<input id="note" name="note" th:field="*{note}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">评分日期：</label>
+				<div class="col-sm-8">
+					<input id="adddate" name="adddate" th:field="*{adddate}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">党员评分期数：</label>
+				<div class="col-sm-8">
+					<input id="no" name="no" th:field="*{no}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">评价人编号：</label>
+				<div class="col-sm-8">
+					<input id="uid" name="uid" th:field="*{uid}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">评价人姓名：</label>
+				<div class="col-sm-8">
+					<input id="uname" name="uname" th:field="*{uname}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地区编号：</label>
+				<div class="col-sm-8">
+					<input id="aid" name="aid" th:field="*{aid}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">是否有效：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "village/partyscore"
+		$("#form-partyscore-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-partyscore-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

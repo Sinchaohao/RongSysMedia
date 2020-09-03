@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.BoardMapper">
+    <resultMap type="com.sixin.iot.domain.Board" id="BoardResult">
+        <id property="id"    column="id"    />
+        <result property="ctype"    column="ctype"    />
+        <result property="cid"    column="cid"    />
+        <result property="cfun"    column="cfun"    />
+        <result property="collip"    column="collip"    />
+        <result property="status"    column="status"    />
+        <result property="startdate"    column="startdate"    />
+        <result property="exdate"    column="exdate"    />
+        <result property="deptid"    column="deptid"    />
+        <result property="uid"    column="uid"    />
+        <result property="demo"    column="demo"    />
+        <result property="delflag"    column="delflag"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.iot.domain.Iotree" id="BoardIMEIResult">
+        <result property="dept_id"    column="dept_id"    />
+        <result property="parent_id"    column="parent_id"    />
+        <result property="imei"    column="imei"    />
+    </resultMap>
+    <!--定义selectBoard为查询整表命令-->
+    <sql id="selectBoard">
+    select distinct(a.id),a.ctype,a.cid,a.cfun,a.conip,a.status,a.startdate,a.exdate,a.deptid,a.uid,c.user_name,a.demo,a.delflag
+    from iotdata.tb_control a
+        inner join ry.sys_dept b on a.deptid=b.dept_id
+        inner join ry.sys_user c on a.uid=c.user_id
+        inner join iotdata.tb_ioterminal d on a.cid = d.imei
+    </sql>
+
+    <select id="queryList" parameterType="com.sixin.iot.domain.Torrent" resultType="com.sixin.iot.domain.Torrent">
+        select id,imei,ctype,deptid from iotdata.tb_ioterminal a inner join ry.sys_dept b on a.deptid=b.dept_id
+        where ctype='广告'
+        <if test="deptid != null and deptid != ''">
+            AND a.deptid like concat('%', #{deptid}, '%')
+        </if>
+    </select>
+
+    <select id="selectList" parameterType="com.sixin.iot.domain.Iotype" resultType="com.sixin.iot.domain.Iotype">
+        select id,ctype from iotdata.tb_iotype
+    </select>
+
+
+    <!--查询表的所有列表信息-->
+    <select id="selectBoardList" parameterType="com.sixin.iot.domain.Board" resultMap="BoardResult">
+        <include refid="selectBoard"/>
+        <where>
+            a.ctype='广告'
+            <if test="id != null and id != ''">
+                AND a.id like concat('%',#{id},'%')
+            </if>
+            <if test="cid != null and cid != ''">
+                AND a.cid like concat('%',#{cid},'%')
+            </if>
+            <if test="cfun != null and cfun != ''">
+                AND a.cfun like concat('%',#{cfun},'%')
+            </if>
+            <if test="conip != null and conip != ''">
+                AND a.conip like concat('%',#{conip},'%')
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status like concat('%',#{status},'%')
+            </if>
+            <if test="startdate != null and startdate != ''">
+                AND a.startdate like concat('%',#{startdate},'%')
+            </if>
+            <if test="exdate != null and exdate != ''">
+                AND a.exdate like concat('%',#{exdate},'%')
+            </if>
+            <if test="deptid != null and deptid != ''">
+                AND a.deptid like concat('%',#{deptid},'%')
+            </if>
+            <if test="uid != null and uid != ''">
+                AND a.uid like concat('%',#{uid},'%')
+            </if>
+            <if test="demo != null and demo != ''">
+                AND a.demo like concat('%',#{demo},'%')
+            </if>
+            <if test="delflag != null and delflag != ''">
+                AND a.delflag like concat('%',#{delflag},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--根据id删除-->
+    <delete id="deleteBoardByid" parameterType="Long">
+        delete from tb_control where id = #{id}
+    </delete>
+    <!--批量删除-->
+    <delete id="deleteBoardByids" parameterType="String">
+        delete from tb_control where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--根据id查询信息-->
+    <select id="selectByid" parameterType="Long" resultMap="BoardResult">
+        <include refid="selectBoard"/>
+        where a.id=#{id}
+    </select>
+
+    <!--根据ids查询信息-->
+    <select id="selectBoardByids" parameterType="java.util.List" resultMap="BoardResult">
+        <include refid="selectBoard"/>
+        where a.id in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+    </select>
+
+    <select id="selectUserList" parameterType="com.sixin.system.domain.SysUser" resultType="SysUser">
+        select user_id,user_name from ry.sys_user
+    </select>
+
+    <insert id="insertDataToTable" parameterType="com.sixin.iot.domain.Board">
+
+	 insert into board (id,ctype,cid,cfun,conip,status,startdate,exdate,deptid,uid,demo,delflag) values (#{id},#{ctype},#{cid},#{cfun},#{conip},#{status},#{startdate},#{exdate},#{deptid},#{uid},#{demo},#{delflag})
+
+	 </insert>
+
+    <!--向表中插入新数据-->
+    <insert id="insertBoard" parameterType="com.sixin.iot.domain.Board">
+        insert into tb_control
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id!='' ">id,</if>
+            <if test="cid != null  and cid != ''  ">cid,</if>
+            <if test="ctype != null  and ctype != ''  ">ctype,</if>
+            <if test="cfun != null  and cfun != ''  ">cfun,</if>
+            <if test="conip != null  and conip != ''  ">conip,</if>
+            <if test="status != null  and status != ''  ">status,</if>
+            <if test="startdate != null  ">startdate,</if>
+            <if test="exdate != null ">exdate,</if>
+            <if test="deptid != null  and deptid != ''  ">deptid,</if>
+            <if test="uid != null  and uid != ''  ">uid,</if>
+            <if test="demo != null  and demo != ''  ">demo,</if>
+            <if test="delflag != null  and delflag != ''  ">delflag,</if>
+        </trim>
+        values<trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null and id!='' ">#{id},</if>
+        <if test="cid != null  and cid != ''  ">#{cid},</if>
+        <if test="ctype != null  and ctype != ''  ">#{ctype},</if>
+        <if test="cfun != null  and cfun != ''  ">#{cfun},</if>
+        <if test="conip != null  and conip != ''  ">#{conip},</if>
+        <if test="status != null  and status != ''  ">#{status},</if>
+        <if test="startdate != null ">#{startdate},</if>
+        <if test="exdate != null ">#{exdate},</if>
+        <if test="deptid != null  and deptid != ''  ">#{deptid},</if>
+        <if test="uid != null  and uid != ''  ">#{uid},</if>
+        <if test="demo != null  and demo != ''  ">#{demo},</if>
+        <if test="delflag != null  and delflag != ''  ">#{delflag},</if>
+    </trim>
+    </insert>
+    <!--更新数据-->
+    <update id="updateBoard" parameterType="com.sixin.iot.domain.Board">
+        update tb_control
+        <set>
+            <if test="ctype != null  and ctype != ''  ">ctype = #{ctype},</if>
+            <if test="cid != null  and cid != ''  ">cid = #{cid},</if>
+            <if test="cfun != null  ">cfun = #{cfun},</if>
+            <if test="conip != null  and conip != ''  ">conip = #{conip},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="startdate != null ">startdate = #{startdate},</if>
+            <if test="exdate != null  ">exdate = #{exdate},</if>
+            <if test="deptid != null  and deptid != ''  ">deptid = #{deptid},</if>
+            <if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+
+
+</mapper>

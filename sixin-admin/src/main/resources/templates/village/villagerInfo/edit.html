@@ -1,0 +1,932 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg" onload="getAge()">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-villagerInfo-edit" th:object="${villagerInfo}">
+		<input id="vid" name="vid" th:field="*{vid}"  type="hidden">
+		<!--<div class="form-group">
+            <label class="col-sm-3 control-label">地域编号：</label>
+            <div class="col-sm-8">
+                <input id="aid" name="aid" th:field="*{aid}" class="form-control" type="text">
+            </div>
+        </div>-->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">地域编号：</label>
+			<div class="col-sm-8">
+				<input  class="form-control" type="text" id="aid" name="aid"  th:field="*{aid}" onclick="selectAidTree()" readonly="true" placeholder="点击选择区域">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">所属村组：</label>
+			<div class="col-sm-8">
+				<input class="form-control" type="text" name="grouptype" th:field="*{grouptype}" onclick="selectAidTree()" readonly="true" id="aidName"  placeholder="请选择所属村组">
+				<!--<input id="grouptype" name="grouptype" th:field="*{grouptype}" class="form-control" type="text">-->
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">村民姓名：</label>
+			<div class="col-sm-8">
+				<input id="vname" name="vname" th:field="*{vname}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">年龄：</label>
+			<div class="col-sm-8">
+				<input id="age" name="age" th:field="*{age}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">性别：</label>
+			<div class="col-sm-8">
+				<select id="sex" name="sex" th:field="*{sex}" class="form-control" type="text">
+					<option value="男">男</option>
+					<option value="女">女</option>
+					<option value="未知">未知</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">籍贯：</label>
+			<div class="col-sm-8">
+				<input id="nativeplace" name="nativeplace" th:field="*{nativeplace}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">户口性质：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="prt" name="prt" th:field="*{prt}" type="text">
+					<option value=""></option>
+					<option value="城镇户口">城镇户口</option>
+					<option value="农村居民户口">农村居民户口</option>
+					<option value="集体户口">集体户口</option>
+					<option value="农业户口">农业户口</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">户籍地址：</label>
+			<div class="col-sm-8">
+				<input id="pra" name="pra" th:field="*{pra}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">民族：</label>
+			<div class="col-sm-8">
+				<input id="nation" name="nation" th:field="*{nation}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">政治面貌：</label>
+			<div class="col-sm-8">
+				<select id="politics" name="politics" th:field="*{politics}" class="form-control" type="text">
+					<option value=""></option>
+					<option value="群众">群众</option>
+					<option value="党员">党员</option>
+					<option value="中共预备党员">中共预备党员</option>
+					<option value="共青团员">共青团员</option>
+					<option value="民革党员">民革党员</option>
+					<option value="民盟盟员">民盟盟员</option>
+					<option value="民建会员">民建会员</option>
+					<option value="民进会员">民进会员</option>
+					<option value="台盟盟员">台盟盟员</option>
+					<option value="农工党党员">农工党党员</option>
+					<option value="致公党党员">致公党党员</option>
+					<option value="无党派人士">无党派人士</option>
+					<option value="九三学社社员">九三学社社员</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">入党年月：</label>
+			<div class="col-sm-8">
+				<input class="form-control laydate-icon  layer-date" name="partyjoindate"
+					   id="partyjoindate" th:field="*{partyjoindate}" value="" readonly="readonly"
+					   style="width:120px;" placeholder="入党日期" title="入党日期"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">文化程度：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="edulevel" th:field="*{edulevel}" name="edulevel"  type="text">
+					<option value=""></option>
+					<option value="本科">本科</option>
+					<option value="研究生">研究生</option>
+					<option value="大专">大专</option>
+					<option value="中专">中专</option>
+					<option value="高中">高中</option>
+					<option value="初中">初中</option>
+					<option value="小学">小学</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">婚姻状况：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="marital" name="marital" th:field="*{marital}" type="text">
+					<option value="未婚">未婚</option>
+					<option value="已婚">已婚</option>
+					<option value="丧偶">丧偶</option>
+					<option value="离婚">离婚</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">身份证号码：</label>
+			<div class="col-sm-8">
+				<input id="idcard" name="idcard" th:field="*{idcard}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">联系方式：</label>
+			<div class="col-sm-8">
+				<input id="phone" name="phone" th:field="*{phone}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">职业：</label>
+			<div class="col-sm-8">
+				<input id="job" name="job" th:field="*{job}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">工作单位：</label>
+			<div class="col-sm-8">
+				<input id="company" name="company" th:field="*{company}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">健康状况：</label>
+			<div class="col-sm-8">
+				<input id="health" name="health" th:field="*{health}" class="form-control" type="text">
+				<!--<select class="chosen-select form-control" id="health" name="health" th:field="*{health}" type="text">-->
+				<!--<option value="健康">健康</option>-->
+				<!--<option value="一般">一般</option>-->
+				<!--<option value="较差">较差</option>-->
+				<!--</select>-->
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">特种（残疾）信息：</label>
+			<div class="col-sm-8">
+				<input id="special" name="special" th:field="*{special}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">优抚信息：</label>
+			<div class="col-sm-8">
+				<input id="entitle" name="entitle" th:field="*{entitle}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">计生情况：</label>
+			<div class="col-sm-8">
+				<input id="familyplan" name="familyplan" th:field="*{familyplan}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">医疗情况：</label>
+			<div class="col-sm-8">
+				<input id="medical" name="medical" th:field="*{medical}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">补助情况：</label>
+			<div class="col-sm-8">
+				<input id="subsidy" name="subsidy" th:field="*{subsidy}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">保险情况：</label>
+			<div class="col-sm-8">
+				<input id="insurance" name="insurance" th:field="*{insurance}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">犯罪史：</label>
+			<div class="col-sm-8">
+				<input id="criminal" name="criminal" th:field="*{criminal}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">吸毒史：</label>
+			<div class="col-sm-8">
+				<input id="drug" name="drug" th:field="*{drug}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">驾照：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="drive" name="drive" th:field="*{drive}" type="text">
+					<option value=""></option>
+					<option value="C1驾驶证">C1驾驶证</option>
+					<option value="C2驾驶证">C2驾驶证</option>
+					<option value="C3驾驶证">C3驾驶证</option>
+					<option value="C4驾驶证">C4驾驶证</option>
+					<option value="A1驾驶证">A1驾驶证</option>
+					<option value="A2驾驶证">A2驾驶证</option>
+					<option value="A3驾驶证">A3驾驶证</option>
+					<option value="B1驾驶证">B1驾驶证</option>
+					<option value="B2驾驶证">B2驾驶证</option>
+					<option value="D型驾驶证">D型驾驶证</option>
+					<option value="E型驾驶证">E型驾驶证</option>
+					<option value="F型驾驶证">F型驾驶证</option>
+					<option value="M型驾驶证">M型驾驶证</option>
+					<option value="N型驾驶证">N型驾驶证</option>
+					<option value="P型驾驶证">P型驾驶证</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">车辆：</label>
+			<div class="col-sm-8">
+				<input id="car" name="car" th:field="*{car}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">车辆类型：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="vtype" name="vtype" th:field="*{vtype}" type="text">
+					<option value=""></option>
+					<option value="轿车">轿车</option>
+					<option value="客车">客车</option>
+					<option value="挂车">挂车</option>
+					<option value="载货车">载货车</option>
+					<option value="摩托车">摩托车</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">车牌号：</label>
+			<div class="col-sm-8">
+				<input id="carnum" name="carnum" th:field="*{carnum}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">现居地址：</label>
+			<div class="col-sm-8">
+				<input id="home" name="home" th:field="*{home}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">住房性质：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="house" name="house" th:field="*{house}" type="text">
+					<option value=""></option>
+					<option value="自建房">自建房</option>
+					<option value="自购商品房">自购商品房</option>
+					<option value="租住公房">租住公房</option>
+					<option value="租住私房">租住私房</option>
+					<option value="借助父母处">借助父母处</option>
+					<option value="房改成本价房">房改成本价房</option>
+					<option value="房改标准价房">房改标准价房</option>
+					<option value="安居工程住房">安居工程住房</option>
+					<option value="集资建房">集资建房</option>
+					<option value="经济适用房">经济适用房</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">身高：</label>
+			<div class="col-sm-8">
+				<input id="height" name="height" th:field="*{height}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">户主号：</label>
+			<div class="col-sm-8">
+				<input id="hhdnum" name="hhdnum" th:field="*{hhdnum}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">户主：</label>
+			<div class="col-sm-8">
+				<input id="hhd" name="hhd" th:field="*{hhd}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">户主身份证号：</label>
+			<div class="col-sm-8">
+				<input id="hhdidcard" name="hhdidcard" th:field="*{hhdidcard}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">与户主关系：</label>
+			<div class="col-sm-8">
+				<input id="hhdrelation" name="hhdrelation" th:field="*{hhdrelation}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">职务等级：</label>
+			<div class="col-sm-8">
+				<input id="jobrank" name="jobrank" th:field="*{jobrank}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">爱好特长：</label>
+			<div class="col-sm-8">
+				<input id="hobby" name="hobby" th:field="*{hobby}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">思想动向：</label>
+			<div class="col-sm-8">
+				<input id="trend" name="trend" th:field="*{trend}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">就业状态：</label>
+			<div class="col-sm-8">
+				<input id="jobstate" name="jobstate" th:field="*{jobstate}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">大病医疗：</label>
+			<div class="col-sm-8">
+				<input id="pr" name="pr" th:field="*{pr}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">医保情况：</label>
+			<div class="col-sm-8">
+				<input id="medinsur" name="medinsur" th:field="*{medinsur}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">新农保：</label>
+			<div class="col-sm-8">
+				<input id="fmi" name="fmi" th:field="*{fmi}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">新农保状态：</label>
+			<div class="col-sm-8">
+				<input id="fmistate" name="fmistate" th:field="*{fmistate}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">社保：</label>
+			<div class="col-sm-8">
+				<input id="security" name="security" th:field="*{security}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">商业保险：</label>
+			<div class="col-sm-8">
+				<input id="bsecurity" name="bsecurity" th:field="*{bsecurity}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">低保情况：</label>
+			<div class="col-sm-8">
+				<input id="subsis" name="subsis" th:field="*{subsis}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">特贫/困户：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="poor" name="poor" th:field="*{poor}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">行驶证号：</label>
+			<div class="col-sm-8">
+				<input id="drivenum" name="drivenum" th:field="*{drivenum}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">技术类型：</label>
+			<div class="col-sm-8">
+				<input id="techtype" name="techtype" th:field="*{techtype}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">技术等级：</label>
+			<div class="col-sm-8">
+				<input id="techgrade" name="techgrade" th:field="*{techgrade}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">职称等级：</label>
+			<div class="col-sm-8">
+				<input id="titgrade" name="titgrade" th:field="*{titgrade}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否迁移（地址）：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="move" name="move" th:field="*{move}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">田地面积：</label>
+			<div class="col-sm-8">
+				<input id="fieldarea" name="fieldarea" th:field="*{fieldarea}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">林地面积：</label>
+			<div class="col-sm-8">
+				<input id="forestarea" name="forestarea" th:field="*{forestarea}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">水塘面积：</label>
+			<div class="col-sm-8">
+				<input id="poolarea" name="poolarea" th:field="*{poolarea}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">家庭收入：</label>
+			<div class="col-sm-8">
+				<input id="income" name="income" th:field="*{income}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">个人财产总额：</label>
+			<div class="col-sm-8">
+				<input id="totalppt" name="totalppt" th:field="*{totalppt}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">月收入：</label>
+			<div class="col-sm-8">
+				<input id="mincome" name="mincome" th:field="*{mincome}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">年收入：</label>
+			<div class="col-sm-8">
+				<input id="yincome" name="yincome" th:field="*{yincome}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">银行：</label>
+			<div class="col-sm-8">
+				<input id="bank" name="bank" th:field="*{bank}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">银行卡号：</label>
+			<div class="col-sm-8">
+				<input id="bankcardnum" name="bankcardnum" th:field="*{bankcardnum}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">土地确权：</label>
+			<div class="col-sm-8">
+				<input id="landowner" name="landowner" th:field="*{landowner}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">综治：</label>
+			<div class="col-sm-8">
+				<input id="control" name="control" th:field="*{control}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">房屋面积：</label>
+			<div class="col-sm-8">
+				<input id="housearea" name="housearea" th:field="*{housearea}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">村务宝典登录名：</label>
+			<div class="col-sm-8">
+				<input id="loginname" name="loginname" th:field="*{loginname}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">个体经营：</label>
+			<div class="col-sm-8">
+				<input id="selfmanage" name="selfmanage" th:field="*{selfmanage}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">经营类型：</label>
+			<div class="col-sm-8">
+				<input id="managetype" name="managetype" th:field="*{managetype}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">投入成本：</label>
+			<div class="col-sm-8">
+				<input id="cost" name="cost" th:field="*{cost}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">经营月收入：</label>
+			<div class="col-sm-8">
+				<input id="mmincome" name="mmincome" th:field="*{mmincome}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">经营年收入：</label>
+			<div class="col-sm-8">
+				<input id="myincome" name="myincome" th:field="*{myincome}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">所在组织/社团：</label>
+			<div class="col-sm-8">
+				<input id="organization" name="organization" th:field="*{organization}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否土地流转：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="landtransfer" name="landtransfer" th:field="*{landtransfer}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">土地流转收入：</label>
+			<div class="col-sm-8">
+				<input id="landincome" name="landincome" th:field="*{landincome}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否林地流转：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="foresttransfer" name="foresttransfer" th:field="*{foresttransfer}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">林地流转收入：</label>
+			<div class="col-sm-8">
+				<input id="forestincome" name="forestincome" th:field="*{forestincome}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否征收：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="levy" name="levy" th:field="*{levy}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">房租收入：</label>
+			<div class="col-sm-8">
+				<input id="rent" name="rent" th:field="*{rent}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">房屋使用状态：</label>
+			<div class="col-sm-8">
+				<input id="housestate" name="housestate" th:field="*{housestate}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否接入电力：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="psa" name="psa" th:field="*{psa}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否接入有线电视：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="ca" name="ca" th:field="*{ca}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否接入宽带：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="woban" name="woban" th:field="*{woban}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否接入自来水：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="water" name="water" th:field="*{water}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否接入安防系统：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="ssa" name="ssa" th:field="*{ssa}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否接入燃气：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="gfs" name="gfs" th:field="*{gfs}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否垃圾分类：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="wdr" name="wdr" th:field="*{wdr}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">道路是否到户：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="rth" name="rth" th:field="*{rth}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否行政干部：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="iscadre" name="iscadre" th:field="*{iscadre}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">行政干部级别：</label>
+			<div class="col-sm-8">
+				<input id="cadrelevel" name="cadrelevel" th:field="*{cadrelevel}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否低保户：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="islowincome" name="islowincome" th:field="*{islowincome}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">获得低保时间：</label>
+			<div class="col-sm-8">
+				<input class="form-control laydate-icon  layer-date" name="getlowdate"
+					   id="getlowdate" th:field="*{getlowdate}" value="" readonly="readonly"
+					   style="width:120px;" placeholder="获得低保时间" title="获得低保时间"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否复员军人：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="isdemob" name="isdemob" th:field="*{isdemob}" type="text">
+					<option value=""></option>
+					<option value="1">是</option>
+					<option value="0">否</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">'复员时间'：</label>
+			<div class="col-sm-8">
+				<input class="form-control laydate-icon  layer-date" name="getlowdate"
+					   id="demobdate" th:field="*{demobdate}" value="" readonly="readonly"
+					   style="width:120px;" placeholder="复员时间" title="复员时间"/>
+			</div>
+		</div>
+
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">个人照片：</label>
+			<div class="col-sm-8">
+				<input id="personphoto" name="personphoto" th:field="*{personphoto}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">户口照片：</label>
+			<div class="col-sm-8">
+				<input id="hkphoto" name="hkphoto" th:field="*{hkphoto}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">身份证照片：</label>
+			<div class="col-sm-8">
+				<input id="rent" name="rent" th:field="*{rent}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">汽车照片：</label>
+			<div class="col-sm-8">
+				<input id="carphoto" name="carphoto" th:field="*{carphoto}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">房屋照片：</label>
+			<div class="col-sm-8">
+				<input id="housephoto" name="rent" th:field="*{housephoto}" class="form-control" type="text">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">获奖情况：</label>
+			<div class="col-sm-8">
+				<textarea id="winaward" name="winaward" th:field="*{winaward}"  autofocus></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">处分情况：</label>
+			<div class="col-sm-8">
+				<textarea id="punish" name="punish" th:field="*{punish}"  autofocus></textarea>
+			</div>
+		</div>
+
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+	var prefix = ctx + "village/villagerInfo"
+	$("#form-villagerInfo-edit").validate({
+		rules: {
+			idcard: {
+				required: true,
+				minlength: 15
+			}
+		},
+		messages: {
+			idcard: {
+				required: "请输入身份证号码",
+				minlength: "身份证号码必须为15或者18个字符"
+			},
+		}
+	});
+	/*根据身份证号计算年龄*/
+	function getAge(){
+		var idcard=  document.getElementById("idcard").value;
+
+		var len=idcard.length;
+		var strBirthday ="";
+		if(len == 18){
+			strBirthday=idcard.substr(6,4)+ "/" +idcard.substr(10, 2) + "/" + idcard.substr(12, 2);
+		}
+		if (len == 15) {
+			strBirthday = "19" + idcard.substr(6, 2) + "/" + idcard.substr(8, 2) + "/" + idcard.substr(10, 2);
+		}
+		var birthDate = new Date(strBirthday);
+		var nowDateTime = new Date();
+		var age = nowDateTime.getFullYear() - birthDate.getFullYear();
+		//再考虑月、天的因素;.getMonth()获取的是从0开始的，这里进行比较，不需要加1
+		if (nowDateTime.getMonth() < birthDate.getMonth() || (nowDateTime.getMonth() == birthDate.getMonth() && nowDateTime.getDate() < birthDate.getDate())) {
+			age--;
+		}
+		document.getElementById("age").value=age;
+
+	}
+
+
+	/*用户管理-新增-选择用户所属区域树*/
+	function selectAidTree() {
+		var url = "/village/company/selectAidTree";
+		var options = {
+			title: '选择区域',
+			width: "380",
+			url: "/village/company/selectAidTree",
+			callBack: doSubmitAid
+		};
+		$.modal.openOptions(options);
+	}
+	function doSubmit(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#treeId").val(body.find('#treeId').val());
+			$("#treeName").val(body.find('#treeName').val());
+			layer.close(index);
+		}
+	}
+
+	/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+	function doSubmitAid(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#aid").val(body.find('#treeId').val());
+			$("#aidName").val(body.find('#treeName').val());
+			/*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+			layer.close(index);
+		}
+	}
+
+
+
+	function submitHandler() {
+		proinfo =$("#winaward").val();//获取当前编辑后的文本框的值
+		proinfo2=$("#punish").val();
+		//alert(proinfo);
+		$("#winaward").val(proinfo);
+		$("#punish").val(proinfo2);
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/edit", $('#form-villagerInfo-edit').serialize());
+		}
+	}
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+	laydate({
+		elem:"#partyjoindate",
+		event:"focus"
+	});
+	laydate({
+		elem:"#getlowdate",
+		event:"focus"
+	});
+	laydate({
+		elem:"#demobdate",
+		event:"focus"
+	});
+	layui.use('laydate', function(){
+		var laydate = layui.laydate;
+		//执行一个laydate实例
+		laydate.render({
+			elem:"#village",
+			type: 'time',
+		});
+	});
+</script>
+<!--③引入需要的js文件-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+<!--④初始化文本框并且通过setValue方法传值给富文本编辑器-->
+<script>
+	$(document).ready(function() {
+		var editor = new Simditor({
+			placeholder: "", // 编辑器默认值（默认为’’）
+			toolbar: [
+				'title', 'bold', 'italic', 'underline',
+				'color', '|', 'ol', 'ul', 'table'
+			],
+			textarea: '#winaward',
+		});
+		// proinfo =$("#winaward").val();//将后台返回的content字段的值提取出来
+		// editor.setValue(proinfo);//赋值给UEditor
+		var editor2 = new Simditor({
+			placeholder: "", // 编辑器默认值（默认为’’）
+			toolbar: [
+				'title', 'bold', 'italic', 'underline',
+				'color', '|', 'ol', 'ul', 'table'
+			],
+			textarea: '#punish',
+		});
+		// proinfo2=$("#punish").val();
+		// editor2.setvalue(proinfo2)
+	});
+</script>
+</body>
+</html>

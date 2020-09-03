@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.MemberMapper">
+    
+    <resultMap type="com.sixin.village.domain.Member" id="MemberResult">
+        <result property="pid"    column="pid"    />
+        <result property="aid"    column="aid"    />
+        <result property="grouptype"    column="grouptype"    />
+        <result property="gid"    column="gid"    />
+        <result property="housename"    column="housename"    />
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="nation"    column="nation"    />
+        <result property="relation"    column="relation"    />
+        <result property="idcard"    column="idcard"    />
+        <result property="edulevel"    column="edulevel"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="address"    column="address"    />
+        <result property="phone1"    column="phone1"    />
+        <result property="phone2"    column="phone2"    />
+        <result property="jod"    column="jod"    />
+        <result property="workplace"    column="workplace"    />
+        <result property="income"    column="income"    />
+        <result property="bankcard1"    column="bankcard1"    />
+        <result property="bankcard2"    column="bankcard2"    />
+        <result property="bankcard3"    column="bankcard3"    />
+        <result property="note"    column="note"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.village.domain.Mcount" id="McountResult">
+        <result property="aid"      column="aid"    />
+        <result property="marea"    column="marea"    />
+        <result property="msum"    column="msum"    />
+        <result property="man"    column="man"    />
+        <result property="woman"    column="woman"    />
+    </resultMap>
+
+    <select id="countbygroup" parameterType="String" resultMap="McountResult">
+        select
+            aid,grouptype as marea,
+            count(pid) as msum,
+            count(sex = '男' or null ) as man,
+            count(sex = '女' or null ) as woman
+        from myc_member
+        where 1=1
+        <if test="aid != null and aid !=''">
+            and aid=#{aid} or aid in (select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{aid},ancestors))
+        </if>
+        group by grouptype,aid
+    </select>
+
+    <select id="groupAreaCountPM" resultType="HashMap">
+        select
+            m.area as area,
+            m.msum as msum,
+            m.mman as mman,
+            m.mwoman as mwoman,
+            p.psum as psum,
+            p.pwoman as pwoman,
+            p.pman as pman
+        from
+            (select
+                 grouptype as area,
+                 count(pid) as msum,
+                 count(sex = '男' or null ) as mman,
+                 count(sex = '女' or null ) as mwoman
+             from myc_member
+             group by grouptype) as m,
+            (select
+                 grouptype as area,
+                 count(pid) as psum,
+                 count(sex = '男' or null ) as pman,
+                 count(sex = '女' or null ) as pwoman
+             from myc_partymember
+             group by grouptype) as p
+        where
+            m.area = p.area
+    </select>
+
+    <select id="countpm" resultType="HashMap">
+        select * from
+         (select
+              count(pid) as msum,
+              count(sex = '男' or null ) as mman,
+              count(sex = '女' or null ) as mwoman
+          from myc_member
+         ) as one,
+         (select
+              count(pid) as psum,
+              count(sex = '男' or null ) as pman,
+              count(sex = '女' or null ) as pwoman
+          from myc_partymember) as tow
+    </select>
+
+	
+	<sql id="selectMemberVo">
+        select pid, aid, grouptype, gid, housename, name, sex, nation, relation, idcard, edulevel, birthday, address, phone1, phone2, jod, workplace, income, bankcard1, bankcard2, bankcard3, note from myc_member
+    </sql>
+	
+    <select id="selectMemberList" parameterType="com.sixin.village.domain.Member" resultMap="MemberResult">
+        <include refid="selectMemberVo"/>
+        <where>  
+            <if test="pid != null "> and pid like '%${pid}%'</if>
+             <if test="aid != null  and aid != '' "> and aid like '%${aid}%'</if>
+             <if test="grouptype != null  and grouptype != '' "> and grouptype like '%${grouptype}%'</if>
+             <if test="gid != null "> and gid like '%{gid}%'</if>
+             <if test="housename != null  and housename != '' "> and housename like '%${housename}%'</if>
+             <if test="name != null  and name != '' "> and name like '%${name}%'</if>
+             <if test="sex != null  and sex != '' "> and sex like '%${sex}%'</if>
+             <if test="nation != null  and nation != '' "> and nation like '%${nation}%'</if>
+             <if test="relation != null  and relation != '' "> and relation like '%${relation}%'</if>
+             <if test="idcard != null  and idcard != '' "> and idcard like '%${idcard}%'</if>
+             <if test="edulevel != null  and edulevel != '' "> and edulevel like '%${edulevel}%'</if>
+             <if test="birthday != null  and birthday != '' "> and birthday like '%${birthday}%'</if>
+             <if test="address != null  and address != '' "> and address like '%${address}%'</if>
+             <if test="phone1 != null  and phone1 != '' "> and phone1 like '%${phone1}%'</if>
+             <if test="phone2 != null  and phone2 != '' "> and phone2 like '%${phone2}%'</if>
+             <if test="jod != null  and jod != '' "> and jod like '%${jod}%'</if>
+             <if test="workplace != null  and workplace != '' "> and workplace like '%${workplace}%'</if>
+             <if test="income != null  and income != '' "> and income like '%${income}%'</if>
+             <if test="bankcard1 != null  and bankcard1 != '' "> and bankcard1 like '%${bankcard1}%'</if>
+             <if test="bankcard2 != null  and bankcard2 != '' "> and bankcard2 like '%${bankcard2}%'</if>
+             <if test="bankcard3 != null  and bankcard3 != '' "> and bankcard3 like '%${bankcard3}%'</if>
+             <if test="note != null  and note != '' "> and note like '%${note}%'</if>
+         </where>
+    </select>
+    
+    <select id="selectMemberById" parameterType="Integer" resultMap="MemberResult">
+        <include refid="selectMemberVo"/>
+        where pid = #{pid}
+    </select>
+        
+    <insert id="insertMember" parameterType="com.sixin.village.domain.Member">
+        insert into myc_member
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null  ">pid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="grouptype != null  and grouptype != ''  ">grouptype,</if>
+			<if test="gid != null  ">gid,</if>
+			<if test="housename != null  and housename != ''  ">housename,</if>
+			<if test="name != null  and name != ''  ">name,</if>
+			<if test="sex != null  and sex != ''  ">sex,</if>
+			<if test="nation != null  and nation != ''  ">nation,</if>
+			<if test="relation != null  and relation != ''  ">relation,</if>
+			<if test="idcard != null  and idcard != ''  ">idcard,</if>
+			<if test="edulevel != null  and edulevel != ''  ">edulevel,</if>
+			<if test="birthday != null  and birthday != ''  ">birthday,</if>
+			<if test="address != null  and address != ''  ">address,</if>
+			<if test="phone1 != null  and phone1 != ''  ">phone1,</if>
+			<if test="phone2 != null  and phone2 != ''  ">phone2,</if>
+			<if test="jod != null  and jod != ''  ">jod,</if>
+			<if test="workplace != null  and workplace != ''  ">workplace,</if>
+			<if test="income != null  and income != ''  ">income,</if>
+			<if test="bankcard1 != null  and bankcard1 != ''  ">bankcard1,</if>
+			<if test="bankcard2 != null  and bankcard2 != ''  ">bankcard2,</if>
+			<if test="bankcard3 != null  and bankcard3 != ''  ">bankcard3,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null  ">#{pid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="grouptype != null  and grouptype != ''  ">#{grouptype},</if>
+			<if test="gid != null  ">#{gid},</if>
+			<if test="housename != null  and housename != ''  ">#{housename},</if>
+			<if test="name != null  and name != ''  ">#{name},</if>
+			<if test="sex != null  and sex != ''  ">#{sex},</if>
+			<if test="nation != null  and nation != ''  ">#{nation},</if>
+			<if test="relation != null  and relation != ''  ">#{relation},</if>
+			<if test="idcard != null  and idcard != ''  ">#{idcard},</if>
+			<if test="edulevel != null  and edulevel != ''  ">#{edulevel},</if>
+			<if test="birthday != null  and birthday != ''  ">#{birthday},</if>
+			<if test="address != null  and address != ''  ">#{address},</if>
+			<if test="phone1 != null  and phone1 != ''  ">#{phone1},</if>
+			<if test="phone2 != null  and phone2 != ''  ">#{phone2},</if>
+			<if test="jod != null  and jod != ''  ">#{jod},</if>
+			<if test="workplace != null  and workplace != ''  ">#{workplace},</if>
+			<if test="income != null  and income != ''  ">#{income},</if>
+			<if test="bankcard1 != null  and bankcard1 != ''  ">#{bankcard1},</if>
+			<if test="bankcard2 != null  and bankcard2 != ''  ">#{bankcard2},</if>
+			<if test="bankcard3 != null  and bankcard3 != ''  ">#{bankcard3},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateMember" parameterType="com.sixin.village.domain.Member">
+        update myc_member
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="grouptype != null  and grouptype != ''  ">grouptype = #{grouptype},</if>
+            <if test="gid != null  ">gid = #{gid},</if>
+            <if test="housename != null  and housename != ''  ">housename = #{housename},</if>
+            <if test="name != null  and name != ''  ">name = #{name},</if>
+            <if test="sex != null  and sex != ''  ">sex = #{sex},</if>
+            <if test="nation != null  and nation != ''  ">nation = #{nation},</if>
+            <if test="relation != null  and relation != ''  ">relation = #{relation},</if>
+            <if test="idcard != null  and idcard != ''  ">idcard = #{idcard},</if>
+            <if test="edulevel != null  and edulevel != ''  ">edulevel = #{edulevel},</if>
+            <if test="birthday != null  and birthday != ''  ">birthday = #{birthday},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="phone1 != null  and phone1 != ''  ">phone1 = #{phone1},</if>
+            <if test="phone2 != null  and phone2 != ''  ">phone2 = #{phone2},</if>
+            <if test="jod != null  and jod != ''  ">jod = #{jod},</if>
+            <if test="workplace != null  and workplace != ''  ">workplace = #{workplace},</if>
+            <if test="income != null  and income != ''  ">income = #{income},</if>
+            <if test="bankcard1 != null  and bankcard1 != ''  ">bankcard1 = #{bankcard1},</if>
+            <if test="bankcard2 != null  and bankcard2 != ''  ">bankcard2 = #{bankcard2},</if>
+            <if test="bankcard3 != null  and bankcard3 != ''  ">bankcard3 = #{bankcard3},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+        </trim>
+        where pid = #{pid}
+    </update>
+
+	<delete id="deleteMemberById" parameterType="Integer">
+        delete from myc_member where pid = #{pid}
+    </delete>
+	
+    <delete id="deleteMemberByIds" parameterType="String">
+        delete from myc_member where pid in 
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+    
+</mapper>

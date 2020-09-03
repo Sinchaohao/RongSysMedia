@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.ForestlandInfoMapper">
+    
+    <resultMap type="com.sixin.village.domain.ForestlandInfo" id="ForestlandInfoResult">
+        <result property="fid"    column="fid"    />
+        <result property="aid"    column="aid"    />
+        <result property="grouptype"    column="grouptype"    />
+        <result property="collective"    column="collective"    />
+        <result property="contracted"    column="contracted"    />
+    </resultMap>
+	
+	<sql id="selectForestlandInfoVo">
+        select fid, aid, grouptype, collective, contracted from forestland_info
+    </sql>
+	
+    <select id="selectForestlandInfoList" parameterType="com.sixin.village.domain.ForestlandInfo" resultMap="ForestlandInfoResult">
+        <include refid="selectForestlandInfoVo"/>
+        <where>  
+             <if test="fid != null and fid != '' "> and fid = #{fid}</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="grouptype != null  and grouptype != '' "> and grouptype = #{grouptype}</if>
+             <if test="collective != null  and collective != '' "> and collective = #{collective}</if>
+             <if test="contracted != null  and contracted != '' "> and contracted = #{contracted}</if>
+         </where>
+    </select>
+    
+    <select id="selectForestlandInfoById" parameterType="Integer" resultMap="ForestlandInfoResult">
+        <include refid="selectForestlandInfoVo"/>
+        where fid = #{fid}
+    </select>
+
+    <select id="selectForestlandByIds" parameterType="java.util.List" resultMap="ForestlandInfoResult">
+        <include refid="selectForestlandInfoVo"/>
+        where fid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+        
+    <insert id="insertForestlandInfo" parameterType="com.sixin.village.domain.ForestlandInfo">
+        insert into forestland_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="fid != null  ">fid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="grouptype != null  and grouptype != ''  ">grouptype,</if>
+			<if test="collective != null  and collective != ''  ">collective,</if>
+			<if test="contracted != null  and contracted != ''  ">contracted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="fid != null  ">#{fid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="grouptype != null  and grouptype != ''  ">#{grouptype},</if>
+			<if test="collective != null  and collective != ''  ">#{collective},</if>
+			<if test="contracted != null  and contracted != ''  ">#{contracted},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateForestlandInfo" parameterType="com.sixin.village.domain.ForestlandInfo">
+        update forestland_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="grouptype != null  and grouptype != ''  ">grouptype = #{grouptype},</if>
+            <if test="collective != null  and collective != ''  ">collective = #{collective},</if>
+            <if test="contracted != null  and contracted != ''  ">contracted = #{contracted},</if>
+        </trim>
+        where fid = #{fid}
+    </update>
+
+	<delete id="deleteForestlandInfoById" parameterType="Integer">
+        delete from forestland_info where fid = #{fid}
+    </delete>
+	
+    <delete id="deleteForestlandInfoByIds" parameterType="String">
+        delete from forestland_info where fid in 
+        <foreach item="fid" collection="array" open="(" separator="," close=")">
+            #{fid}
+        </foreach>
+    </delete>
+    
+</mapper>

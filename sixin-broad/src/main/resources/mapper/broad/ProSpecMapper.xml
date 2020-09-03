@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ProSpecMapper">
+
+    <resultMap type="com.sixin.broad.domain.ProSpec" id="ProSpecResult">
+        <result property="fid" column="fid"/>
+        <result property="fname" column="fname"/>
+        <result property="filename" column="filename"/>
+        <result property="flenth" column="flenth"/>
+        <result property="fsize" column="fsize"/>
+        <result property="uname" column="uname"/>
+        <result property="createdtime" column="createdtime"/>
+        <result property="urls" column="urls"/>
+    </resultMap>
+
+    <sql id="selectProSpecVo">
+        select
+          fid,
+          fname,
+          filename,
+          flenth,
+          fsize,
+          b.uname,
+          createdtime,
+          urls
+        from
+          programs as a,
+          userinfo as b
+    </sql>
+
+    <select id="selectProSpecList" parameterType="com.sixin.broad.domain.ProSpec" resultMap="ProSpecResult">
+        <include refid="selectProSpecVo"/>
+        <where>
+            <if test="fid != null  and fid != '' ">and fid like CONCAT('%',#{fid},'%')</if>
+            <if test="fname != null  and fname != '' ">and fname like CONCAT('%',#{fname},'%')</if>
+            <if test="filename != null  and filename != '' ">and filename like CONCAT('%',#{filename},'%')</if>
+            <if test="flenth != null  and flenth != '' ">and flenth like CONCAT('%',#{flenth},'%')</if>
+            <if test="fsize != null  and fsize != '' ">and fsize like CONCAT('%',#{fsize},'%')</if>
+            <if test="uname != null  and uname != '' ">and b.uname = like CONCAT('%',#{uname},'%')</if>
+            <if test="userid != null  and userid != '' ">and a.userid = #{userid}</if>
+            <if test="createdtime != null  and createdtime != '' ">and createdtime like CONCAT('%',#{createdtime},'%')</if>
+            and ispublic = 1
+            and a.userid = b.userid
+            order by fid DESC
+        </where>
+    </select>
+
+    <select id="selectProSpecById" parameterType="String" resultMap="ProSpecResult">
+        <include refid="selectProSpecVo"/>
+        where fid = #{fid}
+    </select>
+
+    <select id="selectAllProSpec" resultMap="ProSpecResult">
+        <include refid="selectProSpecVo"/>
+    </select>
+
+    <update id="updateprospec" parameterType="com.sixin.broad.domain.ProSpec">
+        update programs
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createdtime != null  and createdtime != ''  ">createdtime = #{createdtime},</if>
+            <if test="filename != null  and filename != ''  ">filename = #{filename},</if>
+            <if test="flenth != null  and flenth != ''  ">flenth = #{flenth},</if>
+            <if test="fname != null  and fname != ''  ">fname = #{fname},</if>
+            <if test="fsize != null  and fsize != ''  ">fsize = #{fsize},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="urls != null  and urls != ''  ">urls = #{urls},</if>
+            <if test="userid != null  and userid != ''  ">userid = #{userid},</if>
+        </trim>
+        where  fid =  #{fid}
+    </update>
+
+</mapper>

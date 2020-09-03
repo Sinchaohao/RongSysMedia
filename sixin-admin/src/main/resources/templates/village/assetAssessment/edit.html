@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-assetAssessment-edit" th:object="${assetAssessment}">
+            <input id="aaid" name="aaid" th:field="*{aaid}"  type="hidden">
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">地域编号：</label>
+				<div class="col-sm-8">
+					<input class="form-control" th:field="*{aid}" type="text" id="aid" name="aid" onclick="selectAidTree()"
+						    placeholder="点击选择区域">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">村组名称：</label>
+				<div class="col-sm-8">
+					<input id="grouptype" name="grouptype" th:field="*{grouptype}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">建设用地：</label>
+				<div class="col-sm-8">
+					<input id="constructionland" name="constructionland" th:field="*{constructionland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">工矿仓储用地：</label>
+				<div class="col-sm-8">
+					<input id="imsland" name="imsland" th:field="*{imsland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">商服用地：</label>
+				<div class="col-sm-8">
+					<input id="businessland" name="businessland" th:field="*{businessland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">农村宅基地：</label>
+				<div class="col-sm-8">
+					<input id="homestead" name="homestead" th:field="*{homestead}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">公共服务用地：</label>
+				<div class="col-sm-8">
+					<input id="publicland" name="publicland" th:field="*{publicland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">交通水利用地：</label>
+				<div class="col-sm-8">
+					<input id="twland" name="twland" th:field="*{twland}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">其他建设用地：</label>
+				<div class="col-sm-8">
+					<input id="otherland" name="otherland" th:field="*{otherland}" class="form-control" type="text">
+				</div>
+			</div>
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "village/assetAssessment"
+		$("#form-assetAssessment-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+
+		/*企业管理-新增-选择企业所属区域树*/
+		function selectAidTree() {
+			var url = "/village/company/selectAidTree";
+			var options = {
+				title: '选择区域',
+				width: "380",
+				url: "/village/company/selectAidTree",
+				callBack: doSubmitAid
+			};
+			$.modal.openOptions(options);
+		}
+
+		/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+		function doSubmitAid(index, layero) {
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			if ($.tree.notAllowParents(tree)) {
+				var body = layer.getChildFrame('body', index);
+				$("#aid").val(body.find('#treeId').val());
+				$("#grouptype").val(body.find('#treeName').val());
+				/*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+				layer.close(index);
+			}
+		}
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-assetAssessment-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

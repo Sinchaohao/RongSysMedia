@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.WorklogMapper">
+    
+    <resultMap type="com.sixin.village.domain.Worklog" id="WorklogResult">
+        <result property="wid"    column="wid"    />
+        <result property="proid"    column="proid"    />
+        <result property="proname"    column="proname"    />
+        <result property="wtitle"    column="wtitle"    />
+        <result property="wpic"    column="wpic"    />
+        <result property="wtype"    column="wtype"    />
+        <result property="content"    column="content"    />
+        <result property="wname"    column="wname"    />
+        <result property="wphone"    column="wphone"    />
+        <result property="uid"    column="uid"    />
+        <result property="greadtotal"    column="greadtotal"    />
+        <result property="pushdate"    column="pushdate"    />
+        <result property="uname"    column="uname"    />
+        <result property="remark"    column="remark"    />
+        <result property="aid"    column="aid"    />
+        <result property="ptype"    column="ptype"    />
+    </resultMap>
+	
+	<sql id="selectWorklogVo">
+        select wid, proid, proname, wtitle, wpic, wtype, content, wname, wphone, uid, greadtotal, pushdate, uname, remark, aid, ptype from village.tb_worklog
+    </sql>
+	
+    <select id="selectWorklogList" parameterType="com.sixin.village.domain.Worklog" resultMap="WorklogResult">
+        <include refid="selectWorklogVo"/>
+        <where>  
+            <if test="wid != null "> and wid = #{wid}</if>
+            <if test="proname != null  and proname != '' "> and proname LIKE CONCAT(CONCAT('%', #{proname}),'%')</if>
+             <if test="wtitle != null  and wtitle != '' "> and wtitle LIKE CONCAT(CONCAT('%', #{wtitle}),'%')</if>
+             <if test="wpic != null  and wpic != '' "> and wpic LIKE CONCAT(CONCAT('%', #{wpic}),'%')</if>
+             <if test="wtype != null  and wtype != '' "> and wtype LIKE CONCAT(CONCAT('%', #{wtype}),'%')</if>
+             <if test="content != null  and content != '' "> and content LIKE CONCAT(CONCAT('%', #{content}),'%')</if>
+             <if test="wname != null  and wname != '' "> and wname LIKE CONCAT(CONCAT('%', #{wname}),'%')</if>
+             <if test="wphone != null  and wphone != '' "> and wphone LIKE CONCAT(CONCAT('%', #{wphone}),'%')</if>
+             <if test="uid != null and uid != '' "> and uid =#{uid}</if>
+             <if test="greadtotal != null "> and greadtotal LIKE CONCAT(CONCAT('%', #{greadtotal}),'%')</if>
+             <if test="pushdate != null "> and pushdate LIKE CONCAT(CONCAT('%', #{pushdate}),'%')</if>
+             <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+             <if test="remark != null  and remark != '' "> and remark LIKE CONCAT(CONCAT('%', #{remark}),'%')</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="ptype != null "> and ptype LIKE CONCAT(CONCAT('%', #{ptype}),'%')</if>
+         </where>
+        ORDER BY pushdate DESC
+    </select>
+    
+    <select id="selectWorklogById" parameterType="Integer" resultMap="WorklogResult">
+        <include refid="selectWorklogVo"/>
+        where wid = #{wid}
+    </select>
+
+    <select id="selectWorkLogByProId" parameterType="Integer" resultType="hashmap">
+       select * from tb_worklog
+        where proid = #{proid}
+        ORDER BY pushdate DESC
+    </select>
+
+    <select id="selectWorkLogNumByProId" parameterType="Integer" resultType="int">
+      select count(wid) from tb_worklog
+        where proid = #{proid}
+    </select>
+
+    <select id="selectWorklogByIds" parameterType="java.util.List" resultMap="WorklogResult">
+        <include refid="selectWorklogVo"/>
+        where wid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <insert id="insertWorklog" parameterType="com.sixin.village.domain.Worklog">
+        insert into tb_worklog
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="wid != null  ">wid,</if>
+            <if test="proid != null  and proid != ''  ">proid,</if>
+            <if test="proname != null  and proname != ''  ">proname,</if>
+			<if test="wtitle != null  and wtitle != ''  ">wtitle,</if>
+			<if test="wpic != null  and wpic != ''  ">wpic,</if>
+			<if test="wtype != null  and wtype != ''  ">wtype,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="wname != null  and wname != ''  ">wname,</if>
+			<if test="wphone != null  and wphone != ''  ">wphone,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="greadtotal != null  ">greadtotal,</if>
+			<if test="pushdate != null  ">pushdate,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="ptype != null  ">ptype</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="wid != null  ">#{wid},</if>
+            <if test="proid != null  and proid != ''  ">#{proid},</if>
+            <if test="proname != null  and proname != ''  ">#{proname},</if>
+			<if test="wtitle != null  and wtitle != ''  ">#{wtitle},</if>
+			<if test="wpic != null  and wpic != ''  ">#{wpic},</if>
+			<if test="wtype != null  and wtype != ''  ">#{wtype},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="wname != null  and wname != ''  ">#{wname},</if>
+			<if test="wphone != null  and wphone != ''  ">#{wphone},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="greadtotal != null  ">#{greadtotal},</if>
+			<if test="pushdate != null  ">#{pushdate},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="ptype != null  ">#{ptype}</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateWorklog" parameterType="com.sixin.village.domain.Worklog">
+        update tb_worklog
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="wtitle != null  and wtitle != ''  ">wtitle = #{wtitle},</if>
+            <if test="wpic != null  and wpic != ''  ">wpic = #{wpic},</if>
+            <if test="wtype != null  and wtype != ''  ">wtype = #{wtype},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="wname != null  and wname != ''  ">wname = #{wname},</if>
+            <if test="wphone != null  and wphone != ''  ">wphone = #{wphone},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="greadtotal != null  ">greadtotal = #{greadtotal},</if>
+            <if test="pushdate != null  ">pushdate = #{pushdate},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="ptype != null  ">ptype = #{ptype},</if>
+        </trim>
+        where wid = #{wid}
+    </update>
+
+	<delete id="deleteWorklogById" parameterType="Integer">
+        delete from tb_worklog where wid = #{wid}
+    </delete>
+	
+    <delete id="deleteWorklogByIds" parameterType="String">
+        delete from tb_worklog where wid in
+        <foreach item="wid" collection="array" open="(" separator="," close=")">
+            #{wid}
+        </foreach>
+    </delete>
+    <select id="selectWorklogListByid" parameterType="com.sixin.village.domain.pubObjApi" resultMap="WorklogResult">
+        <include refid="selectWorklogVo"/>
+        <where>
+            <if test="userid != null  and userid != '' "> uid = #{userid}</if>
+            <if test="title != null  and title != ''  ">and wtitle LIKE CONCAT(CONCAT('%', #{title}),'%')</if>
+            <if test="proid != null  and proid != ''  ">and proid = #{proid}</if>
+        </where>
+        ORDER BY pushdate DESC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

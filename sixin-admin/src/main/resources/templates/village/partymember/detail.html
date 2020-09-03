@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="include :: header"></head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="favicon.ico"> <link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
+</head>
+
+<body class="gray-bg" >
+<div class="wrapper wrapper-content  animated fadeInRight article">
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="ibox">
+                <div class="ibox-content">
+                    <div class="text-center article-title">
+                        <h1 th:text="${listByid.uname}"></h1>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-white btn-xs" type="button">性别:[[${listByid.sex}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">党员小组:[[${listByid.grouptype}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">名族:[[${listByid.nations}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">生日:[[${listByid.birthday}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">[[${listByid.partyjoindate}]]入党</button>
+                        <button class="btn btn-white btn-xs" type="button">学历:[[${listByid.edulevel}]]</button>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-white btn-xs" type="button">身份证号:[[${listByid.idcard}]]</button>
+                        <button class="btn btn-white btn-xs" type="button">联系电话:[[${listByid.phone}]]</button>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-white btn-xs" type="button">现居住地：[[${listByid.address}]]</button>
+                    </div>
+                </div>
+            </div>
+            <!--<div>-->
+                <!--<h4>健康状况:</h4><p th:utext="${listByid.health}"></p>-->
+                <!--<h4>驾照:</h4><p th:utext="${listByid.drive}"></p>-->
+                <!--<h4>车辆:</h4><p th:utext="${listByid.car}"></p>-->
+                <!--<h4>车辆类型:</h4><p th:utext="${listByid.vtype}"></p>-->
+                <!--<h4>车牌号:</h4><p th:utext="${listByid.carnum}"></p>-->
+                <!--<h4>特种信息:</h4><p th:utext="${listByid.special}"></p>-->
+                <!--<h4>优抚信息:</h4><p th:utext="${listByid.entitle}"></p>-->
+                <!--<h4>计生情况:</h4><p th:utext="${listByid.familyplan}"></p>-->
+                <!--<h4>医疗情况:</h4><p th:utext="${listByid.medical}"></p>-->
+                <!--<h4>补助情况:</h4><p th:utext="${listByid.subsidy}"></p>-->
+                <!--<h4>保险情况:</h4><p th:utext="${listByid.insurance}"></p>-->
+                <!--<h4>犯罪史:</h4><p th:utext="${listByid.criminal}"></p>-->
+                <!--<h4>优抚信息:</h4><p th:utext="${listByid.entitle}"></p>-->
+                <!--<h4>计生情况:</h4><p th:utext="${listByid.familyplan}"></p>-->
+                <!--<h4>医疗情况:</h4><p th:utext="${listByid.medical}"></p>-->
+                <!--<h4>补助情况:</h4><p th:utext="${listByid.subsidy}"></p>-->
+                <!--<h4>保险情况:</h4><p th:utext="${listByid.insurance}"></p>-->
+                <!--<h4>犯罪史:</h4><p th:utext="${listByid.criminal}"></p>-->
+                <!--<h4>吸毒史:</h4><p th:utext="${listByid.drug}"></p>-->
+            <!--</div>-->
+
+        </div>
+
+
+        </div>
+    </div>
+
+</div>
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<script src="js/content.min.js?v=1.0.0"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+</body>
+
+
+<!-- Mirrored from www.zi-han.net/theme/hplus/article.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 20 Jan 2016 14:19:47 GMT -->
+</html>

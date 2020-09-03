@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-tempgroup-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">分组名称：</label>
+            <div class="col-sm-8">
+                <input id="tgname" name="tgname" class="form-control" type="text">
+            </div>
+        </div>
+        <!--<div class="form-group">-->
+            <!--<label class="col-sm-3 control-label">权限人：</label>-->
+                <!--<div class="col-sm-8">-->
+                    <!--<select class="chosen-select form-control" name="uname" id="uname">-->
+                        <!--<option value="会展经济区">会展经济区</option>-->
+                        <!--<option value="peng">peng</option>-->
+                        <!--<option value="农大张鸿权测试">农大张鸿权测试</option>-->
+                        <!--<option value="山灾预警">山灾预警</option>-->
+                        <!--<option value="暮云街道许兴村">暮云街道许兴村</option>-->
+                        <!--<option value="石城">石城</option>-->
+                        <!--<option value="暮云新村">暮云新村</option>-->
+                        <!--<option value="黎江平">黎江平</option>-->
+                        <!--<option value="节目">节目</option>-->
+                        <!--<option value="江文">江文</option>-->
+                        <!--<option value="岛石村">岛石村</option>-->
+                        <!--<option value="夏乡">夏乡</option>-->
+                        <!--<option value="江背镇">江背镇</option>-->
+                        <!--<option value="青山铺镇">青山铺镇</option>-->
+                        <!--<option value="长沙气象局">长沙气象局</option>-->
+                        <!--<option value="山洪灾害易发区">山洪灾害易发区</option>-->
+                        <!--<option value="春化镇">春化镇</option>-->
+                        <!--<option value="开慧镇">开慧镇</option>-->
+                        <!--<option value="路口镇">路口镇</option>-->
+                        <!--<option value="黄花镇">黄花镇</option>-->
+                        <!--<option value="金景镇">金景镇</option>-->
+                        <!--<option value="高桥镇">高桥镇</option>-->
+                        <!--<option value="安沙镇">安沙镇</option>-->
+                        <!--<option value="果园镇">果园镇</option>-->
+                        <!--<option value="黄兴镇">黄兴镇</option>-->
+                        <!--<option value="北山镇">北山镇</option>-->
+                        <!--<option value="是否V">是否V</option>-->
+                        <!--<option value="ceshi1">ceshi1</option>-->
+                        <!--<option value="安徽">安徽</option>-->
+                        <!--<option value="jiemu">jiemu</option>-->
+                        <!--<option value="福临镇">福临镇</option>-->
+                        <!--<option value="天天">天天</option>-->
+                        <!--<option value="管理员">管理员</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+        <!--</div>-->
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">创建时间：</label>
+            <div class="col-sm-8">
+                <input id="createtime" name="createtime" class="form-control" type="text">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">备注：</label>
+            <div class="col-sm-8">
+                <input id="note" name="note" class="form-control" type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "broad/tempgroup"
+    $("#form-tempgroup-add").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-tempgroup-add').serialize());
+        }
+    }
+</script>
+
+<script>
+    /*时间函数*/
+    function currentTime()
+    {
+        var now = new Date();
+
+        var year = now.getFullYear();       //年
+        var month = now.getMonth() + 1;     //月
+        var day = now.getDate();            //日
+
+        var hh = now.getHours();            //时
+        var mm = now.getMinutes();          //分
+        var ss = now.getSeconds();           //秒
+
+        var clock = year + "-";
+
+        if(month < 10)
+            clock += "0";
+
+        clock += month + "-";
+
+        if(day < 10)
+            clock += "0";
+
+        clock += day + " ";
+
+        if(hh < 10)
+            clock += "0";
+
+        clock += hh + ":";
+        if (mm < 10) clock += '0';
+        clock += mm + ":";
+
+        if (ss < 10) clock += '0';
+        clock += ss;
+
+        $("#createtime").val(clock);
+    }
+    currentTime();
+</script>
+</body>
+</html>

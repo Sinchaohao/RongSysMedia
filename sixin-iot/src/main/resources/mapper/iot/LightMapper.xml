@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.LightMapper">
+    <resultMap type="com.sixin.iot.domain.Light" id="LightResult">
+        <id property="id"    column="id"    />
+        <result property="ctype"    column="ctype"    />
+        <result property="cid" column="cid"/>
+        <result property="cfun" column="cfun"/>
+        <result property="conip"    column="conip"    />
+        <result property="status"    column="status"    />
+        <result property="startdate" column="startdate"/>
+        <result property="exdate" column="exdate"/>
+        <result property="deptid" column="deptid"/>
+        <result property="user_name" column="user_name"/>
+        <result property="demo" column="demo"/>
+        <result property="delflag" column="delflag"/>
+    </resultMap>
+    <!--定义selectLight为查询整表命令-->
+    <sql id="selectLight">
+    select a.id,a.cid,a.ctype,cfun,conip,a.status,a.startdate,a.exdate,a.deptid,b.user_name,a.demo,a.delflag,a.uid from tb_control a
+        inner join ry.sys_user b on a.uid=b.user_id
+        inner join ry.sys_dept c on a.deptid=c.dept_id
+    </sql>
+
+
+    <!--查询表的所有列表信息-->
+    <select id="selectLightList" parameterType="com.sixin.iot.domain.Light" resultMap="LightResult">
+        <include refid="selectLight"/>
+        <where>
+            a.ctype='路灯'
+            <if test="id !=null and id !='' ">
+                AND a.id like concat('%', #{id},'%')
+            </if>
+            <if test="cid != null and cid != '' ">
+                AND cid = #{cid}
+            </if>
+            <if test="cfun != null and cfun != '' ">
+                AND cfun = #{cfun}
+            </if>
+            <if test="conip != null and conip != '' ">
+                AND conip = #{conip}
+            </if>
+            <if test="status != null and status != '' ">
+                AND a.status = #{status}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+                and date_format(a.startdate,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+                and date_format(a.startdate,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+            </if>
+            <if test="exdate !=null and exdate !='' ">
+                AND exdate like concat('%', #{exdate},'%')
+            </if>
+            <if test="deptid !=null and deptid !='' ">
+                AND a.deptid like concat('%', #{deptid},'%')
+            </if>
+            <if test="delflag !=null and delflag !='' ">
+                AND a.delflag like concat('%', #{delflag},'%')
+            </if>
+
+        </where>
+    </select>
+
+
+
+    <select id="selectIoterminalList" parameterType="com.sixin.iot.domain.Ioterminal" resultType="Ioterminal">
+        select id,imei,ctype,deptid from iotdata.tb_ioterminal
+        <where>
+            <if test="deptid != null and deptid !='' ">
+                AND deptid like concat('%', #{deptid},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIoterminalBycid"  resultType="Ioterminal">
+        select imei,conip,status,startdate,exdate,deptid,demo,delflag,uid from iotdata.tb_ioterminal
+        where imei=#{cid}
+    </select>
+
+    <select id="selectUserList" parameterType="com.sixin.iot.domain.User" resultType="User">
+        select user_id,user_name from ry.sys_user
+    </select>
+
+    <!--根据id查询信息-->
+    <select id="selectByid" parameterType="String" resultMap="LightResult">
+        <include refid="selectLight"/>
+        where a.id=#{id}
+    </select>
+
+    <select id="selectLightByids" parameterType="java.util.List" resultMap="LightResult">
+        <include refid="selectLight"/>
+        where a.id in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+    </select>
+
+
+    <insert id="insertLight" parameterType="com.sixin.iot.domain.Light">
+        insert into tb_control
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id!='' ">id,</if>
+            <if test="cid != null  and cid != ''  ">cid,</if>
+            <if test="ctype != null  and ctype != ''  ">ctype,</if>
+            <if test="cfun != null and cfun != ''">cfun,</if>
+            <if test="status != null  and status != ''  ">status,</if>
+            <if test="conip != null  and conip != ''  ">conip,</if>
+            <if test="startdate != null and startdate != '' ">startdate,</if>
+            <if test="exdate != null and exdate != ''">exdate,</if>
+            <if test="deptid != null  and deptid != ''  ">deptid,</if>
+            <if test="uid != null  and uid != ''  ">uid,</if>
+            <if test="demo != null  and demo != ''  ">demo,</if>
+            <if test="delflag != null  and delflag != ''  ">delflag,</if>
+        </trim>
+        values<trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null and id!='' ">#{id},</if>
+        <if test="cid != null  and cid != ''  ">#{cid},</if>
+        <if test="ctype != null  and ctype != ''  ">#{ctype},</if>
+        <if test="cfun != null  and cfun != ''  ">#{cfun},</if>
+        <if test="status != null  and status != ''  ">#{status},</if>
+        <if test="conip != null  and conip != ''  ">#{conip},</if>
+        <if test="startdate != null and startdate != '' ">#{startdate},</if>
+        <if test="exdate != null and exdate != ''">#{exdate},</if>
+        <if test="deptid != null  and deptid != ''  ">#{deptid},</if>
+        <if test="uid != null  and uid != ''  ">#{uid},</if>
+        <if test="demo != null  and demo != ''  ">#{demo},</if>
+        <if test="delflag != null  and delflag != ''  ">#{delflag},</if>
+    </trim>
+    </insert>
+
+
+    <update id="updateLight1" parameterType="com.sixin.iot.domain.Light">
+        update iotdata.tb_ioterminal
+        <set>
+            <if test="cid != null  and cid != ''  ">imei = #{cid},</if>
+            <if test="conip != null  and conip != ''  ">conip = #{conip},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="startdate != null  and startdate != ''  ">startdate = #{startdate},</if>
+            <if test="exdate != null  and exdate != ''  ">exdate = #{exdate},</if>
+            <if test="deptid != null  and deptid != ''  ">deptid = #{deptid},</if>
+            <if test="uid!= null  and uid != ''  ">uid = #{uid},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+        </set>
+        where imei = #{cid}
+    </update>
+
+    <!--更新数据-->
+    <update id="updateLight" parameterType="com.sixin.iot.domain.Light">
+        update iotdata.tb_control
+        <set>
+            <if test="cid != null  and cid != ''  ">cid = #{cid},</if>
+            <if test="ctype != null  and ctype != ''  ">ctype = #{ctype},</if>
+            <if test="cfun != null  and cfun != ''  ">cfun = #{cfun},</if>
+            <if test="conip != null  and conip != ''  ">conip = #{conip},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="startdate != null  and startdate != ''  ">startdate = #{startdate},</if>
+            <if test="exdate != null  and exdate != ''  ">exdate = #{exdate},</if>
+            <if test="deptid != null  and deptid != ''  ">deptid = #{deptid},</if>
+            <if test="uid!= null  and uid != ''  ">uid = #{uid},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+        </set>
+        where cid = #{cid}
+    </update>
+
+    <update id="updateLight2" parameterType="com.sixin.iot.domain.Light">
+        update iotdata.tb_control
+        <set>
+            <if test="cid != null  and cid != ''  ">cid = #{cid},</if>
+            <if test="ctype != null  and ctype != ''  ">ctype = #{ctype},</if>
+            <if test="cfun != null  and cfun != ''  ">cfun = #{cfun},</if>
+            <if test="conip != null  and conip != ''  ">conip = #{conip},</if>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+            <if test="startdate != null  and startdate != ''  ">startdate = #{startdate},</if>
+            <if test="exdate != null  and exdate != ''  ">exdate = #{exdate},</if>
+            <if test="deptid != null  and deptid != ''  ">deptid = #{deptid},</if>
+            <if test="uid!= null  and uid != ''  ">uid = #{uid},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id删除-->
+    <delete id="deleteLightByid" parameterType="String">
+        delete from tb_control where id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteLightByids" parameterType="String">
+        delete from tb_control where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+</mapper>

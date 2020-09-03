@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-traffic-edit" th:object="${traffic}">
+            <input id="ttid" name="ttid" th:field="*{ttid}"  type="hidden">
+			<!--<div class="form-group">
+				<label class="col-sm-3 control-label">终端编号：</label>
+				<div class="col-sm-8">
+					<input id="tid" name="tid" readonly="true" th:field="*{tid}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">使用流量，单位MB：</label>
+				<div class="col-sm-8">
+					<input id="usetraffic" name="usetraffic" readonly="true" th:field="*{usetraffic}" class="form-control" type="text">
+				</div>
+			</div>-->
+			<div class="form-group">
+				<label class="col-sm-3 control-label">终端流量限制/MB：</label>
+				<div class="col-sm-8">
+					<input id="trafficlimit" name="trafficlimit" th:field="*{trafficlimit}" class="form-control" type="text">
+				</div>
+			</div>
+			<!--<div class="form-group">
+				<label class="col-sm-3 control-label">流量统计时间：</label>
+				<div class="col-sm-8">
+					<input id="lasttime" name="lasttime" readonly="true" th:field="*{lasttime}" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">备注：</label>
+				<div class="col-sm-8">
+					<input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+				</div>
+			</div>-->
+		</form>
+    </div>
+    <div th:include="include::footer"></div>
+    <script type="text/javascript">
+		var prefix = ctx + "broad/traffic"
+		$("#form-traffic-edit").validate({
+			rules:{
+				xxxx:{
+					required:true,
+				},
+			}
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	            $.operate.save(prefix + "/edit", $('#form-traffic-edit').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

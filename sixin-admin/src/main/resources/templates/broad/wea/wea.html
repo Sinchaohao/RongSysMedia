@@ -1,0 +1,199 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<!--<li>-->
+								<!--分发平台ID：<input type="text" name="tid"/>-->
+							<!--</li>-->
+
+							<li>
+								预警编号：<input type="text" name="wnum"/>
+							</li>
+
+							<li>
+								接收用户：<input type="text" name="userid"/>
+							</li>
+
+							<li>
+								发布单位：<input type="text" name="company"/>
+							</li>
+
+							<!--<li>-->
+								<!--渠道发布平台ID：<input type="text" name="qid"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--对接手段：<input type="text" name="means"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--预警状态：<input type="text" name="wstate"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--信息：<input type="text" name="mes"/>-->
+							<!--</li>-->
+
+							<li>
+								<input class="laydate-icon  layer-date"
+									   name="createtime"
+									   id="createtime"
+									   value=""
+									   readonly="readonly"
+									   style="width:120px;"
+									   placeholder="创建时间"
+									   title="创建时间"/>
+							</li>
+							<!--<li>-->
+								<!--是否已读：<input type="text" name="isread"/>-->
+							<!--</li>-->
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="broad:wea:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="broad:wea:edit">-->
+					<!--<i class="fa fa-edit"></i> 修改-->
+				<!--</a>-->
+				<!--<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="broad:wea:remove">-->
+					<!--<i class="fa fa-remove"></i> 删除-->
+				<!--</a>-->
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="broad:wea:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('broad:wea:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('broad:wea:remove')}]];
+        var prefix = ctx + "broad/wea";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "天气公告",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'wid', 
+					title : '气象公告编号',
+					visible: false
+				},
+				{
+					field : 'tid', 
+					title : '分发平台ID',
+					sortable: true
+				},
+				{
+					field : 'wnum', 
+					title : '预警编号',
+					sortable: true
+				},
+				{
+					field : 'userid', 
+					title : '接收用户',
+					sortable: true
+				},
+				{
+					field : 'company', 
+					title : '发布单位',
+					sortable: true
+				},
+				{
+					field : 'qid', 
+					title : '渠道发布平台ID',
+					sortable: true
+				},
+				{
+					field : 'means', 
+					title : '对接手段',
+					sortable: true
+				},
+				{
+					field : 'wstate', 
+					title : '预警状态',
+					sortable: true
+				},
+				{
+					field : 'mes', 
+					title : '信息',
+					sortable: true
+				},
+				{
+					field : 'createtime', 
+					title : '创建时间',
+					sortable: true
+				},
+//				{
+//					field : 'isread',
+//					title : '是否已读',
+//					sortable: true
+//				},
+//		        {
+//		            title: '操作',
+//		            align: 'center',
+//		            formatter: function(value, row, index) {
+//		            	var actions = [];
+//		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.wid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+//                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.wid + '\')"><i class="fa fa-remove"></i>删除</a>');
+//						return actions.join('');
+//		            }
+//		        }
+		        ]
+            };
+            $.table.init(options);
+        });
+    </script>
+	 <script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+	 <script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+	 <!--时间插件-->
+	 <script>
+		 laydate({
+			 elem:"#createtime",
+			 event:"focus"
+		 });
+		 laydate({
+			 elem:"#createtime",
+			 event:"focus"
+		 });
+		 layui.use('laydate', function(){
+			 var laydate = layui.laydate;
+
+			 //执行一个laydate实例
+			 laydate.render({
+				 elem:"#broad",
+				 type: 'time',
+			 });
+		 });
+	 </script>
+</body>
+</html>

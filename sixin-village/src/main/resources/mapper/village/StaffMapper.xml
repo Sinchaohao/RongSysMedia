@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.StaffMapper">
+
+    <resultMap type="com.sixin.village.domain.Staff" id="StaffResult">
+        <result property="stid"    column="stid"    />
+        <result property="userid"    column="userid"    />
+        <result property="aid"    column="aid"    />
+        <result property="username"    column="username"    />
+        <result property="age"    column="age"    />
+        <result property="sex"    column="sex"    />
+        <result property="nativeplace"    column="nativeplace"    />
+        <result property="address"    column="address"    />
+        <result property="nation"    column="nation"    />
+        <result property="politics"    column="politics"    />
+        <result property="edulevel"    column="edulevel"    />
+        <result property="idcard"    column="idcard"    />
+        <result property="phone"    column="phone"    />
+        <result property="job"    column="job"    />
+        <result property="employeeunit" column="employeeunit"/>
+        <result property="winaward" column="winaward"/>
+        <result property="punish" column="punish"/>
+        <result property="idphoto" column="idphoto"/>
+        <result property="isuse" column="isuse"/>
+    </resultMap>
+
+    <sql id="selectStaffVo">
+        select stid, userid, aid,username, age, sex, nativeplace, address, nation, politics, edulevel, idcard, phone,job,employeeunit, winaward, punish,idphoto, isuse from tb_staff
+    </sql>
+
+    <select id="selectStaffList" parameterType="com.sixin.village.domain.Staff" resultMap="StaffResult">
+        <include refid="selectStaffVo"/>
+        <where>
+            <if test="stid != null "> and stid = #{stid}</if>
+            <if test="userid != null "> and userid = #{userid}</if>
+            <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+            <if test="username != null  and username != '' "> and username = #{username}</if>
+            <if test="age != null  and age != '' "> and age LIKE CONCAT(CONCAT('%', #{age}),'%')</if>
+             <if test="sex !=null and sex != ''"> and sex LIKE CONTACT(CONTACT('%',#{sex}),'%')</if>
+            <if test="nativeplace != null  and nativeplace != '' "> and nativeplace LIKE CONCAT(CONCAT('%', #{nativeplace}),'%')</if>
+            <if test="address != null and address != ''"> and address LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+            <if test="nation != null  and nation != '' "> and nation LIKE CONCAT(CONCAT('%', #{nation}),'%')</if>
+            <if test="politics != null  and politics != '' "> and politics LIKE CONCAT(CONCAT('%', #{politics}),'%')</if>
+            <if test="edulevel != null  and edulevel != '' "> and edulevel LIKE CONCAT(CONCAT('%', #{edulevel}),'%')</if>
+            <if test="idcard != null  and idcard != '' "> and idcard LIKE CONCAT(CONCAT('%', #{idcard}),'%')</if>
+            <if test="phone != null  and phone != '' "> and phone LIKE CONCAT(CONCAT('%', #{phone}),'%')</if>
+            <if test="job != null and job != ''"> and job LIKE CONCAT(CONCAT('%', #{job}),'%')</if>
+            <if test="employeeunit != null  and employeeunit != '' "> and employeeunit LIKE CONCAT(CONCAT('%', #{employeeunit}),'%')</if>
+            <if test="winaward != null  and winaward != '' "> and winaward LIKE CONCAT(CONCAT('%', #{winaward}),'%')</if>
+            <if test="punish != null  and punish != '' "> and punish LIKE CONCAT(CONCAT('%', #{punish}),'%')</if>
+            <if test="idphoto != null  and idphoto != '' "> and idphoto LIKE CONCAT(CONCAT('%', #{idphoto}),'%')</if>
+            <if test="isuse != null "> and isuse = #{isuse}</if>
+        </where>
+        ORDER BY stid ASC
+    </select>
+
+    <select id="selectStaffById" parameterType="String" resultMap="StaffResult">
+        <include refid="selectStaffVo"/>
+        where stid = #{stid}
+    </select>
+
+    <select id="selectStaffListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="StaffResult">
+        <include refid="selectStaffVo"/>
+        <where>
+            <if test="stid != null  and stid != '' ">stid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+        </where>
+        ORDER BY aid ASC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

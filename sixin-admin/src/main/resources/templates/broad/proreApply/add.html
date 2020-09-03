@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-proreApply-add" enctype="multipart/form-data" action="/broad/proreApply/add" method="post">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">节目名称：</label>
+                <div class="col-sm-8">
+                    <input id="pname" name="pname" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">
+				<label class="col-sm-3 control-label">录制要求：</label>
+				<div class="col-sm-8">
+					<input id="requires" name="requires" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">是否紧急：</label>
+				<div class="col-sm-8">
+					<div class="radio" style="display: inline">
+						<label>
+							<input id="isemergency" name="isemergency" th:value="true"  type="radio">
+							紧急
+						</label>
+					</div>
+					<div class="radio" style="display: inline">
+						<label>
+							<input id="unemergency" name="isemergency" th:value="false"  type="radio" checked>
+							不紧急
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">	
+				<label class="col-sm-3 control-label">时间限制要求：</label>
+				<div class="col-sm-8">
+					<input id="timelimit" name="timelimit" class="form-control" type="text">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">文稿上传：</label>
+				<div class="col-sm-8">
+					<input id="files" name="files" class="form-control" type="file" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"><audio id="audio" autoplay="false" ></audio>
+				</div>
+			</div>
+		</form>
+	</div>
+    <div th:include="include::footer"></div>
+<script type="text/javascript">
+	var prefix = ctx + "broad/proreApply"
+	$("#form-proreApply-add").validate({
+		rules:{
+			xxxx:{
+				required:true,
+			},
+		}
+	});
+	function checkFile(){
+		var fileList = $('#files')[0].files;
+		if (fileList.length === 0) {
+			console.log('没选择文件');
+			return false;
+		};
+		return fileList[0];
+	};
+
+	function submitHandler() {
+		$.modal.loading("正在处理中，请稍后...");
+        var pname = $("#pname").val();
+        var requires = $("#requires").val();
+        var timelimit = $("#timelimit").val();
+		var isemergency = $("input[type='radio']:checked")
+        var filename = $("#filename").val();
+		var files = $("#files").val();
+
+        var info = {
+            "pname": pname,
+            "requires": requires,
+            "timelimit": timelimit,
+			"isemergency":isemergency,
+			"filename":filename,
+			"files":files
+        }
+		if (!checkFile()) {
+			alert('请先选择文件');
+			return false;
+		}else{
+			$(function(){
+				$("#form-proreApply-add").ajaxSubmit(function (data) {
+					$.operate.successCallback({"code":data.code,"msg":data.msg});
+				});
+				return false;
+			});
+		}
+	}
+	$(document).ready(function(){Dropzone.options.myAwesomeDropzone={autoProcessQueue:false,uploadMultiple:true,parallelUploads:100,maxFiles:100,init:function(){var myDropzone=this;this.element.querySelector("button[type=submit]").addEventListener("click",function(e){e.preventDefault();e.stopPropagation();myDropzone.processQueue()});this.on("sendingmultiple",function(){});this.on("successmultiple",function(files,response){});this.on("errormultiple",function(files,response){})}}});
+</script>
+<script th:src="@{/js/plugins/dropzone/dropzone.js}"></script>
+<script th:src="@{/js/jquery-form.js}"></script>
+</body>
+</html>

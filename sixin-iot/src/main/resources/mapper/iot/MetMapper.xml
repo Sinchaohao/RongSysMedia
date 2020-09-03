@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.MetMapper">
+
+    <resultMap type="com.sixin.iot.domain.Environl" id="MetResult">
+        <result property="id" column="id"/>
+        <result property="imei" column="imei"/>
+        <result property="deptid" column="deptid"/>
+        <result property="ambient_temp" column="ambient_temp"/>
+        <result property="ambient_hum" column="ambient_hum"/>
+        <result property="ambient_light" column="ambient_light"/>
+        <result property="soil_temp" column="soil_temp"/>
+        <result property="soil_hum" column="soil_hum"/>
+        <result property="atmo_pressure" column="atmo_pressure"/>
+        <result property="wind_speed" column="wind_speed"/>
+        <result property="wind_direction" column="wind_direction"/>
+        <result property="snow_rain" column="snow_rain"/>
+        <result property="pm25" column="pm25"/>
+        <result property="co2" column="co2"/>
+        <result property="co" column="co"/>
+        <result property="so2" column="so2"/>
+        <result property="colltime" column="colltime"/>
+        <association property="dept"    column="deptid" javaType="com.sixin.system.domain.SysDept" resultMap="deptResult" />
+    </resultMap>
+
+    <resultMap id="deptResult" type="com.sixin.system.domain.SysDept">
+        <id     property="deptId"   column="dept_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="deptName" column="dept_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
+    </resultMap>
+
+    <sql id="selectMetVo">
+        select id,imei,deptid,ambient_temp,ambient_hum,ambient_light,soil_temp,soil_hum,atmo_pressure,wind_speed,wind_direction,snow_rain,pm25,co2,co,so2,colltime,
+        d.dept_id,d.parent_id,d.dept_name
+        from iotdata.tb_environment left join ry.sys_dept d on deptid=d.dept_id
+    </sql>
+
+    <select id="selectMet" parameterType="com.sixin.iot.domain.Environl" resultMap="MetResult">
+        <include refid="selectMetVo"/>
+        where 1=1
+        <if test="id != null and id !='' ">
+            AND id like concat('%', #{id},'%')
+        </if>
+        <if test="imei != null and imei !='' ">
+            AND imei like concat('%', #{imei},'%')
+        </if>
+        <if test="deptid != null and deptid !='' ">
+            AND (d.dept_id = #{deptid} OR d.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptid},ancestors) ))
+        </if>
+        <if test="ambient_temp !=null and ambient_temp !='' ">
+        AND ambient_temp like concat('%', #{ambient_temp},'%')
+        </if>
+        <if test="ambient_hum !=null and ambient_hum !='' ">
+            AND ambient_hum like concat('%', #{ambient_hum},'%')
+        </if>
+        <if test="ambient_light !=null and ambient_light !='' ">
+            AND ambient_light like concat('%', #{ambient_light},'%')
+        </if>
+        <if test="soil_temp !=null and soil_temp !='' ">
+            AND soil_temp like concat('%', #{soil_temp},'%')
+        </if>
+        <if test="soil_hum !=null and soil_hum !='' ">
+            AND soil_hum like concat('%', #{soil_hum},'%')
+        </if>
+        <if test="atmo_pressure !=null and atmo_pressure !='' ">
+            AND atmo_pressure like concat('%', #{atmo_pressure},'%')
+        </if>
+        <if test="wind_speed !=null and wind_speed !='' ">
+            AND wind_speed like concat('%', #{wind_speed},'%')
+        </if>
+        <if test="wind_direction !=null and wind_direction !='' ">
+            AND wind_direction like concat('%', #{wind_direction},'%')
+        </if>
+        <if test="snow_rain !=null and snow_rain !='' ">
+            AND snow_rain like concat('%', #{snow_rain},'%')
+        </if>
+        <if test="pm25 !=null and pm25 !='' ">
+            AND  pm25 like concat('%', #{pm25},'%')
+        </if>
+        <if test="co2 !=null and co2 !='' ">
+            AND co2 like concat('%', #{co2},'%')
+        </if>
+        <if test="co !=null and co !='' ">
+            AND co like concat('%', #{co},'%')
+        </if>
+        <if test="so2 !=null and so2 !='' ">
+            AND so2 like concat('%', #{so2},'%')
+        </if>
+        <if test="colltime != null and colltime !='' ">
+            AND colltime like concat('%', #{colltime},'%')
+        </if>
+    </select>
+
+    <select id="selectMetDataById" parameterType="Long" resultMap="MetResult">
+        <include refid="selectMetVo"/>
+        where id=#{id}
+    </select>
+
+    <insert id="insertMetData" parameterType="com.sixin.iot.domain.Environl">
+        insert into tb_environment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="imei != null  and tid != ''  ">imei,</if>
+            <if test="deptid != null  and deptid != ''  ">deptid,</if>
+            <if test="surrtemp != null  and surrtemp != ''  ">surrtemp,</if>
+            <if test="surrhumi != null  and surrhumi != ''  ">surrhumi,</if>
+            <if test="surrlight != null  and surrlight != ''  ">surrlight,</if>
+            <if test="rainfall != null  and rainfall != ''  ">rainfall,</if>
+            <if test="atmopress != null  and atmopress != ''  ">atmopress,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="imei != null  and imei != ''  ">#{imei},</if>
+            <if test="deptid != null  and deptid != ''  ">#{deptid},</if>
+            <if test="surrtemp != null  and surrtemp != ''  ">#{surrtemp},</if>
+            <if test="surrhumi != null  and surrhumi != ''  ">#{surrhumi},</if>
+            <if test="surrlight != null  and surrlight != ''  ">#{surrlight},</if>
+            <if test="rainfall != null  and rainfall != ''  ">#{rainfall},</if>
+            <if test="atmopress != null  and atmopress != ''  ">#{atmopress},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMetData" parameterType="com.sixin.iot.domain.Environl">
+        update tb_environment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="imei != null  and imei != ''  ">imei=#{imei},</if>
+            <if test="deptid != null  and deptid != ''  ">deptid=#{deptid},</if>
+            <if test="surrtemp != null  and surrtemp != ''  ">surrtemp=#{surrtemp},</if>
+            <if test="surrhumi != null  and surrhumi != ''  ">surrhumi=#{surrhumi},</if>
+            <if test="surrlight != null  and surrlight != ''  ">surrlight=#{surrlight},</if>
+            <if test="rainfall != null  and rainfall != ''  ">rainfall=#{rainfall},</if>
+            <if test="atmopress != null  and atmopress != ''  ">atmopress=#{atmopress},</if>
+            <if test="remark != null  and remark != ''  ">remark=#{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMetDataByIds" parameterType="String">
+        delete from tb_environment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

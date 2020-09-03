@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.SecurityDataMapper">
+    <resultMap type="com.sixin.iot.domain.SecurityData" id="SecurityDataResult">
+        <result property="id"    column="id"    />
+        <result property="stype"    column="stype"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="sno"    column="sno"    />
+        <result property="sname"    column="sname"    />
+        <result property="producer"    column="producer"    />
+        <result property="prodtime"    column="prodtime"    />
+        <result property="price"    column="price"    />
+        <result property="endtime"    column="endtime"    />
+        <result property="installtime"    column="installtime"    />
+        <result property="installer"    column="installer"    />
+        <result property="demo"    column="demo"    />
+        <result property="delflag"    column="delflag"    />
+        <result property="scount" column="scount"/>
+        <association property="sysDept"    column="dept_id" javaType="com.sixin.system.domain.SysDept" resultMap="deptResult" />
+        <collection  property="securitype"   javaType="com.sixin.iot.domain.Securitype"        resultMap="SecuritypeResult" />
+    </resultMap>
+
+    <resultMap id="deptResult" type="com.sixin.system.domain.SysDept">
+        <id     property="deptId"   column="dept_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="deptName" column="dept_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
+    </resultMap>
+
+    <resultMap type="com.sixin.iot.domain.Securitype" id="SecuritypeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="demo"    column="demo"    />
+        <result property="delflag"    column="delflag"    />
+    </resultMap>
+
+    <sql id="selectSecurityDataVo">
+        select  u.id,u.stype,u.dept_id, d.dept_name, u.sno, u.sname, u.producer, u.prodtime,u.price,u.endtime,u.installtime,u.installer,u.demo,u.delflag
+		from iotdata.tb_security u inner join ry.sys_dept d on u.dept_id = d.dept_id
+    </sql>
+
+    <sql id="selectSecuritypeVo">
+        select id,name,demo,delflag from iotdata.tb_securitype
+    </sql>
+
+    <select id="getAllSecurityData"  parameterType="com.sixin.iot.domain.SecurityData" resultMap="SecurityDataResult">
+        <include refid="selectSecurityDataVo"/>
+        where u.delflag = '1'
+        <if test="id != null and id != ''">
+            and id =#{id}
+        </if>
+        <if test="stype != null and stype != ''">
+            and stype like concat('%',#{stype},'%')
+        </if>
+        <if test="deptId !=null and deptId !=''">
+            AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        <if test="deptName != null and deptName != ''">
+            and deptName like concat('%',#{deptName},'%')
+        </if>
+        <if test="sno != null and sno != ''">
+            and sno like concat('%',#{sno},'%')
+        </if>
+        <if test="sname != null and sname != ''">
+            and sname like concat('%',#{sname},'%')
+        </if>
+    </select>
+
+    <select id="getSecurityDataByDelflag" parameterType="java.lang.Character" resultMap="SecurityDataResult">
+        <include refid="selectSecurityDataVo"/>
+        where 1=1
+        <if test="delflag != null  and delflag != '' "> and delflag = #{delflag,jdbcType=CHAR}</if>
+    </select>
+
+    <select id="getSecuritypeByDelflag" parameterType="java.lang.Character" resultMap="SecuritypeResult">
+        <include refid="selectSecuritypeVo"/>
+        where 1=1
+        <if test="delflag != null  and delflag != '' "> and delflag = #{delflag,jdbcType=CHAR}</if>
+    </select>
+
+    <select id="getSecurityDataById" parameterType="long" resultMap="SecurityDataResult">
+        <include refid="selectSecurityDataVo"/>
+        where 1=1
+        <if test="id != null  and id != '' "> and id = #{id}</if>
+    </select>
+
+    <select id="getSecurityDataList" parameterType="com.sixin.iot.domain.SecurityData" resultMap="SecurityDataResult">
+        <include refid="selectSecurityDataVo"/>
+        where 1=1
+        <if test="id != null  and id != '' "> and id = #{id}</if>
+        <if test="stype != null  and stype != '' "> and stype = #{stype}</if>
+        <if test="deptId != null  and deptId != '' "> and dept_id = #{deptId}</if>
+        <if test="sno != null  and sno != '' "> and sno = #{sno}</if>
+        <if test="sname != null  and sname != '' "> and sname = #{sname}</if>
+        <if test="producer != null  and producer != '' "> and producer = #{producer}</if>
+        <if test="prodtime != null  and prodtime != '' "> and prodtime like concat('%', #{prodtime}, '%')</if>
+        <if test="price != null  and price != '' "> and price like concat('%', #{price}, '%')</if>
+        <if test="endtime != null  and endtime != '' "> and endtime like concat('%', #{endtime}, '%')</if>
+        <if test="installtime != null  and installtime != '' "> and installtime like concat('%', #{installtime}, '%')</if>
+        <if test="installer != null  and installer != '' "> and installer=#{installer}</if>
+        <if test="demo != null  and demo != '' "> and demo=#{demo}</if>
+        <if test="delflag != null  and delflag != '' "> and delflag = #{delflag}</if>
+    </select>
+
+    <select id="getSecurityDataByDeptid" parameterType="long" resultMap="SecurityDataResult">
+        <include refid="selectSecurityDataVo"/>
+        where delflag=1
+        <if test="deptId != null  and deptId != '' "> and dept_id like concat('%', #{deptid}, '%')</if>
+    </select>
+
+    <insert id="insertSecurityData" parameterType="com.sixin.iot.domain.SecurityData">
+        insert into tb_security(
+        <if test="stype != null and stype != 0">stype,</if>
+        <if test="dept_id != null and dept_id != 0">dept_id,</if>
+        <if test="sno != null and sno != 0">sno,</if>
+        <if test="sname != null and sname != 0">sname,</if>
+        <if test="producer != null and producer != 0">producer,</if>
+        <if test="prodtime != null and prodtime != 0">prodtime,</if>
+        <if test="price != null and price != 0">price,</if>
+        <if test="endtime != null and endtime != 0">endtime,</if>
+        <if test="installtime != null and installtime != 0">installtime,</if>
+        <if test="installer != null and installer != 0">installer,</if>
+        <if test="demo != null and demo != 0">demo,</if>
+        <if test="delflag != null and delflag != ''">delflag</if>
+        )values(
+        <if test="stype != null and stype != 0">#{stype},</if>
+        <if test="dept_id != null and dept_id != 0">#{deptId},</if>
+        <if test="sno != null and sno != 0">#{sno},</if>
+        <if test="sname != null and sname != 0">#{sname},</if>
+        <if test="producer != null and producer != 0">#{producer},</if>
+        <if test="prodtime != null and prodtime != 0">#{prodtime},</if>
+        <if test="price != null and price != 0">#{price},</if>
+        <if test="endtime != null and endtime != 0">#{endtime},</if>
+        <if test="installtime != null and installtime != 0">sysdate(),</if>
+        <if test="installer != null and installer != 0">#{installer},</if>
+        <if test="demo != null and demo != 0">#{demo},</if>
+        <if test="delflag != null and delflag != ''">#{delflag}</if>
+        )
+    </insert>
+
+    <update id="updateSecurityData" parameterType="com.sixin.iot.domain.SecurityData">
+        update tb_security
+        <set>
+            <if test="stype != null and stype != 0">stype=#{stype},</if>
+            <if test="dept_id != null and dept_id != 0">dept_id=#{deptId},</if>
+            <if test="sno != null and sno != 0">sno=#{sno},</if>
+            <if test="sname != null and sname != 0">sname=#{sname},</if>
+            <if test="producer != null and producer != 0">producer=#{producer},</if>
+            <if test="prodtime != null and prodtime != 0">prodtime=#{prodtime},</if>
+            <if test="price != null and price != 0">price=#{price},</if>
+            <if test="endtime != null and endtime != 0">endtime=#{endtime},</if>
+            <if test="installtime != null and installtime != 0">installtime=#{installtime},</if>
+            <if test="installer != null and installer != 0">installer=#{installer},</if>
+            <if test="demo != null and demo != 0">demo=#{demo},</if>
+            <if test="delflag != null and delflag != ''">delflag = #{delflag}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSecurityDataById" parameterType="long">
+		delete from tb_security where id = #{id}
+	</delete>
+
+    <delete id="deleteSecurityData">
+		update  tb_security set delflag='1'
+	</delete>
+
+    <select id="InstallByTimeList"  parameterType="Long" resultMap="SecurityDataResult">
+        select count(installtime)as scount,dept_id,installtime from iotdata.tb_security
+        where 1=1
+        <if test="deptId !=null and deptId !=''">
+            AND (dept_id = #{deptId} OR dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        group by dept_id,installtime order by installtime desc
+    </select>
+
+    <select id="EndByTime"  parameterType="Long" resultMap="SecurityDataResult">
+        select count(endtime)as scount,dept_id,endtime from iotdata.tb_security
+        where 1=1
+        <if test="deptId !=null and deptId !=''">
+            AND (dept_id = #{deptId} OR dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        group by dept_id,endtime order by endtime desc
+    </select>
+
+    <select id="isdelflag"  parameterType="Long" resultMap="SecurityDataResult">
+        select sum(a.id)as id,sum(a.scount)as scount from (select count(delflag="1" or null)as id,count(delflag="0" or null)as scount,dept_id from iotdata.tb_security
+        where 1=1
+        <if test="deptId !=null and deptId !=''">
+            AND (dept_id = #{deptId} OR dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        group by dept_id)as a
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.TextmessagesMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="TypeNumMap" type="com.sixin.broad.domain.typenum">
+        <result column="textnum" property="textnum"/>
+        <result column="num" property="num"/>
+        <result column="telnumber" property="telnumber"/>
+    </resultMap>
+    <resultMap id="TextMessagesMap" type="com.sixin.broad.domain.Textmessages">
+        <result column="telid" property="telid"/>
+        <result column="tid" property="tid"/>
+        <result column="tel" property="tel"/>
+        <result column="telperson" property="telperson"/>
+        <result column="isuse" property="isuse"/>
+    </resultMap>
+    <sql id="Field">
+		 telid, tid, tel, telperson, isuse
+	</sql>
+
+    <!--还有一个 #aid 字段-->
+    <sql id="FieldValue">
+		#{telid}, #{tid}, #{tel}, #{telperson}, #{isuse}
+	</sql>
+
+    <!--表名 -->
+    <sql id="tableName">
+		terminaltels
+	</sql>
+    <select id="selectTextMessages" resultMap="TextMessagesMap">
+        select <include refid="Field"/>
+        from <include refid="tableName"/>
+        <where>
+            <if test="tid != null and tid != ''"> and tid like '%${tid}%'</if>
+            <if test="tel != null  and tel != ''"> and tel like '%${tel}%'</if>
+            <if test="telperson != null  and telperson != ''"> and telperson like '%${telperson}%'</if>
+            <if test="isuse != null  and isuse != ''"> and isuse like '%${isuse}%'</if>
+        </where>
+        ORDER BY telid asc
+    </select>
+    <select id="selectTypeNum" resultMap="TypeNumMap">
+          select telperson as textnum ,count(*) as num ,tel as telnumber from terminaltels group by telperson
+    </select>
+</mapper>

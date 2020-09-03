@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" xmlns:margin-left="http://java.sun.com/jsf/composite"
+      xmlns:margin-right="http://java.sun.com/jsf/core">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+    <link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="col-sm-12 select-table table-striped" style="width: 49%; margin-right: 1%" >
+            <h1 class="select-title">特殊分组列表</h1>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增</button>
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped" style="width: 49%; margin-left: 1%" >
+            <h1 class="select-title">终端列表</h1>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal2">添加终端设备</button>
+            <table id="bootstrap-table-form" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+
+    <!--  编辑弹窗-->
+    <div class="modal inmodal" id="myModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <h4 class="modal-title">编辑特殊分组</h4>
+                </div>
+                <!-- 放置特殊分组表单 -->
+                <div class="modal-body">
+                    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+                        <form class="form-horizontal m" id="form-tempgroup-add1" action="#" method="POST">
+                            <div class="form-group"     style="visibility: hidden;" >
+                                <label class="col-sm-3 control-label">分组id：</label>
+                                <div class="col-sm-8">
+                                    <input id="tgid1" name="tgid" class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">分组名称：</label>
+                                <div class="col-sm-8">
+                                    <input id="tgname1" name="tgname" class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">权限人：</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="userinfo1" name="userid">
+                                        <option value="请选择权限人">--请选择权限人--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">是否启用：</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="isuse" id="isuse1">
+                                        <option value="">--请选择是否启用--</option>
+                                        <option value="1">是</option>
+                                        <option value="0">否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">备注：</label>
+                                <div class="col-sm-8">
+                                    <input id="note1" name="note" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" id="close-btn11">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="saveedittempgroup()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  新增弹窗-->
+    <div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <h4 class="modal-title">新增特殊分组</h4>
+                </div>
+                <!-- 放置特殊分组表单 -->
+                <div class="modal-body">
+                    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+                        <form class="form-horizontal m" id="form-tempgroup-add" action="/broad/tempgroup/addtemp" method="POST">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">分组名称：</label>
+                                <div class="col-sm-8">
+                                    <input id="tgname" name="tgname" class="form-control" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">权限人：</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="userinfo" name="userid">
+                                        <option value="">--请选择权限人--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">是否启用：</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" name="isuse">
+                                        <option value="">--请选择是否启用--</option>
+                                        <option value="1">是</option>
+                                        <option value="0">否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">备注：</label>
+                                <div class="col-sm-8">
+                                    <input id="note" name="note" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" id="close-btn">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="savetempgroup()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--   添加终端设备弹窗-->
+    <div class="modal inmodal" id="myModal2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <h4 class="modal-title">新增终端设备</h4>
+                </div>
+                <!-- 放置新增终端设备表单 -->
+                <div class="modal-body">
+                    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+                        <form class="form-horizontal m" id="form-tempgroup-ter-add" action="#" method="POST">
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label"   style="font-size: 16px;">特殊分组名称：</label>
+                                <div id="tempgroup_span" class="col-sm-3 control-label" > </div>
+                            </div>
+                            <div class="ui-layout-west">
+                                <div class="main-content">
+                                    <div class="box box-main" >
+                                        <div class="box-header">
+                                            <div class="box-title">
+                                                <i class="fa icon-grid"></i> 终端列表
+                                            </div>
+                                        </div>
+                                        <div class="ui-layout-content">
+                                            <div id="tree" class="ztree" style="overflow: auto"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" id="close-btn1">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="savetempgroupAndT()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "broad/tempgroup";
+
+    queryAreaTree();
+
+    // 表格1初始化
+    $(function table1() {
+        var options = {
+            url: prefix + "/list",
+            detailUrl: prefix + "/detail/{id}",
+            removeUrl: prefix + "/remove",
+            createUrl: prefix + "/addtemp",
+            modalName: "临时分组",
+            search: false,
+            showExport: true,
+            clickToSelect: true,
+            onClickRow:function (row, $element) {
+                row1 = row
+                teble2(row, $element)
+            },
+            onLoadSuccess:function(data){
+                $("#bootstrap-table tr td")[1].click()
+            },
+            columns: [
+                {
+                    field : 'tgname',
+                    title : '特殊分组名称',
+                    sortable: true
+                },
+                {
+                    field : 'tgid',
+                    title : '分组id',
+                    sortable: true
+                },
+                {
+                    title : '权限人',
+                    field : 'uname',
+                    sortable: true
+                },
+                {
+                    title : '是否启用',
+                    field : 'isuse',
+                    sortable: true,
+                    formatter:function (value,row,index) {
+                        if(value==0){
+                            return "否"
+                        }else{
+                            return "是"
+                        }
+                    }
+                },
+                {
+                    field : 'createtime',
+                    title : '创建时间',
+                    sortable: true
+                },
+                {
+                    field : 'note',
+                    title : '备注',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs shanchu' + '" href="#" onclick="deleteTempgroup(event)"><i class="fa fa-remove"></i>删除</a>');
+                        actions.push('<a class="btn btn-danger btn-xs bianji' + '" href="#" data-toggle="modal" data-target="#myModal1" onclick="editTempgroup(event) "><i class="fa fa-remove"></i>编辑</a>');
+                        return actions.join('');
+                    }
+                }
+            ],
+        };
+        $.table.init(options);
+    });
+
+    // 选中表格1后，点击行，查询出特殊分组下的终端信息在表格中展示
+    function teble2(row, $element) {
+        $("#tempgroup_span").html(row.tgname);
+        $("#tempgroup_span").data("tgid", row.tgid);
+        if($element){
+            $element.addClass("active");
+            $element.siblings().removeClass('active');
+        }
+
+        var temp = row.tgid
+        var options = {
+            url: prefix + `/list/${temp}`,
+            id: "bootstrap-table-form",
+            modalName: "终端列表",
+            search: false,
+            showExport: true,
+            columns: [
+                {
+                    radio:true
+                },
+                {
+                    field : 'tid',
+                    title : '终端IEME',
+                    sortable: true
+                },
+                {
+                    field : 'tname',
+                    title : '终端名称',
+                    sortable: true
+                },
+                {
+                    field : 'aname',
+                    title : '所属分组',
+                    sortable: true
+                },
+                {
+                    field : 'uname',
+                    title : '所属用户',
+                    sortable: true
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + '" href="#" onclick="deleteTempgroupT(event)"><i class="fa fa-remove"></i>移除</a> ');
+                        return actions.join('');
+                    }
+                }
+            ]
+        };
+        $.table.destroy("bootstrap-table-form");
+        $.table.init(options);
+    }
+
+    // 新增特殊分组弹窗人员下拉框调取人员信息组件
+    $(function getUserInfo(ele,msg) {
+        $.get("/broad/dto/userinfos",function getmsg(params1,params2) {
+            for (let index = 0; index < params1.length; index++) {
+                let text = params1[index].uname;
+                let value1 = params1[index].userid;
+                $("#userinfo").append("<option value='"+value1+"'>"+text+"</option>")
+                $("#userinfo1").append("<option value='"+value1+"'>"+text+"</option>")
+            }
+        });
+    })
+
+    //提交表单
+    function savetempgroup() {
+        var params = $("#form-tempgroup-add").serializeArray();
+        var values = {};
+        for( x in params ){
+            values[params[x].name] = params[x].value;
+        }
+        $("#form-tempgroup-add")[0].reset()
+        $.ajax({
+            url:"/broad/tempgroup/addtemp",
+            type: "POST",
+            data:values,
+            success:function a(res){
+                if(res.code==0){
+                    alert(res.msg)
+                    $(".fixed-table-toolbar .btn-group")[0].children[1].click();
+                }else{
+                    alert(res.msg)
+                }
+            },
+            error:function () {
+                alert("保存失败")
+                $("#form-tempgroup-add").reset()
+            }
+        });
+
+        $("#close-btn").click();
+    }
+
+    function deleteTempgroup(event) {
+        event.stopPropagation();
+        var tgid = $(event.currentTarget).parent().context.parentNode.parentNode.children[2].innerText;
+
+        $.ajax({
+            url:"/broad/tempgroup/remove",
+            type: "POST",
+            data:{tgid:tgid},
+            success:function a(res){
+                alert(res.msg)
+                $(".fixed-table-toolbar .btn-group")[0].children[1].click();
+            },
+            error:function () {
+                alert("删除失败")
+            }
+        });
+    }
+
+    function editTempgroup(event) {
+        let tgname = $(event.currentTarget).parent().context.parentNode.parentNode.children[1].innerText;
+        let tgid = $(event.currentTarget).parent().context.parentNode.parentNode.children[2].innerText;
+        let userid1 = $(event.currentTarget).parent().context.parentNode.parentNode.children[3].innerText;
+        let isuse1 = $(event.currentTarget).parent().context.parentNode.parentNode.children[4].innerText=="是"?1:0;
+        let createtime = $(event.currentTarget).parent().context.parentNode.parentNode.children[5].innerText;
+        let note = $(event.currentTarget).parent().context.parentNode.parentNode.children[6].innerText;
+        $("#tgid1").val(tgid);
+        $("#tgname1").val(tgname);
+        $("#note1").val(note);
+        $("#isuse1 option[value="+isuse1+"]").attr("selected","selected");
+        $("#userinfo1 option:contains("+userid1+")").attr("selected","selected");
+        $("#createtime1").val(createtime);
+    }
+
+    function savetempgroupAndT() {
+        tgid =  $("#tempgroup_span").data("tgid")
+        $.ajax({
+            url:"/broad/tempgroup/tempgroup_ter",
+            type: "POST",
+            data:{tgid:tgid,tid:tid},
+            success:function a(res){
+                if(res.code==0){
+                    alert(res.msg)
+                    $("#close-btn1").click()
+                    teble2(row1);
+                }else{
+                    alert(res.msg)
+                }
+            },
+            error:function () {
+                alert("保存失败")
+            }
+        });
+
+        $("#close-btn").click();
+    }
+
+    function deleteTempgroupT(event) {
+        var tid = $(event.currentTarget).parent().context.parentNode.parentNode.children[1].innerText;
+        $.ajax({
+            url:"/broad/tempgroup/removet",
+            type: "POST",
+            data:{tid:tid},
+            success:function a(res){
+                if(res.code==0){
+                    alert(res.msg)
+                    teble2(row1);
+                }
+            },
+            error:function () {
+                alert("删除失败")
+            }
+        });
+
+    }
+
+    function saveedittempgroup(){
+        var params = $("#form-tempgroup-add1").serializeArray();
+        var values = {};
+        for( x in params ){
+            values[params[x].name] = params[x].value;
+        }
+        $("#form-tempgroup-add")[0].reset()
+        $.ajax({
+            url:"/broad/tempgroup/update",
+            type: "POST",
+            data:values,
+            success:function a(res){
+                if(res.code==0){
+                    alert(res.msg)
+                    $("#close-btn11").click()
+                    $(".fixed-table-toolbar .btn-group")[0].children[1].click();
+                }else{
+                    alert(res.msg)
+                }
+                $("#form-tempgroup-add").reset()
+            },
+            error:function () {
+                alert("保存失败")
+            }
+        });
+        $("#close-btn").click();
+    }
+
+    var row1;
+    var tgid;
+    var tid;
+
+    function queryAreaTree(){
+        var url = ctx + "broad/areaGrouping/treeData";
+        var options = {
+            url: url,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+        function zOnClick(event, treeId, treeNode) {
+            tgid = $("#tempgroup_span").text();
+            tid = treeNode.id;
+
+            $("#parentaid").val(treeNode.aid);
+            $.table.search();
+        }
+        $.tree.init(options);
+    }
+
+</script>
+
+<style>
+    .active{
+        background: #f5f5f5!important;
+    }
+</style>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.FileinfoMapper">
+    
+    <resultMap type="com.sixin.village.domain.Fileinfo" id="FileinfoResult">
+        <result property="fileid"    column="fileid"    />
+        <result property="filename"    column="filename"    />
+        <result property="furl"    column="furl"    />
+        <result property="filesize"    column="filesize"    />
+        <result property="pushdate"    column="pushdate"    />
+        <result property="fsname"    column="fsname"    />
+        <result property="suffix"    column="suffix"    />
+        <result property="downloadnum"    column="downloadnum"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="aid"    column="aid"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectFileinfoVo">
+        select fileid, filename, furl, filesize, pushdate, fsname, suffix, downloadnum, uid, uname, aid, remark from fileinfo
+    </sql>
+	
+    <select id="selectFileinfoList" parameterType="com.sixin.village.domain.Fileinfo" resultMap="FileinfoResult">
+        <include refid="selectFileinfoVo"/>
+        <where>  
+            <if test="fileid != null "> and fileid = #{fileid}</if>
+             <if test="filename != null  and filename != '' ">and filename LIKE CONCAT(CONCAT('%', #{filename}),'%')</if>
+             <if test="furl != null  and furl != '' "> and furl = #{furl}</if>
+             <if test="filesize != null  and filesize != '' "> and filesize = #{filesize}</if>
+             <if test="pushdate != null  and pushdate != '' "> and pushdate LIKE CONCAT(CONCAT('%', #{pushdate}),'%')</if>
+             <if test="fsname != null  and fsname != '' "> and fsname LIKE CONCAT(CONCAT('%', #{fsname}),'%')</if>
+             <if test="suffix != null  and suffix != '' ">
+              <if test="suffix ==0 ">
+                and suffix ="jpg" or suffix ="jpeg" or suffix ="TIFF" or suffix ="RAW" or suffix ="BMP"or suffix ="GIF"
+              </if>
+              <if test="suffix ==1 ">
+                and suffix = "avi" or suffix ="wma" or suffix ="rmvb" or suffix ="rm" or suffix ="flash" or suffix ="mp4"or suffix ="3GP"
+              </if>
+               <if test="suffix ==2 ">
+                and suffix = "doc" or suffix ="pdf" or suffix ="pdf" or suffix ="html" or suffix ="docx" or suffix ="ppt" or suffix ="pptx" or suffix ="zip"or suffix ="txt" or suffix ="xlsx" or suffix ="xls"
+               </if>
+             </if>
+             <if test="downloadnum != null "> and downloadnum = #{downloadnum}</if>
+             <if test="uid != null  and uid != '' "> and uid = #{uid}</if>
+             <if test="uname != null  and uname != '' "> and uname = #{uname}</if>
+             <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+        ORDER BY pushdate DESC
+    </select>
+    
+    <select id="selectFileinfoById" parameterType="Integer" resultMap="FileinfoResult">
+        <include refid="selectFileinfoVo"/>
+        where fileid = #{fileid}
+    </select>
+
+    <select id="selectFilesizeSum" parameterType="String"  resultType="double">
+       select IFNULL(sum(filesize),0 ) from fileinfo where uid = #{uid}
+    </select>
+
+    <select id="selectFileurlById" parameterType="Integer"  resultType="String">
+        select furl from fileinfo
+        where fileid = #{fileid}
+    </select>
+
+    <insert id="insertFileinfo" parameterType="com.sixin.village.domain.Fileinfo">
+        insert into fileinfo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="fileid != null  ">fileid,</if>
+			<if test="filename != null  and filename != ''  ">filename,</if>
+			<if test="furl != null  and furl != ''  ">furl,</if>
+			<if test="filesize != null  and filesize != ''  ">filesize,</if>
+			<if test="pushdate != null  and pushdate != ''  ">pushdate,</if>
+			<if test="fsname != null  and fsname != ''  ">fsname,</if>
+			<if test="suffix != null  and suffix != ''  ">suffix,</if>
+			<if test="downloadnum != null  ">downloadnum,</if>
+			<if test="uid != null  and uid != ''  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="fileid != null  ">#{fileid},</if>
+			<if test="filename != null  and filename != ''  ">#{filename},</if>
+			<if test="furl != null  and furl != ''  ">#{furl},</if>
+			<if test="filesize != null  and filesize != ''  ">#{filesize},</if>
+			<if test="pushdate != null  and pushdate != ''  ">#{pushdate},</if>
+			<if test="fsname != null  and fsname != ''  ">#{fsname},</if>
+			<if test="suffix != null  and suffix != ''  ">#{suffix},</if>
+			<if test="downloadnum != null  ">#{downloadnum},</if>
+			<if test="uid != null  and uid != ''  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateFileinfo" parameterType="com.sixin.village.domain.Fileinfo">
+        update fileinfo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="filename != null  and filename != ''  ">filename = #{filename},</if>
+            <if test="furl != null  and furl != ''  ">furl = #{furl},</if>
+            <if test="filesize != null  and filesize != ''  ">filesize = #{filesize},</if>
+            <if test="pushdate != null  and pushdate != ''  ">pushdate = #{pushdate},</if>
+            <if test="fsname != null  and fsname != ''  ">fsname = #{fsname},</if>
+            <if test="suffix != null  and suffix != ''  ">suffix = #{suffix},</if>
+            <if test="downloadnum != null  ">downloadnum = #{downloadnum},</if>
+            <if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where fileid = #{fileid}
+    </update>
+
+	<delete id="deleteFileinfoById" parameterType="Integer">
+        delete from fileinfo where fileid = #{fileid}
+    </delete>
+	
+    <delete id="deleteFileinfoByIds" parameterType="String">
+        delete from fileinfo where fileid in 
+        <foreach item="fileid" collection="array" open="(" separator="," close=")">
+        #{fileid}
+    </foreach>
+    </delete>
+    <select id="selectMyFileListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="FileinfoResult">
+        <include refid="selectFileinfoVo"/>
+        <where>
+            <if test="userid != null  and userid != '' "> uid = #{userid}</if>
+            <if test="title != null  and title != ''  ">and filename LIKE CONCAT(CONCAT('%', #{title}),'%')</if>
+        </where>
+        <choose>
+            <when test="ordername=='01'">
+                ORDER BY pushdate DESC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+            <when test="ordername=='011'" >
+                ORDER BY pushdate ASC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+            <when test="ordername=='02'" >
+                ORDER BY filesize DESC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+            <when test="ordername=='021'" >
+                ORDER BY filesize ASC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+            <when test="ordername=='03'" >
+                ORDER BY fsname DESC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+            <when test="ordername=='031'" >
+                ORDER BY fsname ASC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+            <when test="ordername=='04'" >
+                ORDER BY suffix DESC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+            <when test="ordername=='041'" >
+                ORDER BY suffix ASC
+                limit #{pageSize} offset #{pageIndex}
+            </when>
+        </choose>
+    </select>
+</mapper>

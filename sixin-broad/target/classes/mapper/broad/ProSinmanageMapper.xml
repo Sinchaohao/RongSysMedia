@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ProSinmanageMapper">
+    
+    <resultMap type="com.sixin.broad.domain.ProSinmanage" id="ProSinmanageResult">
+        <result property="sfid"    column="sfid"    />
+        <result property="scategory"    column="scategory"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="broaddate"    column="broaddate"    />
+        <result property="userid"    column="userid"    />
+        <result property="remark"    column="remark"    />
+        <result property="broadtimes"    column="broadtimes"    />
+    </resultMap>
+	
+	<sql id="selectProSinmanageVo">
+        select sfid, scategory, createtime, broaddate, userid, remark, broadtimes from pro_sinmanage
+    </sql>
+	
+    <select id="selectProSinmanageList" parameterType="com.sixin.broad.domain.ProSinmanage" resultMap="ProSinmanageResult">
+        select PS.sfid as sfid,
+        PS.scategory as scategory,
+        PS.createtime,
+        PS.broaddate,
+        US.uname as uname,
+        PS.remark,
+        PS.broadtimes
+#         ,WS.pname as pname,
+#         WS.submittime
+        from pro_sinmanage as PS
+        left join
+        userinfo as US
+            on
+        PS.userid = US.userid
+
+#          ,prore_apply as WS
+        <where>
+#             PS.userid = US.userid and
+            PS.scategory = #{scategory}
+#         and PS.userid = WS.paid
+        <if test="sfid != null and sfid != ''"> and sfid like '%${sfid}%'</if>
+        <if test="pname != null and pname != ''"> and pname like '%${pname}%'</if>
+        <if test="uname != null and uname != ''"> and US.uname like '%${uname}%'</if>
+    </where>
+    order by sfid desc
+    </select>
+    <select id="selectProSinmanagebyoneday" parameterType="com.sixin.broad.domain.ProSinmanage" resultMap="ProSinmanageResult">
+        select PS.sfid as sfid,
+        PS.scategory as scategory,
+        PS.createtime,
+        PS.broaddate,
+        US.uname as uname,
+        PS.remark,
+        PS.broadtimes,
+        WS.pname as pname,
+        WS.submittime
+        from pro_sinmanage as PS,
+        userinfo as US,
+        prore_apply as WS
+        <where>
+            PS.userid = US.userid and
+            PS.userid = WS.userid and
+            PS.createtime >= DATE_SUB((select createtime from pro_sinmanage order by sfid desc LIMIT 1),INTERVAL 1 day)
+            <if test="sfid != null and sfid != ''"> and sfid like '%${sfid}%'</if>
+            <if test="pname != null and pname != ''"> and pname like '%${pname}%'</if>
+        </where>
+        order by sfid desc
+    </select>
+    <select id="selectProSinmanageList1" parameterType="com.sixin.broad.domain.ProSinmanage" resultMap="ProSinmanageResult">-->
+        select PS.sfid,
+        PS.scategory,
+        PS.createtime,
+        PS.broaddate,
+        US.uname as uname,
+        US.username,
+        PS.remark,
+        PS.broadtimes
+        from pro_sinmanage as PS,
+        userinfo as US
+        where
+        PS.userid = US.userid and
+        PS.scategory = "紧急播出单"
+        order by sfid desc
+    </select>
+
+    <select id="selectProSinmanageListForWarning" parameterType="Long" resultMap="ProSinmanageResult">
+        select PS.sfid,
+        PS.scategory,
+        PS.createtime,
+        PS.broaddate,
+        US.uname as uname,
+        US.username,
+        PS.remark,
+        PS.broadtimes
+        from pro_sinmanage as PS,
+        userinfo as US
+        where
+        PS.userid = US.userid and
+        PS.scategory = "紧急播出单"
+        <if test="_parameter != 0  ">
+            and PS.userid = #{_parameter}
+        </if>
+        order by sfid desc
+    </select>
+    <select id="selectProSinmanageListbySfid" parameterType="String" resultMap="ProSinmanageResult">
+        <include refid="selectProSinmanageVo"/>
+        where
+            sfid = #{sfid}
+        order by sfid desc
+    </select>
+    
+    <select id="selectProSinmanageById" parameterType="Integer" resultMap="ProSinmanageResult">
+        <include refid="selectProSinmanageVo"/>
+        where sfid = #{sfid}
+    </select>
+        
+    <insert id="insertProSinmanage" parameterType="com.sixin.broad.domain.ProSinmanage">
+        insert into pro_sinmanage
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sfid != null  ">sfid,</if>
+			<if test="scategory != null  and scategory != ''  ">scategory,</if>
+			<if test="createtime != null  and createtime != ''  ">createtime,</if>
+			<if test="broaddate != null  and broaddate != ''  ">broaddate,</if>
+			<if test="userid != null  and userid != ''  ">userid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+			<if test="broadtimes != null  ">broadtimes,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sfid != null  ">#{sfid},</if>
+			<if test="scategory != null  and scategory != ''  ">#{scategory},</if>
+			<if test="createtime != null  and createtime != ''  ">#{createtime},</if>
+			<if test="broaddate != null  and broaddate != ''  ">#{broaddate},</if>
+			<if test="userid != null  and userid != ''  ">#{userid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+			<if test="broadtimes != null  ">#{broadtimes},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProSinmanage" parameterType="com.sixin.broad.domain.ProSinmanage">
+        update pro_sinmanage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="scategory != null  and scategory != ''  ">scategory = #{scategory},</if>
+            <if test="createtime != null  and createtime != ''  ">createtime = #{createtime},</if>
+            <if test="broaddate != null  and broaddate != ''  ">broaddate = #{broaddate},</if>
+            <if test="userid != null  and userid != ''  ">userid = #{userid},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="broadtimes != null  ">broadtimes = #{broadtimes},</if>
+        </trim>
+        where sfid = #{sfid}
+    </update>
+
+	<delete id="deleteProSinmanageById" parameterType="Integer">
+        delete from pro_sinmanage where sfid = #{sfid}
+    </delete>
+	
+    <delete id="deleteProSinmanageByIds" parameterType="String">
+        delete from pro_sinmanage where sfid in 
+        <foreach item="sfid" collection="array" open="(" separator="," close=")">
+            #{sfid}
+        </foreach>
+    </delete>
+
+    <select id="selectProSinmanageByTId" parameterType="String" resultMap="ProSinmanageResult">
+        select max(sfid) as sfid,
+        scategory,
+        createtime,
+        broaddate,
+        remark from pro_sinmanage ps
+        LEFT JOIN pro_terminals pt on ps.sfid=pt.ProgrammeID
+        LEFT JOIN terminals ter on ter.tid=pt.TerminalID
+        where pt.TerminalID=#{imei} and ter.isuse=1
+        ORDER BY sfid DESC
+    </select>
+
+    <select id="selectLastInsertID" resultType="int">
+        SELECT max(sfid) FROM `broad`.`pro_sinmanage`;
+    </select>
+<!--批量新增节目单和绑定的节目执行顺序-->
+    <insert id="addProList" parameterType="java.util.List">
+        INSERT INTO `broad`.`pro_list` (`Pid`, `Ptp`, `FN`, `Fid`, `Bt`, `broadtime`) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.pid},#{item.ptp},#{item.fN},#{item.fid},#{item.bt},#{item.broadtime})
+        </foreach>
+    </insert>
+
+<!--批量新增节目单绑定的终端设备-->
+    <insert id="addProTerminals">
+        INSERT INTO `broad`.`pro_terminals` (`ProgrammeID`, `TerminalID`) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.programmeID},#{item.terminalID})
+        </foreach>
+    </insert>
+
+<!--支持批量id查询-->
+    <select id="selectProSinmanageListByids" parameterType="java.util.List" resultMap="ProSinmanageResult">
+        select sfid, scategory, createtime, broaddate, userid, remark, broadtimes from pro_sinmanage
+        where
+        sfid in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+    </select>
+</mapper>

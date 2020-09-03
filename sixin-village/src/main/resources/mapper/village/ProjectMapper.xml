@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.ProjectMapper">
+
+    <resultMap type="com.sixin.village.domain.Project" id="ProjectResult">
+        <result property="proid" column="proid"/>
+        <result property="proname" column="proname"/>
+        <result property="wpeopleid" column="wpeopleid"/>
+        <result property="wpeoplename" column="wpeoplename"/>
+        <result property="propic" column="propic"/>
+        <result property="protype" column="protype"/>
+        <result property="money" column="money"/>
+        <result property="moneynote" column="moneynote"/>
+        <result property="content" column="content"/>
+        <result property="address" column="address"/>
+        <result property="fname" column="fname"/>
+        <result property="fphone" column="fphone"/>
+        <result property="greadtotal" column="greadtotal"/>
+        <result property="pushdate" column="pushdate"/>
+        <result property="uid" column="uid"/>
+        <result property="uname" column="uname"/>
+        <result property="remark" column="remark"/>
+        <result property="aid" column="aid"/>
+        <result property="ptype" column="ptype"/>
+    </resultMap>
+
+    <sql id="selectProjectVo">
+        select proid, proname,wpeopleid,wpeoplename, propic, protype, money, moneynote, content, address, fname, fphone, greadtotal, pushdate, uid, uname, remark, aid, ptype from tb_project
+    </sql>
+
+    <select id="selectProjectList" parameterType="com.sixin.village.domain.Project" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        <where>
+            <!--            <if test="uid != null and uid != '' "> and FIND_IN_SET(#{uid},wpeopleid)>0</if>-->
+            <if test="proid != null and proid != '' ">and proid = #{proid}</if>
+            <if test="proname != null  and proname != '' ">and proname LIKE CONCAT(CONCAT('%', #{proname}),'%')</if>
+            <if test="propic != null  and propic != '' ">and propic LIKE CONCAT(CONCAT('%', #{propic}),'%')</if>
+            <if test="protype != null  and protype != '' ">and protype LIKE CONCAT(CONCAT('%', #{protype}),'%')</if>
+            <if test="money != null ">and money LIKE CONCAT(CONCAT('%', #{money}),'%')</if>
+            <if test="moneynote != null  and moneynote != '' ">and moneynote LIKE CONCAT(CONCAT('%',
+                #{moneynote}),'%')
+            </if>
+            <if test="content != null  and content != '' ">and content LIKE CONCAT(CONCAT('%', #{content}),'%')</if>
+            <if test="address != null  and address != '' ">and address LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+            <if test="fname != null  and fname != '' ">and fname LIKE CONCAT(CONCAT('%', #{fname}),'%')</if>
+            <if test="fphone != null  and fphone != '' ">and fphone LIKE CONCAT(CONCAT('%', #{fphone}),'%')</if>
+            <if test="greadtotal != null ">and greadtotal LIKE CONCAT(CONCAT('%', #{greadtotal}),'%')</if>
+            <if test="pushdate != null  and pushdate != '' ">and pushdate LIKE CONCAT(CONCAT('%', #{pushdate}),'%')</if>
+
+            <if test="uname != null  and uname != '' ">and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+            <if test="remark != null  and remark != '' ">and remark = #{remark}</if>
+            <if test="aid != null  and aid != '' ">and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+            <if test="ptype != null ">and ptype LIKE CONCAT(CONCAT('%', #{ptype}),'%')</if>
+        </where>
+        ORDER BY proid desc
+    </select>
+
+    <select id="selectProjectById" parameterType="Integer" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        where proid = #{proid}
+    </select>
+
+    <select id="selectProjectByIds" parameterType="java.util.List" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        where proid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <insert id="insertProject" parameterType="com.sixin.village.domain.Project">
+        insert into tb_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="proid != null  ">proid,</if>
+            <if test="proname != null  and proname != ''  ">proname,</if>
+            <if test="propic != null  and propic != ''  ">propic,</if>
+            <if test="wpeopleid != null  and wpeopleid != ''  ">wpeopleid,</if>
+            <if test="wpeoplename != null  and wpeoplename != ''  ">wpeoplename,</if>
+            <if test="protype != null  and protype != ''  ">protype,</if>
+            <if test="money != null  ">money,</if>
+            <if test="moneynote != null  and moneynote != ''  ">moneynote,</if>
+            <if test="content != null  and content != ''  ">content,</if>
+            <if test="address != null  and address != ''  ">address,</if>
+            <if test="fname != null  and fname != ''  ">fname,</if>
+            <if test="fphone != null  and fphone != ''  ">fphone,</if>
+            <if test="pushdate != null  and pushdate != ''  ">pushdate,</if>
+            <if test="uid != null  ">uid,</if>
+            <if test="uname != null  and uname != ''  ">uname,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="aid != null  and aid != ''  ">aid,</if>
+            <if test="ptype != null  ">ptype,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="proid != null  ">#{proid},</if>
+            <if test="proname != null  and proname != ''  ">#{proname},</if>
+            <if test="propic != null  and propic != ''  ">#{propic},</if>
+            <if test="wpeopleid != null  and wpeopleid != ''  ">#{wpeopleid},</if>
+            <if test="wpeoplename != null  and wpeoplename != ''  ">#{wpeoplename},</if>
+            <if test="protype != null  and protype != ''  ">#{protype},</if>
+            <if test="money != null  ">#{money},</if>
+            <if test="moneynote != null  and moneynote != ''  ">#{moneynote},</if>
+            <if test="content != null  and content != ''  ">#{content},</if>
+            <if test="address != null  and address != ''  ">#{address},</if>
+            <if test="fname != null  and fname != ''  ">#{fname},</if>
+            <if test="fphone != null  and fphone != ''  ">#{fphone},</if>
+            <if test="greadtotal != null  ">#{greadtotal},</if>
+            <if test="pushdate != null  and pushdate != ''  ">#{pushdate},</if>
+            <if test="uid != null  ">#{uid},</if>
+            <if test="uname != null  and uname != '' ">#{uname},</if>
+            <if test="remark != null  and remark != '' ">#{remark},</if>
+            <if test="aid != null  and aid != ''  ">#{aid},</if>
+            <if test="ptype != null  ">#{ptype},</if>
+        </trim>
+    </insert>
+
+    <update id="updateProject" parameterType="com.sixin.village.domain.Project">
+        update tb_project
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="proname != null  and proname != ''  ">proname = #{proname},</if>
+            <if test="wpeopleid != null  and wpeopleid != ''  ">wpeopleid = #{wpeopleid},</if>
+            <if test="wpeoplename != null  and wpeoplename != ''  ">wpeoplename = #{wpeoplename},</if>
+            <if test="propic != null  and propic != ''  ">propic = #{propic},</if>
+            <if test="protype != null  and protype != ''  ">protype = #{protype},</if>
+            <if test="money != null  ">money = #{money},</if>
+            <if test="moneynote != null  and moneynote != ''  ">moneynote = #{moneynote},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="fname != null  and fname != ''  ">fname = #{fname},</if>
+            <if test="fphone != null  and fphone != ''  ">fphone = #{fphone},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="ptype != null  ">ptype = #{ptype},</if>
+        </trim>
+        where proid = #{proid}
+    </update>
+
+    <delete id="deleteProjectById" parameterType="Integer">
+        delete from tb_project where proid = #{proid}
+    </delete>
+
+    <delete id="deleteProjectByIds" parameterType="String">
+        delete from tb_project where proid in
+        <foreach item="proid" collection="array" open="(" separator="," close=")">
+            #{proid}
+        </foreach>
+    </delete>
+    <select id="selectProjectListForapp" parameterType="com.sixin.village.domain.pubObjApi" resultMap="ProjectResult">
+        <include refid="selectProjectVo"/>
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="title != null  and title != '' ">and proname LIKE CONCAT(CONCAT('%', #{title}),'%')</if>
+            <if test="state != null ">and ptype LIKE CONCAT(CONCAT('%', #{state}),'%')</if>
+            <if test="beginTime != null  and endTime != '' ">and pushdate between #{beginTime} AND #{endTime}</if>
+        </where>
+        ORDER BY proid desc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

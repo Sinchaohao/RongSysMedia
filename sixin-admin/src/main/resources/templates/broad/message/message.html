@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body>
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main" style="width: 3000px">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 终端列表
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;">
+                        <i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠">
+                        <i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新">
+                        <i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree" style="overflow: auto"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form action="" method="post" name="Form" id="Form">
+                <div class="select-list">
+                    <ul>
+                        <li style="width: 40%">
+                            <select class="chosen-select form-control" id="smstype" name="smstype"
+                                    onchange="typechange();" data-placeholder="请选择短信类型" style="width:98%;height: auto">
+                                <option value="1">短信应急广播</option>
+                                <option value="0">平台短信命令</option>
+                            </select>
+                        </li>
+                        <li>
+                            <a class="btn btn-sm btn-primary" id="save" onclick="save();">发送</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <div class="row" style="padding-left:12px;">
+                <div id="smsExample" onload="onLoad()">
+                    <select class="chosen-select form-control" id="example" name="example"
+                            onchange="select();" data-placeholder="短信模板" style="width:50%;height: auto">
+                        <option value="">可选择模板</option>
+                    </select>
+                </div>
+                <br>
+
+                <textarea class="col-xs-7" rows="16" name="content" id="content" wrap="soft" title="内容"></textarea>
+                <span id="sms" class="col-xs-4" style="display:none;">
+													提示： 短信命令必须为英文<br><br>
+													短信命令示例：<br>
+													重启：app-server:110.53.162.164:8600<br>
+													升级：upgrade-server:110.53.162.164:8600<br>
+													调整音量：chan-volume:38,38,38,38<br>
+													紧急调频转播：urgent:fm,101.7MHz,300<br>
+													紧急节目广播：urgent:mp3,1700011.mp3,600<br>
+													获取终端状态：get status<br>
+													紧急停止：urgent:stop<br>
+												</span>
+                <span id="smsbroad" class="col-xs-4">
+													提示：短信应急广播第一个字必须为汉字。 <br><br>
+												</span>
+            </div>
+            <<!--div align="center">
+                <a class="btn btn-sm btn-primary" id="save" onclick="save();">发送</a>
+            </div>-->
+        </div>
+    </div>
+</div>
+
+<div th:include="include :: footer"></div>
+<script>
+    //保存
+    function save() {
+        var regExp1 = /^[a-zA-Z]{1}/;
+        var regExp2 = /^[\u4e00-\u9fa5]{1}/;
+
+        if ($("#content").val() == null || $("#content").val() == "") {
+            window.alert('请输入短信内容');
+            /*$("#content").tips({
+             side: 3,
+             msg: '请输入短信内容',
+             bg: '#AE81FF',
+             time: 3
+             });*/
+            return false;
+        }
+        if ($("#smstype").val() == '0') {
+            if (!regExp1.test($("#content").val())) {
+                window.alert('命令格式不正确');
+                /*$("#content").tips({
+                 side: 3,
+                 msg: '命令格式不正确',
+                 bg: '#AE81FF',
+                 time: 3
+                 });*/
+                return false;
+            }
+        } else {
+            if (!regExp2.test($("#content").val())) {
+                window.alert('首字必须为汉字');
+                /*$("#content").tips({
+                 side: 3,
+                 msg: '首字必须为汉字',
+                 bg: '#AE81FF',
+                 time: 3
+                 });*/
+                return false;
+            }
+        }
+
+        //获取选择终端
+        var terids = $.tree.getCheckedNodes('aid');
+        var phones = $.tree.getCheckedNodes('phone');
+        var names = $.tree.getCheckedNodes('name');
+        terids = terids.toString().substring(0, terids.length - 1);
+        phones = phones.toString().substring(0, phones.length - 1);
+        names = names.toString().substring(0, names.length - 1);
+
+        /*for (var i = 0; i < terids.length; i++) {
+
+        }*/
+
+        console.log('terids: ' + terids + '\n');
+        console.log('phones: ' + phones + '\n');
+        console.log('phones: ' + names + '\n');
+        if (terids == "") {
+            window.alert('请选择播出终端');
+            /*$("#tertitle").tips({
+             side: 3,
+             msg: '请选择播出终端',
+             bg: '#AE81FF',
+             time: 3
+             });*/
+            return false;
+        }
+
+        //window.alert("发送成功!");
+        var content = $("#content").val();
+        var smstype = $("#smstype").val();
+        $.ajax({
+            type: 'post',
+            url: "/broad/message/sendsms",
+            timeout: 1000,
+            data: {
+                'content': content,
+                'smstype': smstype,
+                'terids': terids,
+                'phones': phones,
+                'names': names
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.result == "success") {
+                    $("#content").val("");
+                    window.alert('发送成功');
+                } else {
+                    window.alert('发送失败');
+                }
+            }
+        })
+        /*$.post(
+         {
+         url:'/broad/message/sendsms'
+         },
+         {
+         content: $("#content").val(),
+         smstype: $("#smstype").val(),
+         terids: terids,
+         phones: phones
+         },
+         function (data) {
+         if (data.result == "success") {
+         $("#content").val("");
+         window.alert('发送成功');
+         /!*$("#save").tips({
+         side: 3,
+         msg: '发送成功',
+         bg: '#AE81FF',
+         time: 3
+         });*!/
+         } else {
+         window.alert('发送失败');
+         /!*$("#save").tips({
+         side: 3,
+         msg: '发送失败',
+         bg: '#AE81FF',
+         time: 3
+         });*!/
+         }
+         });*/
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        onLoad();
+        select();
+    });
+    function onLoad() {
+        $.ajax({
+            type: 'get',
+            url: "/broad/message/example",
+            timeout: 1000,
+            data: {},
+            dataType: 'json',
+            success: function (data) {
+                /*console.log(data);*/
+                var str = '<select class="chosen-select form-control" id="example" name="example" ' +
+                    'onchange="select();" data-placeholder="短信模板" style="width:50%;height: auto">' +
+                    '<option value="">可选择模板</option>';
+                for (var i = 0; i < data.length; i++) {
+                    str += '<option value="' + data[i].details + '">' + data[i].name + '</option>';
+                }
+                str += '</select>';
+                $("#smsExample").html(str);
+            }
+        })
+    }
+    function select() {
+        /*console.log($("#example").val());*/
+        javascript:document.getElementById('content').value = $("#example").val();
+        /*$("#content").text($("#example").val());*/
+    }
+</script>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    $(function () {
+        $('body').layout({west__size: 185});
+        queryAreaTree();
+    });
+
+    function queryAreaTree() {
+        var url = ctx + "broad/message/treeData";
+        var options = {
+            url: url,
+            check: {
+                enable: true,
+                nocheckInherit: true,
+                chkboxType: {
+                    "Y": "ps",
+                    "N": "ps"
+                }
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            expandLevel: 0,
+        };
+        $.tree.init(options);
+
+    }
+
+    $('#btnExpand').click(function () {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function () {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function () {
+        queryAreaTree();
+    });
+    function typechange() {
+        if ($("#smstype").val() == "0") {
+            $("#smsbroad").css("display", "none");
+            $("#sms").css("display", "block");
+        } else {
+            $("#smsbroad").css("display", "block");
+            $("#sms").css("display", "none");
+        }
+    }
+</script>
+</body>
+</html>

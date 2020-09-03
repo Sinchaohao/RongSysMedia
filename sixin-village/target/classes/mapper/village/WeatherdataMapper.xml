@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.WeatherdataMapper">
+
+    <resultMap type="com.sixin.village.domain.Weatherdata" id="WeatherdataResult">
+        <result property="id"    column="id"    />
+        <result property="tid"    column="tid"    />
+        <result property="addrid"    column="addrid"    />
+        <result property="aname"    column="aname"    />
+        <result property="colltime"    column="colltime"    />
+        <result property="surrtemp"    column="surrtemp"    />
+        <result property="surrhumi"    column="surrhumi"    />
+        <result property="surrlight"    column="surrlight"    />
+        <result property="soiltemp"    column="soiltemp"    />
+        <result property="soilhumi"    column="soilhumi"    />
+        <result property="atmopress"    column="atmopress"    />
+        <result property="windspeed"    column="windspeed"    />
+        <result property="windire"    column="windire"    />
+        <result property="weathertype"    column="weathertype"    />
+        <result property="pm25"    column="pm25"    />
+        <result property="co2"    column="co2"    />
+        <result property="co"    column="co"    />
+        <result property="so2"    column="so2"    />
+        <result property="ch4"    column="ch4"    />
+        <result property="rainfall"    column="rainfall"    />
+        <result property="ph"    column="ph"    />
+        <result property="remark"    column="remark"    />
+
+    </resultMap>
+
+    <sql id="selectWeatherdataVo">
+        select id, tid, addrid,aname, colltime, surrtemp, surrhumi, surrlight, soiltemp, soilhumi,atmopress,windspeed,windire,weathertype,pm25,co2,co,so2,ch4,rainfall,ph,remark from vw_weatherdata
+    </sql>
+
+    <select id="selectWeatherdataList" parameterType="String" resultMap="WeatherdataResult">
+        select vw_weatherdata.*,broad.tb_organization.tid,broad.tb_organization.userid
+        from vw_weatherdata
+        left join broad.tb_organization on vw_weatherdata.tid=broad.tb_organization.tid
+        <where>
+            <if test="userid != null and userid != '' "> userid = #{userid}</if>
+        </where>
+        ORDER BY id desc
+    </select>
+
+</mapper>

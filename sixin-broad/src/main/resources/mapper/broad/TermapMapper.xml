@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.TermapMapper">
+    <resultMap type="com.sixin.broad.domain.Termap" id="MapResult">
+        <result property="tname"         column="tname"        />
+        <result property="tid"       column="tid"      />
+        <result property="address"     column="address"    />
+        <result property="uname"       column="uname"      />
+        <result property="aname"       column="aname"      />
+        <result property="phone"            column="phone"            />
+        <result property="basestation"       column="basestation"      />
+        <result property="latitude"        column="latitude"        />
+        <result property="longitude"          column="longitude"          />
+        <result property="receivetime"           column="receivetime"           />
+        <result property="createtime"       column="createtime"      />
+        <result property="manageruserid"     column="manageruserid"    />
+        <result property="managername"     column="managername"    />
+        <result property="isuse"     column="isuse"    />
+    </resultMap>
+
+    <sql id="tableName">
+		terminal_management
+	</sql>
+    <sql id="terminalreceivesTable">
+		terminal_receives
+	</sql>
+    <sql id="terconditiontable">
+		ter_conditions
+	</sql>
+    <sql id="managertertable">
+		termanager_ter
+	</sql>
+    <sql id="terminaltableName">
+		terminals
+	</sql>
+    <sql id="areatable">
+		user.area
+	</sql>
+    <sql id="usertable">
+		userinfo
+	</sql>
+    <sql id="userinfotable">
+		userinfo
+	</sql>
+    <sql id="clienttable">
+		shuofang.client
+	</sql>
+    <select id="getAllMapInfo" parameterType="com.sixin.broad.domain.Organization" resultMap="MapResult">
+        SELECT
+        terminals.*,
+        area.aname,
+        user_name as uname,
+        terminal_management.latitude,
+        terminal_management.longitude
+        FROM
+        terminals,
+        terminal_management,
+        area,
+        ry.sys_user
+        WHERE
+        terminals.tid = terminal_management.tid
+        AND
+        terminals.aid = area.aid
+        AND
+        ry.sys_user.user_id = terminals.userid
+        AND latitude != 0.000000
+        <if test="tid != null  and tid != '' "> and terminals.tid like '%${tid}%'</if>
+        <if test="tname != null  and tname != '' "> and terminals.tname like '%${tname}%'</if>
+        <if test="aname != null  and aname != '' "> and area.aname like '%${aname}%'</if>
+        <if test="phone != null  and phone != '' "> and terminals.phone like '%${phone}%'</if>
+        <if test="address != null  and address != '' "> and terminals.address like '%${address}%'</if>
+        <if test="facid != null  and facid != '' "> and terminals.facid like '%${facid}%'</if>
+        <if test="comstand != null  and comstand != '' "> and terminals.comstand like '%${comstand}%'</if>
+        <if test="broadtel != broadtel  and broadtel != '' "> and terminals.broadtel like '%${broadtel}%'</if>
+        <if test="manager != null  and manager != '' "> and terminals.manager like '%${manager}%'</if>
+        <if test="managertel != null  and managertel != '' "> and terminals.managertel like '%${managertel}%'</if>
+        limit 500
+    </select>
+
+
+    <select id="getAllMapInfoForIot" parameterType="String" resultMap="MapResult">
+        SELECT DISTINCT c.IMEI as tid,latitude,longitude,c.finallogindate as receivetime,t.isuse as isuse,a.aname as aname,ui.uname as uname,t.address as address,phone
+        from ((((<include refid="clienttable"/> c  JOIN <include refid="tableName"/> m on m.tid=c.IMEI)
+        LEFT JOIN <include refid="terminaltableName"/> t on t.tid= c.IMEI)
+        LEFT JOIN <include refid="areatable"/> a on t.aid= a.aid)
+        LEFT JOIN <include refid="usertable"/> ui on t.userid = ui.userid)
+    </select>
+</mapper>

@@ -1,0 +1,198 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-yuqing-edit" th:object="${yuqing}">
+		<input id="yqid" name="yqid" th:field="*{yqid}"  type="hidden">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">地域编号：</label>
+			<div class="col-sm-8">
+				<input  class="form-control" type="text" id="aid" name="aid"  th:field="*{aid}" onclick="selectAidTree()" readonly="true" placeholder="点击选择区域">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">舆情类别：</label>
+			<div class="col-sm-8">
+				<input id="yqtype" name="yqtype" th:field="*{yqtype}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">舆情内容：</label>
+			<div class="col-sm-8">
+				<input id="content" name="content" th:field="*{content}" class="form-control" type="text">
+			</div>
+		</div>
+		<!--<div class="form-group">
+            <label class="col-sm-3 control-label">舆情图片地址：</label>
+            <div class="col-sm-8">
+                <input id="uploadimage" name="uploadimage" th:field="*{uploadimage}" class="form-control" type="text">
+            </div>
+        </div>-->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">舆情报告日期：</label>
+			<div class="col-sm-8">
+				<input class="form-control laydate-icon  layer-date" name="getlowdate"
+					   id="adddate" th:field="*{adddate}" value="" readonly="readonly"
+					   style="width:120px;" placeholder="舆情报告日期" title="舆情报告日期"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">发送日期：</label>
+			<div class="col-sm-8">
+				<input class="form-control laydate-icon  layer-date" name="getlowdate"
+					   id="reldate" th:field="*{reldate}" value="" readonly="readonly"
+					   style="width:120px;" placeholder="发送日期" title="发送日期"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">报告人编号：</label>
+			<div class="col-sm-8">
+				<input id="adduid" name="adduid" th:field="*{adduid}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">报告人姓名：</label>
+			<div class="col-sm-8">
+				<input id="adduname" name="adduname" th:field="*{adduname}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">发送人编号：</label>
+			<div class="col-sm-8">
+				<input id="uid" name="uid" th:field="*{uid}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">发送人姓名：</label>
+			<div class="col-sm-8">
+				<input id="uname" name="uname" th:field="*{uname}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">状态：</label>
+			<div class="col-sm-8">
+				<div class="onoffswitch" >
+					<input type="checkbox"  class="onoffswitch-checkbox" th:value="${remark}" id="ctype1" name="ctype1"  onclick="changevalue();" />
+					<label class="onoffswitch-label" for="ctype1">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<input id="remark" name="remark" th:field="*{remark}"  class="form-control" type="hidden" >
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+	var prefix = ctx + "village/yuqing"
+	$("#form-yuqing-edit").validate({
+		rules:{
+			aid:{
+				required:true,
+			},
+		}
+	});
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/edit", $('#form-yuqing-edit').serialize());
+		}
+	}
+</script>
+
+
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+	laydate({
+		elem:"#reldate",
+		event:"focus"
+	});
+	laydate({
+		elem:"#adddate",
+		event:"focus"
+	});
+	layui.use('laydate', function(){
+		var laydate = layui.laydate;
+		//执行一个laydate实例
+		laydate.render({
+			elem:"#village",
+			type: 'time',
+		});
+	});
+</script>
+
+
+<script>
+	function selectAidTree() {
+		var url = "/village/company/selectAidTree";
+		var options = {
+			title: '选择区域',
+			width: "380",
+			url: "/village/company/selectAidTree",
+			callBack: doSubmitAid
+		};
+		$.modal.openOptions(options);
+	}
+	function doSubmit(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#treeId").val(body.find('#treeId').val());
+			$("#treeName").val(body.find('#treeName').val());
+			layer.close(index);
+		}
+	}
+
+	/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+	function doSubmitAid(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#aid").val(body.find('#treeId').val());
+			/*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+			layer.close(index);
+		}
+	}
+
+</script>
+
+<script>
+	$(function(){
+		var ctype2=document.getElementById("ctype1");
+		var data = $("#remark").val();
+		if(data=="1"){
+
+			ctype2.checked=true;
+
+		}else{
+			ctype2.checked=false;
+		}
+	});
+
+	var aa = $("#remark").val();
+	var aflag = 0;
+	function changevalue() {
+		aflag++;
+		if(aflag % 2 == 0) {
+			$("#remark").val(aa);
+
+		}else{
+			if (aa == "1") {
+				$("#remark").val("0");
+			} else{
+				$("#remark").val("1");
+
+			}
+
+		}
+
+	}
+</script>
+</body>
+</html>

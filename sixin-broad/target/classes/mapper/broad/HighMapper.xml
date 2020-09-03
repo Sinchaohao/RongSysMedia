@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.HighMapper">
+    
+    <resultMap type="com.sixin.broad.domain.High" id="HighResult">
+        <result property="mhid"    column="mhid"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="userid"    column="userid"    />
+        <result property="aid"    column="aid"    />
+        <result property="sendtime"    column="sendtime"    />
+        <result property="isread"    column="isread"    />
+        <result property="senduserid"    column="senduserid"    />
+    </resultMap>
+	
+	<sql id="selectHighVo">
+        select mhid, title, content, userid, aid, sendtime, isread, senduserid from ann_high
+    </sql>
+	
+    <select id="selectHighList" parameterType="com.sixin.broad.domain.High" resultMap="HighResult">
+        <include refid="selectHighVo"/>
+        <where>  
+            <if test="mhid != null "> and mhid like '%${mhid}%'</if>
+             <if test="title != null  and title != '' "> and title like '%${title}%'</if>
+             <if test="content != null  and content != '' "> and content like '%${content}%'</if>
+             <if test="userid != null  and userid != '' "> and userid like '%${userid}%'</if>
+             <if test="aid != null  and aid != '' "> and aid like '%${aid}%'</if>
+             <if test="sendtime != null  and sendtime != '' "> and sendtime like '%${sendtime}%'</if>
+             <if test="isread != null "> and isread like '%${isread}%'</if>
+             <if test="senduserid != null  and senduserid != '' "> and senduserid like '%${senduserid}%'</if>
+         </where>
+        ORDER BY sendtime DESC
+    </select>
+    
+    <select id="selectHighById" parameterType="Integer" resultMap="HighResult">
+        <include refid="selectHighVo"/>
+        where mhid = #{mhid}
+    </select>
+        
+    <insert id="insertHigh" parameterType="com.sixin.broad.domain.High">
+        insert into ann_high
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="mhid != null  ">mhid,</if>
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="userid != null  and userid != ''  ">userid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="sendtime != null  and sendtime != ''  ">sendtime,</if>
+			<if test="isread != null  ">isread,</if>
+			<if test="senduserid != null  and senduserid != ''  ">senduserid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="mhid != null  ">#{mhid},</if>
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="userid != null  and userid != ''  ">#{userid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="sendtime != null  and sendtime != ''  ">#{sendtime},</if>
+			<if test="isread != null  ">#{isread},</if>
+			<if test="senduserid != null  and senduserid != ''  ">#{senduserid},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHigh" parameterType="com.sixin.broad.domain.High">
+        update ann_high
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null  and title != ''  ">title = #{title},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="userid != null  and userid != ''  ">userid = #{userid},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="sendtime != null  and sendtime != ''  ">sendtime = #{sendtime},</if>
+            <if test="isread != null  ">isread = #{isread},</if>
+            <if test="senduserid != null  and senduserid != ''  ">senduserid = #{senduserid},</if>
+        </trim>
+        where mhid = #{mhid}
+    </update>
+
+	<delete id="deleteHighById" parameterType="Integer">
+        delete from ann_high where mhid = #{mhid}
+    </delete>
+	
+    <delete id="deleteHighByIds" parameterType="String">
+        delete from ann_high where mhid in 
+        <foreach item="mhid" collection="array" open="(" separator="," close=")">
+            #{mhid}
+        </foreach>
+    </delete>
+    
+</mapper>

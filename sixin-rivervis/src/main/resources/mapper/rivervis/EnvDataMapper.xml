@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.rivervis.mapper.EnvDataMapper">
+    
+    <resultMap type="com.sixin.rivervis.domain.EnvData" id="EnvDataResult">
+        <result property="id"    column="id"    />
+        <result property="rain"    column="rain"    />
+        <result property="flow"    column="flow"    />
+        <result property="wlevel"    column="wlevel"    />
+        <result property="ph"    column="ph"    />
+        <result property="pm"    column="pm"    />
+        <result property="temp"    column="temp"    />
+        <result property="hum"    column="hum"    />
+        <result property="aid"    column="aid"    />
+        <result property="time"    column="time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectEnvDataVo">
+        select id, rain, flow, wlevel, ph, pm, temp, hum, aid, time, remark from env_data
+    </sql>
+
+    <select id="selectEnvDataListLimit"  resultMap="EnvDataResult">
+        select id, rain, flow, wlevel, ph, pm, temp, hum, aid, time, remark
+        from env_data
+        order by time
+        limit 0,20
+  </select>
+
+    <select id="countall" resultType="Integer">
+        select
+            count(*)
+        from env_data
+    </select>
+	
+    <select id="selectEnvDataList" parameterType="com.sixin.rivervis.domain.EnvData" resultMap="EnvDataResult">
+        <include refid="selectEnvDataVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+             <if test="rain != null  and rain != '' "> and rain = #{rain}</if>
+             <if test="flow != null  and flow != '' "> and flow = #{flow}</if>
+             <if test="wlevel != null  and wlevel != '' "> and wlevel = #{wlevel}</if>
+             <if test="ph != null  and ph != '' "> and ph = #{ph}</if>
+             <if test="pm != null  and pm != '' "> and pm = #{pm}</if>
+             <if test="temp != null  and temp != '' "> and temp = #{temp}</if>
+             <if test="hum != null  and hum != '' "> and hum = #{hum}</if>
+             <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+             <if test="time != null  and time != '' "> and time = #{time}</if>
+             and remark = 1
+         </where>
+         order by time desc
+    </select>
+    
+    <select id="selectEnvDataById" parameterType="Integer" resultMap="EnvDataResult">
+        <include refid="selectEnvDataVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEnvData" parameterType="com.sixin.rivervis.domain.EnvData">
+        insert into env_data
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">id,</if>
+			<if test="rain != null  and rain != ''  ">rain,</if>
+			<if test="flow != null  and flow != ''  ">flow,</if>
+			<if test="wlevel != null  and wlevel != ''  ">wlevel,</if>
+			<if test="ph != null  and ph != ''  ">ph,</if>
+			<if test="pm != null  and pm != ''  ">pm,</if>
+			<if test="temp != null  and temp != ''  ">temp,</if>
+			<if test="hum != null  and hum != ''  ">hum,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="time != null  and time != ''  ">time,</if>
+			<if test="remark != null  ">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null  ">#{id},</if>
+			<if test="rain != null  and rain != ''  ">#{rain},</if>
+			<if test="flow != null  and flow != ''  ">#{flow},</if>
+			<if test="wlevel != null  and wlevel != ''  ">#{wlevel},</if>
+			<if test="ph != null  and ph != ''  ">#{ph},</if>
+			<if test="pm != null  and pm != ''  ">#{pm},</if>
+			<if test="temp != null  and temp != ''  ">#{temp},</if>
+			<if test="hum != null  and hum != ''  ">#{hum},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="time != null  and time != ''  ">#{time},</if>
+			<if test="remark != null  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateEnvData" parameterType="com.sixin.rivervis.domain.EnvData">
+        update env_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="rain != null  and rain != ''  ">rain = #{rain},</if>
+            <if test="flow != null  and flow != ''  ">flow = #{flow},</if>
+            <if test="wlevel != null  and wlevel != ''  ">wlevel = #{wlevel},</if>
+            <if test="ph != null  and ph != ''  ">ph = #{ph},</if>
+            <if test="pm != null  and pm != ''  ">pm = #{pm},</if>
+            <if test="temp != null  and temp != ''  ">temp = #{temp},</if>
+            <if test="hum != null  and hum != ''  ">hum = #{hum},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="time != null  and time != ''  ">time = #{time},</if>
+            <if test="remark != null  ">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+	<delete id="deleteEnvDataById" parameterType="Integer">
+        delete from env_data where id = #{id}
+    </delete>
+	
+    <delete id="deleteEnvDataByIds" parameterType="String">
+        delete from env_data where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectEnvDataListbytl" parameterType="com.sixin.rivervis.domain.Riverbytl" resultMap="EnvDataResult">
+        <include refid="selectEnvDataVo"/>
+        where  time between #{begintime} AND #{endtime}
+        order by time asc
+        limit 0,#{limit}
+    </select>
+</mapper>

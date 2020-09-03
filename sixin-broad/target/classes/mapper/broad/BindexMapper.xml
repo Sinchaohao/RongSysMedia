@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.BindexMapper">
+
+    <resultMap type="com.sixin.broad.domain.Bindex" id="BindexResult">
+        <result property="dev"    column="dev"    />
+        <result property="run"    column="run"    />
+        <result property="stop"    column="stop"    />
+        <result property="aid"  column="aid"/>
+    </resultMap>
+
+    <select id="count"  parameterType="String" resultMap="BindexResult">
+        select
+            count(tid) as dev,
+            count(isuse = "1" or null) as run,
+            count(isuse = "0" or null) as stop
+        from terminals
+        where 1=1
+        <if test="aid !=null and aid !=''">
+            and (aid =#{aid} or aid in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{aid},ancestors)))
+        </if>
+    </select>
+</mapper>

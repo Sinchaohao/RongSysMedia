@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.HouseMemberInfoMapper">
+    
+    <resultMap type="com.sixin.village.domain.HouseMemberInfo" id="HouseMemberInfoResult">
+        <result property="hmid"    column="hmid"    />
+        <result property="aid"    column="aid"    />
+        <result property="vname"    column="vname"    />
+        <result property="housename"    column="housename"    />
+        <result property="relation"    column="relation"    />
+        <result property="sex"    column="sex"    />
+        <result property="idcard"    column="idcard"    />
+    </resultMap>
+	
+	<sql id="selectHouseMemberInfoVo">
+        select hmid, aid, vname, housename, relation, sex, idcard from house_member_info
+    </sql>
+	
+    <select id="selectHouseMemberInfoList" parameterType="com.sixin.village.domain.HouseMemberInfo" resultMap="HouseMemberInfoResult">
+        <include refid="selectHouseMemberInfoVo"/>
+        <where>  
+            <if test="hmid != null "> and hmid = #{hmid}</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+             <if test="vname != null  and vname != '' "> and vname = #{vname}</if>
+             <if test="housename != null  and housename != '' "> and housename = #{housename}</if>
+             <if test="relation != null  and relation != '' "> and relation = #{relation}</if>
+             <if test="sex != null  and sex != '' "> and sex = #{sex}</if>
+             <if test="idcard != null  and idcard != '' "> and idcard = #{idcard}</if>
+         </where>
+    </select>
+    
+    <select id="selectHouseMemberInfoById" parameterType="Integer" resultMap="HouseMemberInfoResult">
+        <include refid="selectHouseMemberInfoVo"/>
+        where hmid = #{hmid}
+    </select>
+
+    <select id="selectHouseMemberInfoByIds" parameterType="java.util.List" resultMap="HouseMemberInfoResult">
+        <include refid="selectHouseMemberInfoVo"/>
+        where hmid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertHouseMemberInfo" parameterType="com.sixin.village.domain.HouseMemberInfo">
+        insert into house_member_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="hmid != null  ">hmid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="vname != null  and vname != ''  ">vname,</if>
+			<if test="housename != null  and housename != ''  ">housename,</if>
+			<if test="relation != null  and relation != ''  ">relation,</if>
+			<if test="sex != null  and sex != ''  ">sex,</if>
+			<if test="idcard != null  and idcard != ''  ">idcard,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="hmid != null  ">#{hmid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="vname != null  and vname != ''  ">#{vname},</if>
+			<if test="housename != null  and housename != ''  ">#{housename},</if>
+			<if test="relation != null  and relation != ''  ">#{relation},</if>
+			<if test="sex != null  and sex != ''  ">#{sex},</if>
+			<if test="idcard != null  and idcard != ''  ">#{idcard},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateHouseMemberInfo" parameterType="com.sixin.village.domain.HouseMemberInfo">
+        update house_member_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="vname != null  and vname != ''  ">vname = #{vname},</if>
+            <if test="housename != null  and housename != ''  ">housename = #{housename},</if>
+            <if test="relation != null  and relation != ''  ">relation = #{relation},</if>
+            <if test="sex != null  and sex != ''  ">sex = #{sex},</if>
+            <if test="idcard != null  and idcard != ''  ">idcard = #{idcard},</if>
+        </trim>
+        where hmid = #{hmid}
+    </update>
+
+	<delete id="deleteHouseMemberInfoById" parameterType="Integer">
+        delete from house_member_info where hmid = #{hmid}
+    </delete>
+	
+    <delete id="deleteHouseMemberInfoByIds" parameterType="String">
+        delete from house_member_info where hmid in 
+        <foreach item="hmid" collection="array" open="(" separator="," close=")">
+            #{hmid}
+        </foreach>
+    </delete>
+    
+</mapper>

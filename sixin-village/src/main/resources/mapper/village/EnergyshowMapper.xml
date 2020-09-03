@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.EnergyshowMapper">
+
+    <resultMap type="com.sixin.village.domain.Energyshow" id="EnergyshowResult">
+        <result property="id"    column="id"    />
+        <result property="tid"    column="tid"    />
+        <result property="addrid"    column="addrid"    />
+        <result property="colltime"    column="colltime"    />
+        <result property="fvoltage"    column="fvoltage"    />
+        <result property="rechcurrent"    column="rechcurrent"    />
+        <result property="loadcurrent"    column="loadcurrent"    />
+        <result property="outvoltage"    column="outvoltage"    />
+        <result property="extvoltage"    column="extvoltage"    />
+        <result property="sunvoltage"    column="sunvoltage"    />
+        <result property="worktemp"    column="worktemp"    />
+        <result property="rechstatus"    column="rechstatus"    />
+        <result property="workstatus"    column="workstatus"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.village.domain.Energyshow" id="CwEnergyshowResult">
+        <result property="id"    column="id"    />
+        <result property="tid"    column="tid"    />
+        <result property="addrid"    column="addrid"    />
+        <result property="address"    column="address"    />
+        <result property="phone"    column="phone"    />
+        <result property="colltime"    column="colltime"    />
+        <result property="fvoltage"    column="fvoltage"    />
+        <result property="rechcurrent"    column="rechcurrent"    />
+        <result property="loadcurrent"    column="loadcurrent"    />
+        <result property="outvoltage"    column="outvoltage"    />
+        <result property="extvoltage"    column="extvoltage"    />
+        <result property="sunvoltage"    column="sunvoltage"    />
+        <result property="worktemp"    column="worktemp"    />
+        <result property="rechstatus"    column="rechstatus"    />
+        <result property="workstatus"    column="workstatus"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectEnergyshowVo">
+        select id, tid, addrid,colltime,fvoltage,rechcurrent,loadcurrent,outvoltage,extvoltage,sunvoltage,worktemp,rechstatus,workstatus,remark from tb_energy
+    </sql>
+
+    <select id="selectEnergyshowList" parameterType="com.sixin.village.domain.Energyshow" resultMap="EnergyshowResult">
+        <include refid="selectEnergyshowVo"/>
+        <where>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="tid != null "> and tid = #{tid}</if>
+            <if test="addrid != null  and addrid != '' "> and addrid LIKE CONCAT(CONCAT('%', #{addrid}),'%')</if>
+            <if test="colltime != null  and colltime != '' "> and colltime = #{colltime}</if>
+            <if test="fvoltage != null  and fvoltage != '' "> and fvoltage LIKE CONCAT(CONCAT('%', #{fvoltage}),'%')</if>
+            <if test="rechcurrent != null  and rechcurrent != '' "> and rechcurrent LIKE CONCAT(CONCAT('%', #{rechcurrent}),'%')</if>
+            <if test="loadcurrent != null and loadcurrent != ''"> and loadcurrent LIKE CONCAT(CONCAT('%', #{loadcurrent}),'%')</if>
+            <if test="outvoltage != null  and outvoltage != '' "> and outvoltage LIKE CONCAT(CONCAT('%', #{outvoltage}),'%')</if>
+            <if test="extvoltage != null  and extvoltage != '' "> and extvoltage LIKE CONCAT(CONCAT('%', #{extvoltage}),'%')</if>
+            <if test="sunvoltage != null  and sunvoltage != '' "> and sunvoltage LIKE CONCAT(CONCAT('%', #{sunvoltage}),'%')</if>
+            <if test="worktemp != null  and worktemp != '' "> and worktemp LIKE CONCAT(CONCAT('%', #{worktemp}),'%')</if>
+            <if test="rechstatus != null "> and rechstatus = #{rechstatus}</if>
+            <if test="workstatus != null "> and workstatus = #{workstatus}</if>
+            <if test="remark != null "> and remark = #{remark}</if>
+        </where>
+        ORDER BY id ASC
+    </select>
+
+    <select id="selectEnergyshowById" parameterType="Integer" resultMap="EnergyshowResult">
+        <include refid="selectEnergyshowVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectEnergyshowListByAll" parameterType="com.sixin.village.domain.Energyshow" resultMap="CwEnergyshowResult">
+        select tb_energy.*,terminals.tid,terminals.userid,terminals.address,terminals.phone from tb_energy
+        left join broad.terminals on tb_energy.tid = broad.terminals.tid
+        <where>
+            <if test="userid != null and userid != '' "> and userid = #{userid}</if>
+            <if test="tid != null and tid != ''"> and tb_energy.tid = #{tid}</if>
+            <if test="phone != null and phone != ''"> and broad.terminals.phone = #{phone}</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+</mapper>

@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+
+<body class="white-bg">
+<div style="margin: 15px; padding: 25px;">
+    <div class="col-sm-12 select-table table-striped">
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新增</button>
+        </div>
+        <table id="mytab" class="table table-hover"></table>
+    </div>
+    <div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content animated bounceInRight">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">添加授权号码</h4>
+                </div>
+                <form class="form-horizontal" id="form-tempgroup-add1">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">授权号码：</label>
+                        <div class="col-sm-8">
+                            <input type="text" placeholder="授权号码" class="form-control" id="telphoneedit" name="Tel"> <span class="help-block m-b-none" >请输入授权号码</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">电话号码所属人：</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="userinfo" name="userid">
+                                <option value="">--请选择权限人--</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" id="close-btn11">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="savephoneEdit()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script>
+        var tid = window.location.pathname.substr(window.location.pathname.lastIndexOf("phoneEdit")+10)
+        $('#mytab').bootstrapTable({
+            method: 'post',
+            url: window.location.pathname.substr(window.location.pathname.lastIndexOf("phoneEdit") + 10), // 请求路径
+            createUrl: "/add",
+            removeUrl: "/remove",
+            striped: true,
+            pageNumber: 1,
+            pagination: true,
+            showRefresh: true,
+            sidePagination: 'client',
+            pageSize: 5,
+            pageList: [5, 20, 30],
+            columns: [{
+                checkbox: true
+            },
+                {
+                    title: '授权id',
+                    field: 'telid'
+                }, {
+                    title: '终端DI',
+                    field: 'tid'
+                }, {
+                    title: 'telid',
+                    field: 'telid',
+                    visible: false
+                }, {
+                    title: '电话号码',
+                    field: 'tel'
+
+                }, {
+                    title: '管理人员',
+                    field: 'telperson'
+                }, {
+                    title: '是否启用',
+                    field: 'isuse',
+                    formatter: formatIsuse
+
+                }, {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-danger btn-xs shanchu' + '" href="#" onclick="deleteTempgroup(event)"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        })
+        function formatIsuse(value,row,index) { return value == true?"是":"否";}
+        function savephoneEdit(){
+            var params = $("#form-tempgroup-add1").serializeArray();
+            var values = {};
+            for( x in params ){
+                values[params[x].name] = params[x].value;
+            }
+            values.tid = tid
+            $.ajax({
+                url:"/broad/organization/addphoneedit",
+                type: "POST",
+                data:values,
+                success:function (data){
+                    if(data==1){
+                        alert("保存成功")
+                        $("#close-btn11").click()
+                        $("button[name='refresh']").click();
+                    }else{
+                        alert(data)
+                    }
+                },
+                error:function () {
+                    alert("保存失败")
+                    $("button[name='refresh']").click();
+                }
+            });
+
+            $("#close-btn").click();
+        }
+        function deleteTempgroup(data) {
+            let telid = $(event.currentTarget).parent().context.parentNode.parentNode.children[1].innerText;
+            $.ajax({
+                url:"/broad/organization/deletephoneedit/"+telid,
+                type: "get",
+                success:function (data){
+                    alert(data)
+                    $("button[name='refresh']").click();
+                },
+                error:function () {
+                    alert("保存失败")
+                    $("button[name='refresh']").click();
+                }
+            });
+        }
+
+        $(function getUserInfo(ele,msg) {
+            $.get("/broad/dto/userinfos",function getmsg(params1,params2) {
+                for (let index = 0; index < params1.length; index++) {
+                    let text = params1[index].uname;
+                    let value = params1[index].userid;
+                    $("#userinfo").append("<option value='"+value+"'>"+text+"</option>")
+                }
+            });
+        })
+
+    </script>
+</div>
+</body>
+</html>

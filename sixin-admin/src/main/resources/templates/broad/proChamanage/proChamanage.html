@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								电台名称：<input type="text" name="remark"/>
+							</li>
+							<li>
+								节目名称：<input type="text" name="cname"/>
+							</li>
+							<li>
+								发射台地址：<input type="text" name="pronote"/>
+							</li>
+							<li>
+								电台频率：<input type="text" name="frequencies"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="broad:proChamanage:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="broad:proChamanage:edit">-->
+					<!--<i class="fa fa-edit"></i> 修改-->
+				<!--</a>-->
+				<!--<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="broad:proChamanage:remove">-->
+					<!--<i class="fa fa-remove"></i> 删除-->
+				<!--</a>-->
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="broad:proChamanage:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('broad:proChamanage:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('broad:proChamanage:remove')}]];
+        var prefix = ctx + "broad/proChamanage";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+				striped:true,
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "节目转播管理",
+				search: false,
+		        showExport: true,
+                columns: [
+				{
+					checkbox: true
+				},
+				{
+					field : 'cid',
+					title : '转播频道ID',
+					visible: true
+				},
+				{
+					title:"电台名称",
+					field:"remark",
+				},
+				{
+					field : 'cname', 
+					title : '节目名称',
+				},
+				{
+					field : 'frequencies',
+					title : '电台频率',
+				},
+				{
+					title:"发射台地址",
+					field:"pronote",
+				},
+				{
+					title : '操作',
+					visible: true,
+					formatter: function (value, row, index) {
+						var actions = [];
+						actions.push('<a class="' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.cid + '\')"><i class="fa fa-edit"></i>编辑</a>');
+						actions.push('<a class="' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.cid + '\')"><i class="fa fa-trash"></i>删除</a>');
+						return $.table.dropdownToggle(actions.join(''));
+					}
+				}
+				// {
+				// 	field : 'userid',
+				// 	title : '所属用户',
+				// },
+			]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

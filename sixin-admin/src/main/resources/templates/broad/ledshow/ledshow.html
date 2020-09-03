@@ -1,0 +1,127 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<!--<li>-->
+								<!--用户编号：<input type="text" name="userid"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--led显示信息文字：<input type="text" name="content"/>-->
+							<!--</li>-->
+
+							<!--<li>-->
+								<!--终端接收信息后开始显示时间：<input type="text" name="showtime"/>-->
+							<!--</li>-->
+
+							<li>
+								创建时间：<input type="text" name="createtime"/>
+							</li>
+
+							<!--<li>-->
+								<!--备注：<input type="text" name="remark"/>-->
+							<!--</li>-->
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="broad:ledshow:add">-->
+					<!--<i class="fa fa-plus"></i> 添加-->
+				<!--</a>-->
+				<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="broad:ledshow:edit">-->
+					<!--<i class="fa fa-edit"></i> 修改-->
+				<!--</a>-->
+				<!--<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="broad:ledshow:remove">-->
+					<!--<i class="fa fa-remove"></i> 删除-->
+				<!--</a>-->
+				<!--<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="broad:ledshow:export">-->
+						<!--<i class="fa fa-download"></i> 导出-->
+				 <!--</a>-->
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('broad:ledshow:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('broad:ledshow:remove')}]];
+        var prefix = ctx + "broad/ledshow";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "led显示",
+				search: false,
+		        showExport: true,
+                columns: [
+//                    {
+//		            checkbox: true
+//		        },
+				{
+					field : 'lsid', 
+					title : 'led显示编号',
+					visible: false
+				},
+//				{
+//					field : 'userid',
+//					title : '用户编号',
+//					sortable: true
+//				},
+				{
+					field : 'content', 
+					title : 'LED内容',
+					sortable: true
+				},
+				{
+					field : 'showtime', 
+					title : 'LED显示时间',
+					sortable: true
+				},
+				{
+					field : 'createtime', 
+					title : '创建时间',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '备注',
+					sortable: true
+				}
+//		        {
+//		            title: '操作',
+//		            align: 'center',
+//		            formatter: function(value, row, index) {
+//		            	var actions = [];
+//		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.lsid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+//                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.lsid + '\')"><i class="fa fa-remove"></i>删除</a>');
+//						return actions.join('');
+//		            }
+//		        }
+		        ]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

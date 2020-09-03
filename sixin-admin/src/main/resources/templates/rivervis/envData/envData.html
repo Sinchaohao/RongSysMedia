@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+
+							<li>
+								区域编号：<input type="text" name="aid"/>
+							</li>
+
+							<li>
+								数据采集时间：<input type="text" name="time"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="rivervis:envData:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('rivervis:envData:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('rivervis:envData:remove')}]];
+        var prefix = ctx + "rivervis/envData";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "环境监测",
+				search: false,
+		        showExport: true,
+                columns: [{
+					field : 'id', 
+					title : '数据编号',
+					visible: true
+				},
+				{
+					field : 'rain', 
+					title : '雨量数据',
+				},
+				{
+					field : 'flow', 
+					title : '流量数据',
+				},
+				{
+					field : 'wlevel', 
+					title : '河流水位',
+				},
+				{
+					field : 'ph', 
+					title : '河流酸碱度',
+				},
+				{
+					field : 'pm', 
+					title : '空气质量数据',
+				},
+				{
+					field : 'temp', 
+					title : '温度数据',
+				},
+				{
+					field : 'hum', 
+					title : '湿度数据',
+				},
+				{
+					field : 'aid', 
+					title : '区域编号',
+				},
+				{
+					field : 'time', 
+					title : '数据采集时间',
+				}]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

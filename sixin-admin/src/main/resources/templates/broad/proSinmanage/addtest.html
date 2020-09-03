@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <table style="margin-top:5px;">
+            <tr>
+                <td style="padding-left:2px;text-align: right;">播出日期：</td>
+                <td style="padding-left:2px;">
+                    <input class="laydate-icon form-control layer-date"
+                           name="broaddate"
+                           id="broaddate"
+                           value=""
+                           readonly="readonly"
+                           style="width:132px;"
+                           placeholder="播出日期"
+                           title="播出日期"/>
+                </td>
+                <td style="padding-left:2px;text-align: right;">连续天数：</td>
+                <td style="padding-left:2px;">
+                    <input  name="continuenum" id="continuenum"  value="1" type="number" min="1" max="15" step="1" style="width:88px;"  placeholder="连续天数" title="节目单连续播出天数"/></td>
+                <td style="padding-left:10px">
+                    <a class="btn btn-success btn-xs" onclick="savesurl();"  title="保存" id="saves">
+                        <i  class="ace-icon fa fa-floppy-o bigger-110 white"></i>&nbsp;保存
+                    </a>
+                </td>
+            </tr>
+            <tr style="padding-top:15px;">
+                <td style="vertical-align:top;padding-left:2px">
+                    <a id="appon" class="btn btn-white btn-sm" onclick="setPro('app-on');"  style="border: none;" >
+                        <i  class="ace-icon fa fa-play bigger-110 green"></i>&nbsp;开启功放
+                    </a>
+                </td>
+                <td style="vertical-align:top;padding-left:2px">
+                    <a class="btn btn-white btn-sm" onclick="doFile();" style="border: none;"  >
+                        <i class="ace-icon fa fa-music bigger-110 green"></i>&nbsp;文件转播
+                    </a>
+                </td>
+                <td style="vertical-align:top;padding-left:2px">
+                    <a class="btn btn-white btn-sm" onclick="doCham();"  style="border: none;" >
+                        <i class="ace-icon fa fa-bullhorn bigger-110 green"></i>&nbsp;电台播音
+                    </a>
+                </td>
+                <td style="vertical-align:top;padding-left:2px">
+                    <a id="appoff" class="btn btn-white btn-sm" onclick="setPro('app-off');"  style="border: none;" >
+                        <i class="ace-icon fa fa-stop bigger-110 green"></i>&nbsp;关闭功放
+                    </a>
+                </td>
+                <td style="vertical-align:top;padding-left:2px">
+                    <a id="appstop" class="btn btn-white btn-sm" onclick="setPro('stop');"  style="border: none;" >
+                        <i class="ace-icon fa fa-power-off bigger-110 green"></i>&nbsp;停止播放
+                    </a>
+                </td>
+            </tr>
+        </table>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <table id="simple-tables" class="table" style="margin-top:5px;">
+                            <thead style="max-height: 50px">
+                            <tr style="height: 50px">
+                                <th class="center">类型</th>
+                                <th class="center">节目编号</th>
+                                <th class="center">节目</th>
+                                <th class="center">节目文件</th>
+                                <th class="center">开始时间</th>
+                                <th class="center">节目时长</th>
+                                <th class="center">操作</th>
+                                <th class="center">上移</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody" style="height: 60px"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" type="button" id="areabtn" onclick="toggle1('area')">地域分组</button>
+                <button class="btn btn-white" type="button" id="tempbtn" onclick="toggle1('temp')">特殊分组</button>
+            </div>
+            <div>
+                <div class="col-md-6" id="areagroup">
+                    <div class="ui-layout-content">
+                        <div id="tree" class="ztree treeselect"></div>
+                    </div>
+                </div>
+                <div class="col-md-6" id="tempgroup" style="display: none">
+                    <div class="ui-layout-content">
+                        <div id="tree1" class="ztree treeselect"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+
+<script th:inline="javascript">
+    var scategory = [[${scategory}]]
+    if(scategory == 0){
+        $("#tempgroup").hide()
+        $("#tempbtn").hide()
+        $("#areagroup").show()
+        $("#areabtn").show()
+    }else{
+        $("#areagroup").hide()
+        $("#areabtn").hide()
+        $("#tempgroup").show()
+        $("#tempbtn").show()
+    }
+    function savesurl() {
+        if(scategory==0){
+            scategory="正常播出单"
+        }else{
+            scategory="紧急播出单"
+        }
+        saves(scategory);
+    }
+    var userId = [[${user.userId}]];
+    //使表格行上移，接收参数为链接对象
+    function moveUp(_a){
+        //通过链接对象获取表格行的引用
+        var _row=_a.parentNode.parentNode.parentNode;
+        //如果不是第一行，则与上一行交换顺序
+        if(_row.previousSibling)swapNode(_row,_row.previousSibling);
+        timeAuto(_a);
+    }
+
+    //使表格行下移，接收参数为链接对象
+    function moveDown(_a){
+        //通过链接对象获取表格行的引用
+        var _row=_a.parentNode.parentNode.parentNode;
+        //如果不是最后一行，则与下一行交换顺序
+        if(_row.nextSibling)swapNode(_row,_row.nextSibling);
+        timeAuto(_a);
+    }
+
+    //定义通用的函数交换两个结点的位置
+    function swapNode(node1,node2){
+        //获取父结点
+        var _parent=node1.parentNode;
+        //获取两个结点的相对位置
+        var _t1=node1.nextSibling;
+        var _t2=node2.nextSibling;
+        //将node2插入到原来node1的位置
+        if(_t1)
+            _parent.insertBefore(node2,_t1);
+        else
+            _parent.appendChild(node2);
+        //将node1插入到原来node2的位置
+        if(_t2)
+            _parent.insertBefore(node1,_t2);
+        else
+            _parent.appendChild(node1);
+    }
+</script>
+<script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+<script th:src="@{/js/views/addpglist/addpglist.js}"></script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<!--时间插件-->
+<script th:inline="javascript">
+    laydate({
+        elem:"#broaddate",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem:"#broad",
+            type: 'time',
+        });
+    });
+</script>
+<script th:inline="javascript">
+    var test = window.location.href;
+    var tid=test.substring(test.indexOf("=")+1,test.length);
+    $(function queryAreaTree(){
+        var url = ctx + "broad/areaGrouping/treeData";
+        // function zTreeOnCheck(event, treeId, treeNode) {
+        //     var treeObj = $.fn.zTree.getZTreeObj("tree");
+        //     var nodes = treeObj.getCheckedNodes(true);
+        // }
+        function zOnClick(event, treeId, treeNode) {
+            $("#parentaid").val(treeNode.aid);
+            $.table.search();
+        }
+        //树表1
+        var options = {
+            treeId:"tree",
+            url: url,
+            check: {
+                enable: true,
+                chkStyle: "checkbox"
+            },
+            // onCheck: zTreeOnCheck,
+            onClick: zOnClick
+        };
+        //树表2
+        var options1 = {
+            data: {
+                key: {
+                    title: "title"
+                },
+                simpleData: {
+                    enable: true
+                }
+            },
+            treeId:"tree1",
+            check: {
+                enable: true,
+                chkStyle: "checkbox"
+            },
+            async: {
+                enable: true,
+                type:"get",
+                url:"/broad/areaGrouping/treeData1"
+            }
+        };
+
+        $.tree.init(options);
+        // var treeObj = $.fn.zTree.getZTreeObj("tree");
+        // treeObj.checkNode(treeObj.getNodeByParam("id",tid),true,true)
+        $.fn.zTree.init($("#tree1"), options1);
+    })
+
+    function toggle1(value) {
+        if(value=='temp'){
+            $("#areagroup").hide();
+            $("#tempgroup").show();
+            $("#areabtn").addClass("btn-white");
+            $("#areabtn").removeClass("btn-primary");
+            $("#tempbtn").addClass("btn-primary");
+            $("#tempbtn").removeClass("btn-white")
+        }else{
+            $("#areagroup").show();
+            $("#tempgroup").hide();
+            $("#tempbtn").addClass("btn-white");
+            $("#tempbtn").removeClass("btn-primary");
+            $("#areabtn").addClass("btn-primary");
+            $("#areabtn").removeClass("btn-white")
+        }
+    }
+
+</script>
+</body>
+</html>

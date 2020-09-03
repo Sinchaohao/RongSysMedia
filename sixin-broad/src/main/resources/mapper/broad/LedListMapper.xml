@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.LedListMapper">
+
+    <resultMap type="com.sixin.broad.domain.LedList" id="LedListResult">
+        <result property="id"           column="id"         />
+        <result property="imei"         column="imei"       />
+        <result property="content"      column="content"    />
+        <result property="startdate"    column="startdate"  />
+        <result property="enddate"      column="enddate"    />
+        <result property="createdate"   column="createdate" />
+        <result property="effect"       column="effect"     />
+        <result property="color"        column="color"      />
+        <result property="uid"          column="uid"        />
+        <result property="deptid"       column="deptid"     />
+        <result property="status"       column="status"     />
+        <result property="demo"         column="demo"       />
+        <result property="remark"       column="remark"     />
+    </resultMap>
+
+    <sql id="selectLedListVo">
+        select id, imei, content, startdate, enddate, createdate, effect, color, uid, deptid, a.status, demo, remark
+        from iotdata.tb_ledlist a
+              inner join ry.sys_dept b on a.deptid=b.dept_id
+    </sql>
+
+    <!--查询表的所有列表信息-->
+    <select id="selectLedList" parameterType="com.sixin.broad.domain.LedList" resultMap="LedListResult">
+        <include refid="selectLedListVo"/>
+        <where>
+            <if test="id != null  and id != '' ">
+                AND id like concat('%', #{id}, '%')
+            </if>
+            <if test="imei != null  and imei != '' ">
+                AND imei like concat('%', #{imei}, '%')
+            </if>
+            <if test="content != null  and content != '' ">
+                AND content like concat('%', #{content}, '%')
+            </if>
+            <if test="startdate != null  and startdate != '' ">
+                AND startdate like concat('%', #{startdate}, '%')
+            </if>
+            <if test="enddate != null  and enddate != '' ">
+                AND enddate like concat('%', #{enddate}, '%')
+            </if>
+            <if test="createdate != null  and createdate != '' ">
+                AND createdate like concat('%', #{createdate}, '%')
+            </if>
+            <if test="effect != null  and effect != '' ">
+                AND effect like concat('%', #{effect}, '%')
+            </if>
+            <if test="color != null  and color != '' ">
+                AND color like concat('%', #{color}, '%')
+            </if>
+            <if test="uid != null  and uid != '' ">
+                AND uid like concat('%', #{uid}, '%')
+            </if>
+            <if test="deptid != null  and deptid != '' ">
+                AND deptid like concat('%', #{deptid}, '%')
+            </if>
+            <if test="status != null  and status != '' ">
+                AND a.status like concat('%', #{status}, '%')
+            </if>
+            <if test="demo != null  and demo != '' ">
+                AND demo like concat('%', #{demo}, '%')
+            </if>
+            <if test="remark != null  and remark != '' ">
+                AND remark like concat('%', #{remark}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!--根据id删除-->
+    <delete id="deleteLedListByid" parameterType="Long">
+      delete from iotdata.tb_ledlist where id = #{id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteLedListByids" parameterType="String">
+        delete from iotdata.tb_ledlist where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!--根据id查询信息-->
+    <select id="selectLedListByid" parameterType="Long" resultMap="LedListResult">
+        <include refid="selectLedListVo"/>
+        where id = #{id}
+    </select>
+
+    <!--根据ids查询信息-->
+    <select id="selectLedListByids" parameterType="java.util.List" resultMap="LedListResult">
+        <include refid="selectLedListVo"/>
+        where id in
+        <foreach collection="list" item="ids" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+    </select>
+
+    <!--向表中插入新数据-->
+    <insert id="insertLedList" parameterType="com.sixin.broad.domain.LedList">
+        insert into iotdata.tb_ledlist
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id!='' ">id,</if>
+            <if test="imei != null  and imei != ''  ">imei,</if>
+            <if test="content != null  and content != '' ">content,</if>
+            <if test="startdate != null  and startdate != '' ">startdate,</if>
+            <if test="enddate != null  and enddate != '' ">enddate,</if>
+            <if test="createdate != null  and createdate != '' ">createdate,</if>
+            <if test="effect != null  and effect != '' ">effect,</if>
+            <if test="color != null  and color != '' ">color,</if>
+            <if test="uid != null  and uid != '' ">uid,</if>
+
+            <if test="deptid != null  and deptid != '' ">deptid,</if>
+            <if test="status != null  and status != '' ">status,</if>
+
+            <if test="demo != null  and demo != '' ">demo,</if>
+            <if test="remark != null  and remark != '' ">remark,</if>
+        </trim>
+        values<trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null and id!='' ">#{id},</if>
+        <if test="imei != null  and imei != ''  "> #{imei},</if>
+        <if test="content != null  and content != '' "> #{content},</if>
+        <if test="startdate != null  and startdate != '' "> #{startdate},</if>
+        <if test="enddate != null  and enddate != '' "> #{enddate},</if>
+        <if test="createdate != null  and createdate != '' "> #{createdate},</if>
+        <if test="effect != null  and effect != '' "> #{effect},</if>
+        <if test="color != null  and color != '' "> #{color},</if>
+        <if test="uid != null  and uid != '' "> #{uid},</if>
+        <if test="deptid != null  and deptid != '' ">#{deptid},</if>
+        <if test="status != null  and status != '' ">#{status},</if>
+        <if test="demo != null  and demo != '' "> #{demo},</if>
+        <if test="remark != null  and remark != '' "> #{remark},</if>
+    </trim>
+    </insert>
+    <!--更新数据-->
+    <update id="updateLedList" parameterType="com.sixin.broad.domain.LedList">
+        update iotdata.tb_ledlist
+        <set>
+            <if test="imei != null  and imei != '' ">imei = #{imei},</if>
+            <if test="content != null  and content != '' ">content = #{content},</if>
+            <if test="startdate != null  and startdate != '' ">startdate = #{startdate},</if>
+            <if test="enddate != null  and enddate != '' "> enddate = #{enddate},</if>
+            <if test="createdate != null  and createdate != '' ">createdate = #{createdate},</if>
+            <if test="effect != null  and effect != '' ">effect = #{effect},</if>
+            <if test="color != null  and color != '' ">color = #{color},</if>
+            <if test="uid != null  and uid != '' ">uid = #{uid},</if>
+            <if test="deptid != null  and deptid != '' ">deptid = #{deptid},</if>
+            <if test="status != null  and status != '' ">status = #{status},</if>
+            <if test="demo != null  and demo != '' ">demo = #{demo},</if>
+            <if test="remark != null  and remark != '' ">remark = #{remark},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

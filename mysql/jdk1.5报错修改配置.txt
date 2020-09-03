@@ -1,0 +1,29 @@
+推荐一下这种方式，直接改设置，以后创建的maven工程都是你想要的版本！
+
+打开apache-maven-3.5.4\conf文件下的settings.xml文件
+
+再180行左右的profiles标签内加入这么一段话，如果你的jdk版本为1.8的话就这样设置
+
+<profile>
+
+      <id>jdk-1.8</id>
+
+      <activation>
+
+        <activeByDefault>true</activeByDefault>
+
+        <jdk>1.8</jdk>
+
+      </activation>
+
+      <properties>
+
+        <maven.compiler.source>1.8</maven.compiler.source>
+
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+
+      </properties>
+
+</profile>

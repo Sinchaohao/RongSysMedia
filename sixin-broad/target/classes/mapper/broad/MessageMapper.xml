@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.MessageMapper">
+
+    <resultMap type="com.sixin.broad.domain.BroadMessage" id="MessageResult">
+        <result property="aid" column="aid"/>
+        <result property="parentaid" column="parentaid"/>
+        <result property="aname" column="aname"/>
+        <result property="note" column="note"/>
+        <result property="phone" column="phone"/>
+        <result property="isDev" column="isDev"/>
+    </resultMap>
+    <resultMap type="com.sixin.broad.domain.MessageExample" id="MessageExampleResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="details" column="details"/>
+    </resultMap>
+
+    <select id="selectMessageExampleList" parameterType="com.sixin.broad.domain.MessageExample" resultMap="MessageExampleResult">
+        select
+          id,
+          name,
+          details
+        from
+          message_example
+    </select>
+
+    <select id="selectMessageList" parameterType="com.sixin.broad.domain.BroadMessage" resultMap="MessageResult">
+        select
+        aname,
+        aid,
+        parentaid,
+        note,
+        '' as phone,
+        '0' as isDev
+        from
+        area
+        <where>
+            <if test="aid != null  and aid != '' ">and a.aid like concat(#{aid},'%') </if>
+            <if test="parentaid != null  and parentaid != '' ">and parentaid like concat(#{aid},'%') </if>
+        </where>
+        union
+        select
+        tname as aname,
+        concat_ws('_','dev','aid',b.tid) as aid,
+        b.aid as parentaid,
+        a.note,
+        phone,'1' as isDev
+        from
+        area as a,
+        terminals as b
+        <where>
+            <if test="aid != null  and aid != '' ">and a.aid like concat(#{aid},'%') </if>
+            <if test="parentaid != null  and parentaid != '' ">and b.aid like concat(#{parentaid},'%')</if>
+            <if test="aname != null  and aname != '' ">and taname like concat(#{aname},'%')</if>
+            <if test="note != null  and note != '' ">and note like concat(#{note},'%')</if>
+            <if test="phone != null  and phone != '' ">and phone like concat(#{phone},'%')</if>
+            and a.aid = b.aid
+        </where>
+    </select>
+<!--要是用ry和iotdata里面的两个表就用这条sql:
+select a.dept_name as aname, a.dept_id as aid, a.parent_id as  parentaid, a.leader as note, '' as phone, '0' as isDev
+from ry.sys_dept a
+union
+select b.user_name as aname, concat_ws('_','user','aid',b.user_id) as aid, b.dept_id as parentaid, a.leader as note, b.phonenumber,'1' as isDev
+from ry.sys_dept as a, ry.sys_user as b
+WHERE a.dept_id = b.dept_id
+  -->
+    <select id="selectMessageListUser" parameterType="com.sixin.broad.domain.BroadMessage" resultMap="MessageResult">
+        select
+        aname,
+        aid,
+        parentaid,
+        note,
+        '' as phone,
+        '0' as isDev
+        from
+        area
+        <where>
+            <if test="aid != null  and aid != '' ">and a.aid like concat(#{aid},'%') </if>
+            <if test="parentaid != null  and parentaid != '' ">and parentaid like concat(#{aid},'%') </if>
+        </where>
+        union
+        select
+        b.user_name as aname,
+        concat_ws('_','user','aid',b.user_id) as aid,
+        b.dept_id as parentaid,
+        a.note,
+        b.phonenumber,'1' as isDev
+        from
+        area as a,
+        ry.sys_user as b
+        <where>
+            <if test="aid != null  and aid != '' ">and a.aid like concat(#{aid},'%') </if>
+            <if test="parentaid != null  and parentaid != '' ">and b.aid like concat(#{parentaid},'%')</if>
+            <if test="aname != null  and aname != '' ">and taname like concat(#{aname},'%')</if>
+            <if test="note != null  and note != '' ">and note like concat(#{note},'%')</if>
+            <if test="phone != null  and phone != '' ">and phone like concat(#{phone},'%')</if>
+            and a.aid = b.dept_id
+        </where>
+    </select>
+
+    <select id="selectMessageList1" resultMap="MessageResult">
+        SELECT
+             "0" AS parentaid,
+            tempgroup.tgname AS aname,
+            tempgroup.tgid AS aid
+        FROM
+            tempgroup
+            UNION
+        SELECT
+            tempgroup_ter.tgid AS parentaid,
+            terminals.tname AS aname,
+            tempgroup_ter.tid AS aid
+        FROM
+            tempgroup,
+            tempgroup_ter
+            LEFT JOIN terminals ON tempgroup_ter.tid = terminals.tid
+        WHERE
+            tempgroup.tgid = tempgroup_ter.tgid
+    </select>
+
+
+</mapper>

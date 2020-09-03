@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-meteor-edit" th:object="${meteor}">
+        <input id="id" name="id" type="hidden" th:field="*{id}"/>
+        <h4 class="form-header h4">基本信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label "><span style="color: red; ">*</span>IMEI号：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="cid" onclick="selectIotTree()" readonly="true"
+                               th:field="*{cid}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label "><span style="color: red; ">*</span>存放位置编号：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" id="deptid" name="deptid"  th:field="*{deptid}" readonly="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>录入人编号：</label>
+                    <div class="col-sm-8">
+                        <select id="uid" name="uid" class="form-control m-b">
+
+                            <option  th:value="${user}" th:text="${user}">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">测试类型：</label>
+                    <div class="col-sm-8">
+                        <select id="ctype" name="ctype" class="form-control m-b" th:field="*{ctype}">
+                            <option th:each="list:${iotypes}" th:value="${list.ctype}" th:text="${list.ctype}">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>测试数据：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="vdata" id="vdata" th:field="*{vdata}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>测试单位：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="vunit" id="vunit" th:field="*{vunit}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">采集IP：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="collip" id="collip" th:field="*{collip}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>是否有效：</label>
+                    <div class="col-sm-8">
+                        <div class="onoffswitch">
+                            <input type="checkbox" class="onoffswitch-checkbox" id="dflag1" name="dflag1"
+                                   onclick="changevalue2();"/>
+                            <label class="onoffswitch-label" for="dflag1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input id="delflag" name="delflag" th:field="*{delflag}" class="form-control" type="hidden">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">采集时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="colldate"
+                               id="colldate" th:field="*{colldate}" value="" readonly="readonly"
+                               style="width:120px;" placeholder="采集时间" title="采集时间"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>数据状态：</label>
+                    <div class="col-sm-8">
+                        <div class="onoffswitch">
+                            <input type="checkbox" class="onoffswitch-checkbox" id="ctype1" name="ctype1"
+                                   onclick="changevalue();"/>
+                            <label class="onoffswitch-label" for="ctype1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input id="status" name="status" th:field="*{status}" class="form-control" type="hidden">
+                </div>
+            </div>
+        </div>
+
+
+        <h4 class="form-header h4">其他信息</h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">安装时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="startdate"
+                               id="startdate" th:field="*{startdate}" value="" readonly="readonly"
+                               style="width:120px;" placeholder="安装时间" title="安装时间"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">更换时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="exdate"
+                               id="exdate" th:field="*{exdate}" value="" readonly="readonly"
+                               style="width:120px;" placeholder="更换时间" title="更换时间"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">备注：</label>
+                    <div class="col-xs-10">
+                        <textarea name="demo" maxlength="500" class="form-control" rows="3">[[*{demo}]]</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "iot/meteor";
+    $("#form-meteor-edit").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-meteor-edit').serialize());
+        }
+    }
+    //0是关 1是开
+    $(function () {
+        var ctype2 = document.getElementById("ctype1");
+        var dflag2 = document.getElementById("dflag1");
+        var data = $("#status").val();
+        var data2 = $("#delflag").val();
+        if (data == "1") {
+
+            ctype2.checked = true;
+
+        } else {
+            ctype2.checked = false;
+        }
+        if (data2 == "1") {
+            dflag2.checked = true;
+        } else {
+            dflag2.checked = false;
+        }
+
+    });
+
+    var aa = $("#status").val();
+    var aflag = 0;
+
+    function changevalue() {
+        aflag++;
+        if (aflag % 2 == 0) {
+            $("#status").val(aa);
+
+        } else {
+            if (aa == "1") {
+                $("#status").val("0");
+            } else {
+                $("#status").val("1");
+
+            }
+
+        }
+
+    }
+
+    var bb = $("#delflag").val();
+    var bflag = 0;
+
+    function changevalue2() {
+        bflag++;
+        if (bflag % 2 == 0) {
+
+            $("#delflag").val(bb);
+        } else {
+
+
+            if (bb == "1") {
+                $("#delflag").val("0");
+
+            } else {
+                $("#delflag").val("1");
+
+            }
+        }
+
+    }
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<script>
+    laydate({
+        elem:"#colldate",
+        event:"focus"
+    });
+    laydate({
+        elem:"#exdate",
+        event:"focus"
+    });
+    laydate({
+        elem:"#startdate",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#meteor",
+            type: 'time',
+        });
+    });
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            layer.close(index);
+        }
+    }
+
+
+    function selectIotTree() {
+        var _url = prefix + "/selectIotTree";
+        var _title = '选择终端';
+        var _width = "800";
+        var _height = ($(window).height() - 50);
+        layer.open({
+            type: 2,
+            maxmin: true,
+            shade: 0.3,
+            title: _title,
+            fix: false,
+            area: [_width + 'px', _height + 'px'],
+            content: _url,
+            shadeClose: true,
+            btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+            yes: function (index, layero) {
+                doSubmit(index, layero)
+            }, cancel: function () {
+                return true;
+            }
+        });
+    }
+    function ccc(imei){
+        var imei1 = imei;
+        $("#cid").val(imei1);
+        console.log("cid:" + imei1);
+    }
+    function ddd(deptid){
+        var deptid1 = deptid;
+        $("#deptid").val(deptid1);
+        console.log("deptid:" + deptid1);
+    }
+</script>
+</body>
+</html>

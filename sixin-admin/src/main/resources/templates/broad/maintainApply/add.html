@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<!--①注意head是否有样式冲突，引入需要的css文件-->
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{favicon.ico}" rel="shortcut icon"/>
+    <link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+    <link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+    <link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-maintainApply-add">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">序号：</label>
+            <div class="col-sm-8">
+                <input id="maid" name="maid" class="form-control" type="text" placeholder="请输入序号(可不填)<如果填入要保证序号不重复，否则会报错>">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">终端安装地点：</label>
+            <div class="col-sm-8">
+                <input id="teraddress" name="teraddress" class="form-control" type="text" placeholder="请输入终端安装地点">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">联系人：</label>
+            <div class="col-sm-8">
+                <input id="linkman" name="linkman" th:value="*{username}" class="form-control" type="text" placeholder="请输入联系人姓名">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">申请人：</label>
+            <div class="col-sm-8">
+                <input id="applicant" name="applicant" th:value="*{applicant}" class="form-control" type="text" placeholder="请输入申请人姓名">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">联系电话：</label>
+            <div class="col-sm-8">
+                <input id="linkphone" name="linkphone" th:value="*{userphone}" class="form-control" type="text" placeholder="请输入联系电话">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">故障时间：</label>
+            <div class="col-sm-8">
+                <input id="downtime" name="downtime" class="form-control" type="text" placeholder="请输入故障时间">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">提交时间：</label>
+            <div class="col-sm-8">
+                <input id="applytime" name="applytime" class="form-control" type="text">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">故障原因：</label>
+            <div class="col-sm-8">
+                <textarea id="remark" name="remark"  autofocus></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+
+<script th:src="@{/js/plugins/dropzone/dropzone.js}"></script>
+<script th:src="@{/js/jquery-form.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "broad/maintainApply"
+    $("#form-maintainApply-add").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+    function CurrentTime()                         //获取当前时间
+    {
+        var now = new Date();
+
+        var year = now.getFullYear();       //年
+        var month = now.getMonth() + 1;     //月
+        var day = now.getDate();            //日
+
+        var hh = now.getHours();            //时
+        var mm = now.getMinutes();          //分
+        var ss = now.getSeconds();           //秒
+
+        var clock = year + "-";
+
+        if(month < 10)
+            clock += "0";
+
+        clock += month + "-";
+
+        if(day < 10)
+            clock += "0";
+
+        clock += day + " ";
+
+        if(hh < 10)
+            clock += "0";
+
+        clock += hh + ":";
+        if (mm < 10) clock += '0';
+        clock += mm + ":";
+
+        if (ss < 10) clock += '0';
+        clock += ss;
+
+        $("#applytime").val(clock);
+    }
+    CurrentTime(); //调用函数显示时间
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-maintainApply-add').serialize());
+        }
+    }
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--与富文本框有关的js文件的引入-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+<!--时间插件-->
+<script>
+    laydate({
+        elem:"#downtime",
+        event:"focus"
+    });
+
+</script>
+<!--设置富文本插件-->
+<script>
+    $(document).ready(function() {
+        var editor = new Simditor({
+            placeholder: "请输入故障原因", // 编辑器默认值（默认为’’）
+            toolbar: [
+                'title', 'bold', 'italic', 'underline',
+                'color', '|', 'ol', 'ul', 'table'
+            ],
+            textarea: '#remark',
+        });
+    });
+</script>
+</body>
+</html>

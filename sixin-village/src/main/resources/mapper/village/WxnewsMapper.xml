@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.WxnewsMapper">
+
+    <resultMap type="com.sixin.village.domain.Wxnews" id="WxnewsResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="pic"    column="pic"    />
+        <result property="filename"    column="filename"    />
+        <result property="flength"    column="flength"    />
+        <result property="ftype"    column="ftype"    />
+        <result property="addate"    column="addate"    />
+        <result property="modydate"    column="modydate"    />
+        <result property="readers"    column="readers"    />
+        <result property="userid"    column="uid"    />
+        <result property="aid"    column="aid"    />
+        <result property="ispub"    column="ispub"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectWxnewsdataVo">
+        select id, title, content, pic, filename, flength, ftype, addate, modydate, readers,userid,aid,ispub,remark from tb_wxnews
+    </sql>
+
+    <select id="selectWxnewslist" parameterType="com.sixin.village.domain.Wxnews" resultMap="WxnewsResult">
+        <include refid="selectWxnewsdataVo"/>
+        <where>
+            <if test="uid != null and uid != '' ">and userid = #{userid}</if>
+            <if test="title != null and title != '' ">and title = #{title}</if>
+        </where>
+        ORDER BY id desc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+
+    <select id="selectWxnewsByAll" parameterType="com.sixin.village.domain.Wxnews" resultMap="WxnewsResult">
+        <include refid="selectWxnewsdataVo"/>
+        <where>
+            <if test="userid != null and userid != '' ">and userid = #{userid}</if>
+            <if test="title != null and title != '' ">and title = #{title}</if>
+            <if test="content != null and content != '' ">and content = #{content}</if>
+            <if test="pic != null and pic != '' ">and pic = #{pic}</if>
+            <if test="filename != null and filename != '' ">and filename = #{filename}</if>
+            <if test="flength != null and flength != '' ">and flength = #{flength}</if>
+            <if test="ftype != null and ftype != '' ">and ftype = #{ftype}</if>
+        </where>
+        ORDER BY id desc
+    </select>
+</mapper>

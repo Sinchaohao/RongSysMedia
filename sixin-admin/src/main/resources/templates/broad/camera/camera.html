@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<style>
+    .vis{
+        max-width: 640px;
+        max-height: 480px;
+    }
+</style>
+
+<body>
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main" style="width: 3000px">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 摄像头列表
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;">
+                        <i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠">
+                        <i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新">
+                        <i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree" style="overflow: auto"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-div ui-layout-center">
+    <div class="col-sm-8 vis">
+        <div class="ibox float-e-margins vis">
+            <div class="ibox-title vis" >
+<!--                <h5>视频播放</h5>-->
+<!--                <video id="myPlayer" poster="https://lyb-iot-001-1256625471.cos.ap-guangzhou.myqcloud.com/fire_image/choujiang2.jpg"  class="video-js vjs-default-skin"  controls  autoplay>-->
+<!--&lt;!&ndash;                    playsInline webkit-playsinline&ndash;&gt;-->
+<!--                    <source src="rtmp://127.0.0.1:1935/live/test1" type="rtmp/flv"/>-->
+
+<!--                </video>-->
+                <link th:href="@{/ajax/libs/camera/c/video-js.6.0.css}" rel="stylesheet"/>
+                <link th:href="@{/ajax/libs/camera/c/indexC.css}" rel="stylesheet"/>
+                <script th:src="@{/ajax/libs/camera/c/video.6.0.js}"></script>
+                <script th:src="@{/ajax/libs/camera/c/indexC.js}"></script>
+                <script th:src="@{/ajax/libs/camera/c/videojs-flash.min.C.js}"></script>
+                <video id="myPlayer2" class="video-js vjs-default-skin vis" controls autoplay width="640"  height="480" data-setup="{}" poster="http://vjs.zencdn.net/v/oceans.png">
+                    <source src="rtmp://127.0.0.1:1935/live/test" type="rtmp/flv">
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a
+                        web browser that
+                        <a href="https://videojs.com/html5-video-support/" target="_blank">
+                            supports HTML5 video
+                        </a>
+                    </p>
+                </video>
+            </div>
+        </div>
+        <div class="ibox float-e-margins vis">
+            <div class="ibox-title vis" >
+                <button onclick="recorder()" id = "recorder" name="rtmp://127.0.0.1:1935/live/test" class="btn btn-success">开始录制</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:include="include :: footer"></div>
+<!--js-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<!--echarts 可视化图形 插件-->
+<script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+
+<script th:inline="javascript">
+    function recorder() {
+        if($("#recorder").attr("name")===""){
+            $.modal.alertError("未获取到流地址信息");
+        }else {
+            var data={
+                url:$("#recorder").attr("name")
+            };
+            $.operate.post("/broad/camera/recorder",data,function (index) {
+                console.log(index)
+            });
+            $("#recorder").attr("onclick","stop()");
+            $("#recorder").text("停止");
+            $("#recorder").attr("class","btn btn-danger");
+        }
+    }
+    function stop() {
+        if($("#recorder").attr("name")===""){
+            $.modal.alertError("未获取到流地址信息");
+        }else {
+            var data={
+                url:$("#recorder").attr("name")
+            };
+            $.operate.post("/broad/camera/stop",data,function (index) {
+                console.log(index)
+            });
+            $("#recorder").attr("onclick","recorder()")
+            $("#recorder").text("开始录制")
+            $("#recorder").attr("class","btn btn-success");
+        }
+    }
+    //var player = new EZUIPlayer('myPlayer');
+    function fun(obj) {
+        return videojs(obj,{
+            controls: true, // 是否显示控制条
+            poster: 'https://lyb-iot-001-1256625471.cos.ap-guangzhou.myqcloud.com/fire_image/choujiang2.jpg', // 视频封面图地址
+            preload: 'auto',
+            autoplay: true,
+            fluid: true, // 自适应宽高
+            language: 'zh-CN', // 设置语言
+            muted: false, // 是否静音
+            inactivityTimeout: false,
+            controlBar: { // 设置控制条组件
+                'liveDisplay':true,
+                // 设置控制条里面组件的相关属性及显示与否
+                'currentTimeDisplay':true,
+                'timeDivider':true,
+                'durationDisplay':true,
+
+                'remainingTimeDisplay':false,
+                volumePanel: {
+                    inline: false,
+                },
+                /* 使用children的形式可以控制每一个控件的位置，以及显示与否 */
+                children: [
+                    {name: 'playToggle'}, // 播放按钮
+                    {name: 'currentTimeDisplay'}, // 当前已播放时间
+                    {name: 'progressControl'}, // 播放进度条
+                    {name: 'durationDisplay'}, // 总时间
+                    // { // 倍数播放
+                    //     name: 'playbackRateMenuButton',
+                    //     'playbackRates': [0.5, 1, 1.5, 2, 2.5]
+                    // },
+                    {
+                        name: 'volumePanel', // 音量控制
+                        inline: false, // 不使用水平方式
+                    },
+                    {name: 'FullscreenToggle'} // 全屏
+                ]
+                // ],sources:[ // 视频源
+                //     {
+                //         src: 'rtmp://127.0.0.1:1935/live/test1',
+                //         type: 'rtmp/flv',
+                //         poster: 'https://lyb-iot-001-1256625471.cos.ap-guangzhou.myqcloud.com/fire_image/choujiang2.jpg'
+                //     }
+                // ]
+            }},function () {
+            var oneTime = true;
+            //检测视频播放完毕 直播的话就用不上
+            this.on('ended',function () {
+                console.log("结束播放")
+                $("#"+obj+"").next().attr("disabled","disabled");
+                $("#"+obj+"").next().next().attr("disabled","disabled");
+                oneTime = true;
+            });
+            //检测视频播放是否成功
+            this.on('timeupdate',function () {
+                //console.log($("#my-player").html())  //在这个里面找到下面的哪些class
+                //console.log($(".vjs-progress-holder").attr("aria-valuetext"))//直播用这个检测
+                //console.log($(".vjs-remaining-time-display").html()) //普通视频地址用这个
+                if($("#"+obj+"").find(".vjs-progress-holder").attr("aria-valuetext")!=='0:00' && oneTime){
+                    //判断视频真正开始播放 和 重新播放
+                    console.log("开始播放");
+                    $(".vjs-title-bar").text("正在播放...");
+                    $(".vjs-title-bar").css("color","#00B83F");
+                    $("#"+obj+"").prev().find(".iii").css("color","#00B83F");
+                    $("#"+obj+"").prev().find(".sss").css("color","#00B83F");
+                    $("#"+obj+"").next().removeAttr("disabled");
+                    $("#"+obj+"").prev().find(".sss").text("正在监控")
+                    oneTime = false;
+                }
+
+            })
+        });
+    }
+
+
+    var player = fun('myPlayer2');//my-player为页面video元素的id
+    // Add the TitleBar as a child of the player and provide it some text
+    // in its options.
+    player.addChild('TitleBar', {text: '等待视频源'});
+    //player.play(); //播放
+    $(function() {
+        $('body').layout({ east__size: 300});
+        queryAreaTree();
+    });
+    function queryAreaTree(){
+        var url = ctx + "iot/cameradept/treeData";
+        var options = {
+            url: url,
+            check: {
+                enable: true,
+                nocheckInherit: true,
+                chkboxType: {
+                    "Y": "ps",
+                    "N": "ps"
+                }
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            aid1 = treeNode.id;
+            if(treeNode.nocheck){
+                $("#recorder").attr("name",treeNode.title);
+                otherSrc("myPlayer2",treeNode.title);
+                $.modal.msgSuccess("切换成功");
+            }else {
+                console.log("请选择正确节点");
+                $.modal.msgWarning("该节点不是摄像头");
+            }
+            //$.table.search();
+        }
+        $.tree.init(options);
+    }
+    function otherSrc(obj,srcs) {
+        player.src([
+            {type: "application/x-mpegURL", src: srcs}
+            ]);
+        player.play();
+        console.log("重载url成功",srcs)
+    }
+    $('#btnExpand').click(function() {
+        $._tree.expandAll(true);
+        $(this).hide();
+        $('#btnCollapse').show();
+    });
+
+    $('#btnCollapse').click(function() {
+        $._tree.expandAll(false);
+        $(this).hide();
+        $('#btnExpand').show();
+    });
+
+    $('#btnRefresh').click(function() {
+        queryAreaTree();
+    });
+
+</script>
+</body>
+</html>

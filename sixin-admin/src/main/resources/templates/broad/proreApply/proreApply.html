@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								节目名称：<input type="text" name="pname"/>
+							</li>
+							<li>
+								是否紧急：<select class="form-control" name="isemergency" style="display: inline;padding-bottom: 0;padding-top: 0;">
+								<option></option>
+								<option value="true">是</option>
+								<option value="false">否</option>
+							</select>
+							</li>
+							<li class="select-time">
+								<label>申请时间：</label><input class="laydate-icon  layer-date"
+														   name="downtime"
+														   id="recivedtime"
+														   value=""
+														   readonly="readonly"
+														   style="width:120px;"
+														   placeholder="开始日期"
+														   title="开始日期"/>
+								<span>-</span>
+
+								<input class="laydate-icon  layer-date"
+									   name="endtime"
+									   id="endtime"
+									   value=""
+									   readonly="readonly"
+									   style="width:120px;"
+									   placeholder="结束日期"
+									   title="结束日期"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+
+				<a class="btn btn-success" onclick="$.operate.add()">
+					<i class="fa fa-plus"></i> 添加申请
+				</a>
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="broad:proreApply:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="broad:proreApply:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+	 <script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+	 <script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('broad:proreApply:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('broad:proreApply:remove')}]];
+        var prefix = ctx + "broad/proreApply";
+
+        var user = [[${@user.sysUser.userName}]]
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "节目申请",
+				search: false,
+		        showExport: true,
+                columns: [
+				{
+					field : 'paid', 
+					title : '节目ID',
+					visible: true
+				},
+				{
+					field : 'pname', 
+					title : '节目名称',
+					sortable: true
+				},
+				{
+					field : 'uname',
+					title : '申请用户',
+					sortable: true
+				},
+				{
+					field : 'submittime', 
+					title : '申请时间',
+					sortable: true
+				},
+				{
+					field : 'isemergency',
+					title : '是否紧急',
+					sortable: true,
+					formatter:function (value) {
+						if(value==0){
+							return "不紧急"
+						}else{
+							return "紧急"
+						}
+					}
+				},
+				{
+					field : 'timelimit',
+					title : '时间要求',
+					sortable: true
+				},
+				{
+					field : 'requires',
+					title : '录制要求',
+					sortable: true
+				},
+				{
+					field : 'iscancel', 
+					title : '是否撤回',
+					sortable: true,
+					formatter:function (value, row, index) {
+						if(row.isreply=="已回复"){
+							return "已回复不可撤回"
+						}if(row.isread==1){
+							return "已阅读不可撤回"
+						}else if(row.iscancel=="已撤回"){
+							return "已撤回"
+						}else if(user == row.uname){
+							var actions = [];
+							actions.push('<a class="btn btn-success btn-xs" href="#" onclick="recall(\'' + row.paid + '\')"><i class="fa fa-edit"></i>撤回</a> ');
+							return actions.join('');
+						}else{
+							return "未撤回"
+						}
+					}
+				},
+				{
+					field : 'isreply', 
+					title : '是否回复',
+					sortable: true,
+					formatter:function (value, row, index) {
+						var actions = [];
+						if(value=="已回复"){
+							return "已回复";
+						}else if(row.iscancel=="已撤回"){
+							return "已撤回不可回复";
+						}else{
+							actions.push('<a class="btn btn-success btn-xs" href="#" onclick="reply(\'' + row.paid +'\',\'' + row.pname + '\',\'' + row.uname + '\',\'' + row.userid + '\')"><i class="fa fa-edit"></i>回复</a> ');
+							return actions.join('');
+						}
+					}
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs" href="#" onclick="$.operate.edit(\'' + row.paid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+						return actions.join('');
+		            }
+		        }]
+            };
+            $.table.init(options);
+        });
+
+         laydate({
+             elem:"#recivedtime",
+             event:"focus"
+         });
+         laydate({
+             elem:"#recivedtime",
+             event:"focus"
+         });
+         layui.use('laydate', function(){
+             var laydate = layui.laydate;
+             laydate.render({
+                 elem:"#broad",
+                 type: 'time',
+             });
+         });
+         laydate({
+             elem:"#endtime",
+             event:"focus"
+         });
+         laydate({
+             elem:"#endtime",
+             event:"focus"
+         });
+         layui.use('laydate', function(){
+             var laydate2 = layui.laydate;
+             laydate2.render({
+                 elem:"#broad",
+                 type: 'time',
+             });
+         });
+
+         function recall(paid) {
+			 $.get("/broad/proreApply/recall/"+paid, function(data){
+				 if(data==1){
+					 alert("修改成功");
+					 $.table.refresh();
+				 }
+			 });
+		 }
+
+		 function reply(paid,pname,uname,userid) {
+			 layer.open({
+				 type: 2,
+				 maxmin: false,
+				 shade: 0.3,
+				 title: '回复节目申请',
+				 fix: false,
+				 area: ["800" + 'px', ($(window).height() - 50) + 'px'],
+				 content: "/broad/proreApply/reply",
+				 shadeClose: false,
+				 btn: ['<i class="fa fa-chat"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+				 success:function(layero, index){
+					 $(layero).find("iframe")[0].contentWindow.$("#paid").val(paid)
+					 $(layero).find("iframe")[0].contentWindow.$("#pname").val(pname)
+					 $(layero).find("iframe")[0].contentWindow.$("#uname").val(uname)
+					 $(layero).find("iframe")[0].contentWindow.$("#userid").val(userid)
+				 },
+				 yes: function (index, layero) {
+					 var selected = $(layero).find("iframe")[0].contentWindow.$("#form-proreApply-reply");
+					 var formData = new FormData(selected[0])
+					 if ($.validate.form() && $(layero).find("iframe")[0].contentWindow.$("#replayfile")) {
+						 $.ajax({
+                                 type : "POST",
+                                 url : "/broad/proreApply/reply",
+                                 data : formData,
+                                 async: false,
+                                 cache: false,
+                                 contentType: false,
+                                 processData: false,
+                                 success : function(res) {
+                                     if(res.code==0){
+                                         alert(res.msg);
+                                     }else{
+										 alert(res.msg);
+									 }
+                                 }
+                             }
+						 );
+					 }
+					 layer.close(index);
+					 $.table.refresh();
+				 },
+				 cancel: function () {return true;}
+			 });
+		 }
+
+	 </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.TbStaffMapper">
+
+    <resultMap type="com.sixin.village.domain.TbStaff" id="TbStaffResult">
+        <result property="stid"    column="stid"    />
+        <result property="userid"    column="userid"    />
+        <result property="aid"    column="aid"    />
+        <result property="username"    column="username"    />
+        <result property="age"    column="age"    />
+        <result property="sex"    column="sex"    />
+        <result property="nativeplace"    column="nativeplace"    />
+        <result property="address"    column="address"    />
+        <result property="nation"    column="nation"    />
+        <result property="politics"    column="politics"    />
+        <result property="edulevel"    column="edulevel"    />
+        <result property="idcard"    column="idcard"    />
+        <result property="phone"    column="phone"    />
+        <result property="job"    column="job"    />
+        <result property="employeeunit"    column="employeeunit"    />
+        <result property="winaward"    column="winaward"    />
+        <result property="punish"    column="punish"    />
+        <result property="idphoto"    column="idphoto"    />
+        <result property="isuse"    column="isuse"    />
+    </resultMap>
+    <sql id="selectTbStaffVo">
+        select stid, userid, aid, username, age, sex, nativeplace, address, nation, politics, edulevel, idcard, phone, job, employeeunit, winaward, punish, idphoto, isuse from tb_staff
+    </sql>
+
+    <select id="selectTbStaffList" parameterType="com.sixin.village.domain.TbStaff" resultMap="TbStaffResult">
+        <include refid="selectTbStaffVo"/>
+        <where>
+            <if test="stid != null  and stid != '' "> and stid = #{stid}</if>
+            <if test="userid != null  and userid != '' "> and userid = #{userid}</if>
+            <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+            <if test="username != null  and username != '' "> and username = #{username}</if>
+            <if test="age != null "> and age = #{age}</if>
+            <if test="sex != null  and sex != '' "> and sex = #{sex}</if>
+            <if test="nativeplace != null  and nativeplace != '' "> and nativeplace = #{nativeplace}</if>
+            <if test="address != null  and address != '' "> and address = #{address}</if>
+            <if test="nation != null  and nation != '' "> and nation = #{nation}</if>
+            <if test="politics != null  and politics != '' "> and politics = #{politics}</if>
+            <if test="edulevel != null  and edulevel != '' "> and edulevel = #{edulevel}</if>
+            <if test="idcard != null  and idcard != '' "> and idcard = #{idcard}</if>
+            <if test="phone != null  and phone != '' "> and phone = #{phone}</if>
+            <if test="job != null  and job != '' "> and job = #{job}</if>
+            <if test="employeeunit != null  and employeeunit != '' "> and employeeunit = #{employeeunit}</if>
+            <if test="winaward != null  and winaward != '' "> and winaward = #{winaward}</if>
+            <if test="punish != null  and punish != '' "> and punish = #{punish}</if>
+            <if test="idphoto != null  and idphoto != '' "> and idphoto = #{idphoto}</if>
+            <if test="isuse != null "> and isuse = #{isuse}</if>
+        </where>
+    </select>
+
+    <select id="selectTbStaffById" parameterType="String" resultMap="TbStaffResult">
+        <include refid="selectTbStaffVo"/>
+        where stid = #{stid}
+    </select>
+
+    <insert id="insertTbStaff" parameterType="com.sixin.village.domain.TbStaff">
+        insert into tb_staff
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="stid != null  and stid != ''  ">stid,</if>
+            <if test="userid != null  and userid != ''  ">userid,</if>
+            <if test="aid != null  and aid != ''  ">aid,</if>
+            <if test="username != null  and username != ''  ">username,</if>
+            <if test="age != null  ">age,</if>
+            <if test="sex != null  and sex != ''  ">sex,</if>
+            <if test="nativeplace != null  and nativeplace != ''  ">nativeplace,</if>
+            <if test="address != null  and address != ''  ">address,</if>
+            <if test="nation != null  and nation != ''  ">nation,</if>
+            <if test="politics != null  and politics != ''  ">politics,</if>
+            <if test="edulevel != null  and edulevel != ''  ">edulevel,</if>
+            <if test="idcard != null  and idcard != ''  ">idcard,</if>
+            <if test="phone != null  and phone != ''  ">phone,</if>
+            <if test="job != null  and job != ''  ">job,</if>
+            <if test="employeeunit != null  and employeeunit != ''  ">employeeunit,</if>
+            <if test="winaward != null  and winaward != ''  ">winaward,</if>
+            <if test="punish != null  and punish != ''  ">punish,</if>
+            <if test="idphoto != null  and idphoto != ''  ">idphoto,</if>
+            <if test="isuse != null  ">isuse,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="stid != null  and stid != ''  ">#{stid},</if>
+            <if test="userid != null  and userid != ''  ">#{userid},</if>
+            <if test="aid != null  and aid != ''  ">#{aid},</if>
+            <if test="username != null  and username != ''  ">#{username},</if>
+            <if test="age != null  ">#{age},</if>
+            <if test="sex != null  and sex != ''  ">#{sex},</if>
+            <if test="nativeplace != null  and nativeplace != ''  ">#{nativeplace},</if>
+            <if test="address != null  and address != ''  ">#{address},</if>
+            <if test="nation != null  and nation != ''  ">#{nation},</if>
+            <if test="politics != null  and politics != ''  ">#{politics},</if>
+            <if test="edulevel != null  and edulevel != ''  ">#{edulevel},</if>
+            <if test="idcard != null  and idcard != ''  ">#{idcard},</if>
+            <if test="phone != null  and phone != ''  ">#{phone},</if>
+            <if test="job != null  and job != ''  ">#{job},</if>
+            <if test="employeeunit != null  and employeeunit != ''  ">#{employeeunit},</if>
+            <if test="winaward != null  and winaward != ''  ">#{winaward},</if>
+            <if test="punish != null  and punish != ''  ">#{punish},</if>
+            <if test="idphoto != null  and idphoto != ''  ">#{idphoto},</if>
+            <if test="isuse != null  ">#{isuse},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTbStaff" parameterType="com.sixin.village.domain.TbStaff">
+        update tb_staff
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userid != null  and userid != ''  ">userid = #{userid},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="username != null  and username != ''  ">username = #{username},</if>
+            <if test="age != null  ">age = #{age},</if>
+            <if test="sex != null  and sex != ''  ">sex = #{sex},</if>
+            <if test="nativeplace != null  and nativeplace != ''  ">nativeplace = #{nativeplace},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="nation != null  and nation != ''  ">nation = #{nation},</if>
+            <if test="politics != null  and politics != ''  ">politics = #{politics},</if>
+            <if test="edulevel != null  and edulevel != ''  ">edulevel = #{edulevel},</if>
+            <if test="idcard != null  and idcard != ''  ">idcard = #{idcard},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="job != null  and job != ''  ">job = #{job},</if>
+            <if test="employeeunit != null  and employeeunit != ''  ">employeeunit = #{employeeunit},</if>
+            <if test="winaward != null  and winaward != ''  ">winaward = #{winaward},</if>
+            <if test="punish != null  and punish != ''  ">punish = #{punish},</if>
+            <if test="idphoto != null  and idphoto != ''  ">idphoto = #{idphoto},</if>
+            <if test="isuse != null  ">isuse = #{isuse},</if>
+        </trim>
+        where stid = #{stid}
+    </update>
+
+    <delete id="deleteTbStaffById" parameterType="String">
+        delete from tb_staff where stid = #{stid}
+    </delete>
+
+    <delete id="deleteTbStaffByIds" parameterType="String">
+        delete from tb_staff where stid in
+        <foreach item="stid" collection="array" open="(" separator="," close=")">
+            #{stid}
+        </foreach>
+    </delete>
+
+    <select id="selectTbStaffByIds" parameterType="java.util.List" resultMap="TbStaffResult">
+        <include refid="selectTbStaffVo"/>
+        where stid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

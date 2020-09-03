@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+<link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+<link href="../static/js/plugins/layer/layui-v2.4.5/layui/css/layui.css" th:href="@{/js/plugins/layer/layui-v2.4.5/layui/css/layui.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <table style="margin-top:5px;">
+            <tr>
+                <td style="padding-left:2px;text-align: right;" class="" id="chamid">播放时长：</td>
+                <td style="padding-left:2px;">
+                    <input class="laydate-icon form-control layer-date"
+                           name="broaddates"
+                           id="broaddates"
+                           value="00:00:00"
+                           style="width:160px;"
+                           placeholder="播放时长"
+                           title="播放时长"/>
+                </td>
+                <td style="padding-left:2px;text-align: right;" id = "champronote" class="">电台：</td>
+                <td style="padding-left:2px;">
+                    <input  name="" id="cham"  value="" type="text" readonly style="width:158px;height: 30px;border-radius:5%" /></td>
+            </tr>
+        </table>
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            电台名称：<input type="text" name="cname" style="width: 130px;"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+
+<script th:inline="javascript">
+    /**
+     * 选择电台
+     * @param fid
+     */
+    function selectCham(cname,cid,frequencies,pronote) {
+        $("#cham").attr("value",cname);
+        $("#cham").attr("name",cid);
+        $("#chamid").attr("class",frequencies);
+        $("#champronote").attr("class",pronote);
+    }
+
+    var prefix = ctx + "broad/proSinmanage";
+    $(function() {
+        var options = {
+            url: prefix + "/listCham",
+            modalName: "电台选择",
+            search: false,
+            showExport: true,
+
+            columns: [
+                // {
+                //     checkbox: true,
+                // },
+				{
+					field : 'cid',
+					title : '电台id',
+					visible: false
+				},
+                {
+                    field : 'cname',
+                    title : '节目',
+                    sortable: true,
+                    width: '20%',
+                    formatter:function (value,row,index) {
+                        var results = value;
+                        if(results.toString().length>20){
+                            results = results.toString().substring(0,12)+"...";
+                        }
+                        var actions = [];
+                        actions.push('<a href="#" onclick="details(\''+ value+'\')">'+results+'</a> ');
+                        return actions.join('');
+                    }
+                },
+                {
+                    field : 'frequencies',
+                    title : '频道',
+                    sortable: true
+                },
+				{
+					field : 'pronote',
+					title : '节目备注',
+					sortable: true
+				},
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	//actions.push('<a class="btn btn-success btn-xs" href="#"><i class="fa fa-edit"></i>试听</a> ');
+                        actions.push('<a class="btn btn-success btn-xs" href="#" onclick="selectCham(\''+ row.cname+'\',\''+ row.cid+'\',\''+row.frequencies+'\',\''+row.pronote+'\');"><i class="fa fa-edit"></i>选择</a> ');
+                      return actions.join('');
+		            }
+		        }
+            ]
+        };
+        $.table.init(options);
+    });
+
+
+     //提供给父页面获取选中的值
+     function callbackfile() {
+         /*在选择终端前先获取一次文本框的值，为的是可以选择多个小组的终端*/
+         var cname = document.getElementById("cham").value;
+         var frequencies = $("#chamid").attr("class");
+         var cid = $("#cham").attr("name");
+         var time = $("#broaddates").val();
+         var pronote= $("#champronote").attr("class",pronote);
+         datas = {  //调用它的父页面A的input这个function
+             data_filename:cname,  //把data传入父页面A中的data_role，这里cllbackfile()是我另外计算data的一个函数，可以忽略
+             data_fileID:cid,
+             data_file:frequencies,
+             data_time:time,
+             data_pro:pronote,
+         }
+         return datas;
+     }
+</script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.tips.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+
+<!--时间插件-->
+<script>
+
+    function details(value) {
+        var txt = value;
+        alert(txt);
+
+    }
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#broaddates",
+            type: 'time',
+        });
+    });
+</script>
+<div th:include="include :: footer"></div>
+</body>
+</html>

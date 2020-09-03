@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.YuqingMapper">
+
+    <resultMap type="com.sixin.village.domain.Yuqing" id="YuqingResult">
+        <result property="yqid"    column="yqid"    />
+        <result property="yqtype"    column="yqtype"    />
+        <result property="content"    column="content"    />
+        <result property="uploadimage"    column="uploadimage"    />
+        <result property="adddate"    column="adddate"    />
+        <result property="reldate"    column="reldate"    />
+        <result property="adduid"    column="adduid"    />
+        <result property="adduname"    column="adduname"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="aid"    column="aid"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectYuqingVo">
+        select yqid, yqtype, content, uploadimage, adddate, reldate, adduid, adduname, uid, uname, aid, remark from tb_yuqing
+    </sql>
+
+    <select id="selectYuqingList" parameterType="com.sixin.village.domain.Yuqing" resultMap="YuqingResult">
+        <include refid="selectYuqingVo"/>
+        <where>
+            <if test="yqid != null "> and yqid = #{yqid}</if>
+            <if test="yqtype != null  and yqtype != '' "> and yqtype LIKE CONCAT(CONCAT('%', #{yqtype}),'%')</if>
+            <if test="content != null  and content != '' ">and content LIKE CONCAT(CONCAT('%', #{content}),'%')</if>
+            <if test="uploadimage != null  and uploadimage != '' "> and uploadimage = #{uploadimage}</if>
+            <if test="adddate != null  and adddate != '' "> and adddate LIKE CONCAT(CONCAT('%', #{adddate}),'%')</if>
+            <if test="reldate != null  and reldate != '' "> and reldate LIKE CONCAT(CONCAT('%', #{reldate}),'%')</if>
+            <if test="adduid != null "> and adduid = #{adduid}</if>
+            <if test="adduname != null  and adduname != '' ">  and adduname LIKE CONCAT(CONCAT('%', #{adduname}),'%')</if>
+            <if test="uid != null "> and uid = #{uid}</if>
+            <if test="uname != null  and uname != '' ">and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+            <if test="aid != null  and aid != '' "> and aid LIKE concat('%', #{aid}, '%') </if>
+            <if test="remark != null and remark != ''"> and remark = #{remark}</if>
+        </where>
+    </select>
+
+    <select id="selectYuqingById" parameterType="Integer" resultMap="YuqingResult">
+        <include refid="selectYuqingVo"/>
+        where yqid = #{yqid}
+    </select>
+
+    <insert id="insertYuqing" parameterType="com.sixin.village.domain.Yuqing">
+        insert into tb_yuqing
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="yqid != null  ">yqid,</if>
+            <if test="yqtype != null  and yqtype != ''  ">yqtype,</if>
+            <if test="content != null  and content != ''  ">content,</if>
+            <if test="uploadimage != null  and uploadimage != ''  ">uploadimage,</if>
+            <if test="adddate != null  and adddate != ''  ">adddate,</if>
+            <if test="reldate != null  and reldate != ''  ">reldate,</if>
+            <if test="adduid != null  ">adduid,</if>
+            <if test="adduname != null  and adduname != ''  ">adduname,</if>
+            <if test="uid != null  ">uid,</if>
+            <if test="uname != null  and uname != ''  ">uname,</if>
+            <if test="aid != null  and aid != ''  ">aid,</if>
+            <if test="remark != null  ">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="yqid != null  ">#{yqid},</if>
+            <if test="yqtype != null  and yqtype != ''  ">#{yqtype},</if>
+            <if test="content != null  and content != ''  ">#{content},</if>
+            <if test="uploadimage != null  and uploadimage != ''  ">#{uploadimage},</if>
+            <if test="adddate != null  and adddate != ''  ">#{adddate},</if>
+            <if test="reldate != null  and reldate != ''  ">#{reldate},</if>
+            <if test="adduid != null  ">#{adduid},</if>
+            <if test="adduname != null  and adduname != ''  ">#{adduname},</if>
+            <if test="uid != null  ">#{uid},</if>
+            <if test="uname != null  and uname != ''  ">#{uname},</if>
+            <if test="aid != null  and aid != ''  ">#{aid},</if>
+            <if test="remark != null  ">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateYuqing" parameterType="com.sixin.village.domain.Yuqing">
+        update tb_yuqing
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="yqtype != null  and yqtype != ''  ">yqtype = #{yqtype},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="uploadimage != null  and uploadimage != ''  ">uploadimage = #{uploadimage},</if>
+            <if test="adddate != null  and adddate != ''  ">adddate = #{adddate},</if>
+            <if test="reldate != null  and reldate != ''  ">reldate = #{reldate},</if>
+            <if test="adduid != null  ">adduid = #{adduid},</if>
+            <if test="adduname != null  and adduname != ''  ">adduname = #{adduname},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="remark != null  ">remark = #{remark},</if>
+        </trim>
+        where yqid = #{yqid}
+    </update>
+
+    <delete id="deleteYuqingById" parameterType="Integer">
+        delete from tb_yuqing where yqid = #{yqid}
+    </delete>
+
+    <delete id="deleteYuqingByIds" parameterType="String">
+        delete from tb_yuqing where yqid in
+        <foreach item="yqid" collection="array" open="(" separator="," close=")">
+            #{yqid}
+        </foreach>
+    </delete>
+
+    <update id="updateIsuseByYqid" parameterType="String">
+        update tb_yuqing
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null  ">remark = #{remark},</if>
+        </trim>
+        where yqid = #{yqid}
+    </update>
+
+
+    <select id="selectYuqingByIds" parameterType="java.util.List" resultMap="YuqingResult">
+        <include refid="selectYuqingVo"/>
+        where yqid in
+        <foreach collection="list" item="yqid" open="(" close=")" separator=",">
+            #{yqid}
+        </foreach>
+    </select>
+
+</mapper>

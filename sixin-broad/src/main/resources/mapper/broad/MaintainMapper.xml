@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.MaintainMapper">
+
+    <resultMap type="com.sixin.broad.domain.Maintain" id="MaintainResult">
+        <result property="tmid"    column="tmid"    />
+        <result property="tid"    column="tid"    />
+        <result property="fault"    column="fault"    />
+        <result property="mstaff"    column="mstaff"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.Maintainx" id="MaintainxResult">
+        <result property="tid"    column="tid"    />
+        <result property="content"    column="content"    />
+        <result property="ctime"    column="ctime"    />
+        <result property="lo"    column="lo"    />
+        <result property="la"    column="la"    />
+    </resultMap>
+
+    <sql id="selectMaintainVo">
+        select
+            tmid,
+            tm.tid,
+            fault,
+            mstaff,
+            tm.remark as remark,
+            tname,
+            intertime,
+            phone,
+            address,
+            tm.createtime as createtime,
+            t.aid as aid,
+            aname,
+            ui.userid as userid,
+            uname,
+            nettype,
+            basestation
+        from
+        (((terminal_maintain tm  JOIN terminals t on tm.tid=t.tid)
+        left join ter_conditions tc on tm.tid = tc.tid)
+        left join area a on t.aid = a.aid)
+        left join userinfo ui on ui.userid = t.userid
+    </sql>
+    <select id="selectMaintainList" parameterType="com.sixin.broad.domain.Maintain" resultMap="MaintainResult">
+        SELECT
+        broad.terminal_maintain.*,
+        broad.terminals.aid,
+        broad.terminals.tname,
+        broad.terminals.intertime,
+        broad.terminals.phone,
+        broad.terminals.address,
+        broad.area.aname,
+        broad.ter_conditions.nettype,
+        broad.ter_conditions.basestation,
+        ry.sys_user.user_id AS userid,
+        ry.sys_user.user_name AS uname
+        FROM
+        broad.terminal_maintain,
+        broad.terminals,
+        broad.area,
+        broad.ter_conditions,
+        ry.sys_user
+        WHERE
+        broad.terminals.tid = broad.terminal_maintain.tid
+        AND broad.terminals.aid = broad.area.aid
+        AND broad.ter_conditions.tid = broad.terminals.tid
+        AND ry.sys_user.user_id = broad.terminals.userid
+        <if test="tid != null  and tid != '' ">and broad.terminal_maintain.tid like CONCAT('%',#{tid},'%')</if>
+        <if test="tname != null  and tname != '' ">and broad.terminals.tname like CONCAT('%',#{tname},'%')</if>
+        <if test="aid != null  and aid != '' ">and broad.terminals.aid like CONCAT(#{aid},'%') </if>
+        <if test="aname != null  and aname != '' ">and broad.area.aname like CONCAT('%',#{aname},'%')</if>
+        <if test="uname != null  and uname != '' ">and uname like CONCAT('%',#{uname},'%')</if>
+        <if test="phone != null  and phone != '' ">and broad.terminals.phone like CONCAT('%',#{phone},'%')</if>
+        <if test="mstaff != null  and mstaff != '' ">and broad.terminal_maintain.mstaff like CONCAT('%',#{mstaff},'%')</if>
+        <if test="createtime != null  and createtime != '' ">and broad.terminals.createtime like CONCAT('%',#{createtime},'%')</if>
+        <if test="fault != null  and fault != '' ">and broad.terminal_maintain.fault like CONCAT('%',#{fault},'%')</if>
+        ORDER BY broad.terminal_maintain.createtime DESC
+    </select>
+
+    <select id="selectMaintainById" parameterType="Integer" resultMap="MaintainResult">
+        <include refid="selectMaintainVo"/>
+        where tmid = #{tmid}
+    </select>
+
+    <!-- 根据ids批量查询数据，主要用于导出-->
+    <select id="selectMaintainByIds" resultMap="MaintainResult">
+        SELECT
+        tm.tmid,
+        tm.tid,
+        tm.fault,
+        tm.mstaff,
+        t.tname,
+        t.phone,
+        t.address,
+        tm.createtime,
+        a.aname,
+        u.user_name as uname,
+        c.nettype
+        FROM
+        terminal_maintain tm
+        left join terminals t on tm.tid = t.tid
+        left join area a on t.aid = a.aid
+        left join ry.sys_user u on u.user_id = t.userid
+        left join ter_conditions c on t.tid = c.tid
+        WHERE
+        tm.tmid in
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </select>
+
+    <select id="selectlal" resultMap="MaintainxResult">
+        select
+            terminal_maintain.tid as tid,
+            fault as content,
+            createtime as ctime,
+            terminal_management.Longitude as lo,
+            terminal_management.Latitude as la
+        from terminal_maintain,terminal_management
+        where terminal_maintain.tid = terminal_management.tid
+        order by createtime desc
+        limit 0,10
+    </select>
+
+
+    <insert id="insertMaintain" parameterType="com.sixin.broad.domain.Maintain">
+        insert into terminal_maintain
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">tid,</if>
+            <if test="fault != null  and fault != ''  ">fault,</if>
+            <if test="mstaff != null  and mstaff != ''  ">mstaff,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="createtime != null  and createtime != ''  ">createtime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">#{tid},</if>
+            <if test="fault != null  and fault != ''  ">#{fault},</if>
+            <if test="mstaff != null  and mstaff != ''  ">#{mstaff},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="createtime != null  and createtime != ''  ">#{createtime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMaintain" parameterType="com.sixin.broad.domain.Maintain">
+        update terminal_maintain
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">tid = #{tid},</if>
+            <if test="fault != null  and fault != ''  ">fault = #{fault},</if>
+            <if test="mstaff != null  and mstaff != ''  ">mstaff = #{mstaff},</if>
+            <if test="createtime != null  and createtime != ''  ">createtime = #{createtime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where tmid = #{tmid}
+    </update>
+
+    <delete id="deleteMaintainById" parameterType="Integer">
+        delete from terminal_maintain where tmid = #{tmid}
+    </delete>
+
+    <delete id="deleteMaintainByIds" parameterType="String">
+        delete from terminal_maintain where tmid in
+        <foreach item="tmid" collection="array" open="(" separator="," close=")">
+            #{tmid}
+        </foreach>
+    </delete>
+
+</mapper>

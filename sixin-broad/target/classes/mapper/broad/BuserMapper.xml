@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.BuserMapper">
+
+    <resultMap type="com.sixin.broad.domain.Buser" id="BuserResult">
+        <result property="userid" column="userid"/>
+        <result property="uname" column="uname"/>
+        <result property="count" column="count"/>
+        <result property="lenth" column="lenth"/>
+        <result property="isPublic" column="isPublic"/>
+        <result property="ptp" column="Ptp"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+    <select id="selectProgramsByUser" resultMap="BuserResult">
+        select
+          a.userid,
+          uname,
+          count(a.userid) as count
+        from
+          programs as a,
+          userinfo as b
+        where
+          a.userid = b.userid
+        group by
+          a.userid
+        order by
+        count DESC
+    </select>
+
+    <select id="selectProgramsByLenth" parameterType="Long" resultMap="BuserResult">
+        select
+          count(flenth) as count,
+          '0~1' as lenth
+        from
+          programs
+        where
+          1=1
+          <if test="deptId!=null and deptId !=''">
+              and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+          </if>
+          and flenth between '00:00:01' and '00:01:00'
+        union
+        select
+          count(flenth) as count,
+          '1~2' as lenth
+        from
+          programs
+        where
+        1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        and flenth between '00:01:01' and '00:02:00'
+        union
+        select
+          count(flenth) as count,
+          '2~3' as lenth
+        from
+          programs
+        where
+        1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        and flenth between '00:02:01' and '00:03:00'
+        union
+        select
+          count(flenth) as count,
+          '3~4' as lenth
+        from
+          programs
+        where
+        1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        and flenth between '00:03:01' and '00:04:00'
+        union
+        select
+          count(flenth) as count,
+          '4~5' as lenth
+        from
+          programs
+        where
+        1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        and flenth between '00:03:00' and '00:04:00'
+        union
+        select
+          count(flenth) as count,
+          '>5' as lenth
+        from
+          programs
+        where
+        1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        and flenth > '00:04:00'
+    </select>
+
+    <select id="selectProgramsIfPublic" parameterType="Long" resultMap="BuserResult">
+        select
+          count(ispublic) as count,
+          2 as ispublic
+        from
+          programs
+        where
+        1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        union
+        select
+          count(ispublic) as count,
+          ispublic
+        from
+          programs
+        where 1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        and ispublic = 1
+        union
+        select
+          count(ispublic) as count,
+          ispublic
+        from
+          programs
+        where
+        1=1
+        <if test="deptId!=null and deptId !=''">
+            and (dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors)))
+        </if>
+        and ispublic = 0
+        order by ispublic DESC
+    </select>
+
+    <select id="selectProgramsPtp" parameterType="Long" resultMap="BuserResult">
+        select
+          Ptp,
+          count(Ptp) as count
+        from
+          pro_list a
+        where 1=1
+        <if test="deptId != null and deptId !=''">
+            and (a.dept_id = #{deptId} OR a.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptId},ancestors) ))
+        </if>
+        group by
+          Ptp
+    </select>
+
+</mapper>

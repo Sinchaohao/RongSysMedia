@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.SuggestMapper">
+    
+    <resultMap type="com.sixin.village.domain.Suggest" id="SuggestResult">
+        <result property="mid"    column="mid"    />
+        <result property="mtitle"    column="mtitle"    />
+        <result property="mpic"    column="mpic"    />
+        <result property="mcontent"    column="mcontent"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="pushdate"    column="pushdate"    />
+        <result property="greadtotal"    column="greadtotal"    />
+        <result property="mtype"    column="mtype"    />
+        <result property="aid"    column="aid"    />
+        <result property="note"    column="note"    />
+    </resultMap>
+	
+	<sql id="selectSuggestVo">
+        select mid, mtitle, mpic, mcontent, uid, uname, pushdate, greadtotal, mtype, aid, note from suggest
+    </sql>
+	
+    <select id="selectSuggestList" parameterType="com.sixin.village.domain.Suggest" resultMap="SuggestResult">
+        <include refid="selectSuggestVo"/>
+        <where>
+            <if test="mid != null "> and mid = #{mid}</if>
+            <if test="mtitle != null  and mtitle != '' "> and mtitle LIKE CONCAT(CONCAT('%', #{mtitle}),'%')</if>
+            <if test="mpic != null  and mpic != '' "> and mpic = #{mpic}</if>
+            <if test="mcontent != null  and mcontent != '' "> and mcontent LIKE CONCAT(CONCAT('%', #{mcontent}),'%')</if>
+<!--            <if test="uid != null and uid != '' "> and uid = #{uid}</if>-->
+            <if test="uname != null  and uname != '' "> and uname = #{uname}</if>
+            <if test="pushdate != null and pushdate != ''"> and pushdate LIKE CONCAT(CONCAT('%', #{pushdate}),'%')</if>
+            <if test="greadtotal != null "> and greadtotal = #{greadtotal}</if>
+            <if test="mtype != null "> and mtype = #{mtype}</if>
+            <if test="aid != null  and aid != '' "> and aid = #{aid}</if>
+            <if test="note != null  and note != '' "> and note LIKE CONCAT(CONCAT('%', #{note}),'%')</if>
+        </where>
+        ORDER BY pushdate DESC
+    </select>
+    
+    <select id="selectSuggestById" parameterType="Integer" resultMap="SuggestResult">
+        <include refid="selectSuggestVo"/>
+        where mid = #{mid}
+    </select>
+
+    <select id="selectSuggestByIds" parameterType="java.util.List" resultMap="SuggestResult">
+        <include refid="selectSuggestVo"/>
+        where mid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+        
+    <insert id="insertSuggest" parameterType="com.sixin.village.domain.Suggest">
+        insert into suggest
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="mid != null  ">mid,</if>
+			<if test="mtitle != null  and mtitle != ''  ">mtitle,</if>
+			<if test="mpic != null  and mpic != ''  ">mpic,</if>
+			<if test="mcontent != null  and mcontent != ''  ">mcontent,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="pushdate != null  ">pushdate,</if>
+			<if test="greadtotal != null  ">greadtotal,</if>
+			<if test="mtype != null  ">mtype,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="note != null  and note != ''  ">note,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="mid != null  ">#{mid},</if>
+			<if test="mtitle != null  and mtitle != ''  ">#{mtitle},</if>
+			<if test="mpic != null  and mpic != ''  ">#{mpic},</if>
+			<if test="mcontent != null  and mcontent != ''  ">#{mcontent},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="pushdate != null  ">#{pushdate},</if>
+			<if test="greadtotal != null  ">#{greadtotal},</if>
+			<if test="mtype != null  ">#{mtype},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="note != null  and note != ''  ">#{note},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateSuggest" parameterType="com.sixin.village.domain.Suggest">
+        update suggest
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mtitle != null  and mtitle != ''  ">mtitle = #{mtitle},</if>
+            <if test="mpic != null  and mpic != ''  ">mpic = #{mpic},</if>
+            <if test="mcontent != null  and mcontent != ''  ">mcontent = #{mcontent},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="pushdate != null  ">pushdate = #{pushdate},</if>
+            <if test="greadtotal != null  ">greadtotal = #{greadtotal},</if>
+            <if test="mtype != null  ">mtype = #{mtype},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="note != null  and note != ''  ">note = #{note},</if>
+        </trim>
+        where mid = #{mid}
+    </update>
+
+	<delete id="deleteSuggestById" parameterType="Integer">
+        delete from suggest where mid = #{mid}
+    </delete>
+	
+    <delete id="deleteSuggestByIds" parameterType="String">
+        delete from suggest where mid in 
+        <foreach item="mid" collection="array" open="(" separator="," close=")">
+            #{mid}
+        </foreach>
+    </delete>
+    <select id="selectSuggestListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="SuggestResult">
+        <include refid="selectSuggestVo"/>
+        <where>
+            <if test="userid != null  and userid != '' "> uid = #{userid}</if>
+            <if test="title != null  and title != ''  ">and mtitle LIKE CONCAT(CONCAT('%', #{title}),'%')</if>
+        </where>
+        ORDER BY pushdate DESC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

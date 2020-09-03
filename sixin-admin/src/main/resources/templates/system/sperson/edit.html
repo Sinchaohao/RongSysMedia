@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-person-edit" th:object="${person}">
+        <input id="id" name="id" th:field="*{id}"  type="hidden">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">人员编号：</label>
+            <div class="col-sm-8">
+                <input id="pid" name="pid" th:field="*{pid}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">用户姓名：</label>
+            <div class="col-sm-8">
+                <input id="pname" name="pname" th:field="*{pname}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">人员电话:</label>
+            <div class="col-sm-8">
+                <input id="phone" name="phone" th:field="*{phone}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+        <label class="col-sm-3 control-label">信号类型：</label>
+        <div class="col-sm-8">
+            <input id="ptype" name="ptype" th:field="*{ptype}" class="form-control" type="text">
+        </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">基站编码：</label>
+            <div class="col-sm-8">
+                <input id="stationcode" name="stationcode" th:field="*{stationcode}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">辐射半径：</label>
+            <div class="col-sm-8">
+                <input id="redius" name="redius" th:field="*{redius}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">人员登记地址：</label>
+            <div class="col-sm-8">
+                <input id="address" name="address" th:field="*{address}" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否有效：</label>
+            <div class="col-sm-8">
+                <input id="remark" name="remark" th:field="*{remark}" class="form-control" type="text">
+            </div>
+        </div>
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "system/sperson"
+    $("#form-person-edit").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/edit", $('#form-person-edit').serialize());
+        }
+    }
+</script>
+</body>
+</html>

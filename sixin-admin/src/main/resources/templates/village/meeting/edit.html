@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<!--①注意head是否有样式冲突，引入需要的css文件-->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-meeting-edit" th:object="${meeting}">
+		<input id="mid" name="mid" th:field="*{mid}"  type="hidden">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">标题：</label>
+			<div class="col-sm-8">
+				<input id="mtitle" name="mtitle" th:field="*{mtitle}" class="form-control" type="text">
+			</div>
+		</div>
+		<!--②使用input去接收数据，textare去作为文本输入框-->
+		<input id="mcontent" name="mcontent" th:field="*{mcontent}" class="form-control" type="hidden">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">内容：</label>
+			<div class="col-sm-8">
+				<textarea id="aaa" name="aaa"  autofocus></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">状态：</label>
+			<div class="col-sm-8">
+				<div class="onoffswitch" >
+					<input type="checkbox"  class="onoffswitch-checkbox" th:value="${mtype}" id="ctype1" name="ctype1"  onclick="changevalue();" />
+					<label class="onoffswitch-label" for="ctype1">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+				</div>
+			</div>
+		</div>
+		<input id="mtype" name="mtype" th:field="*{mtype}"  class="form-control" type="hidden" >
+		<div class="form-group">
+			<label class="col-sm-3 control-label">备注：</label>
+			<div class="col-sm-8">
+				<input id="note" name="note" th:field="*{note}" class="form-control" type="text">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+	var prefix = ctx + "village/meeting"
+	$("#form-meeting-edit").validate({
+		rules:{
+			xxxx:{
+				required:true,
+			},
+		}
+	});
+
+	<!--⑤获取当前编辑后的文本框的值并赋值给content字段-->
+	function submitHandler() {
+		proinfo =$("#aaa").val();//获取当前编辑后的文本框的值
+		//alert(proinfo);
+		$("#mcontent").val(proinfo);//将获得文本框的值传给content字段
+
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/edit", $('#form-meeting-edit').serialize());
+		}
+	}
+</script>
+<script>
+	//0是关 1是开
+	$(function(){
+		var ctype2=document.getElementById("ctype1");
+		var data = $("#mtype").val();
+		if(data=="1"){
+			ctype2.checked=true;
+		}else{
+			ctype2.checked=false;
+		}
+	});
+	var aa = $("#mtype").val();
+	var aflag = 0;
+	function changevalue() {
+		aflag++;
+		if(aflag % 2 == 0) {
+			$("#mtype").val(aa);
+		}else{
+			if (aa == "1") {
+				$("#mtype").val("0");
+			} else{
+				$("#mtype").val("1");
+			}
+		}
+	}
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+	laydate({
+		elem:"#remintime",
+		event:"focus"
+	});
+	layui.use('laydate', function(){
+		var laydate = layui.laydate;
+
+		//执行一个laydate实例
+		laydate.render({
+			elem:"#village",
+			type: 'time',
+
+		});
+	});
+</script>
+<!--③引入需要的js文件-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+<!--④初始化文本框并且通过setValue方法传值给富文本编辑器-->
+<script>
+	$(document).ready(function() {
+		var editor = new Simditor({
+			placeholder: "输入内容", // 编辑器默认值（默认为’’）
+			toolbar: [
+				'title', 'bold', 'italic', 'underline',
+				'color', '|', 'ol', 'ul', 'table'
+			],
+			textarea: '#aaa',
+		});
+		proinfo =$("#mcontent").val();//将后台返回的content字段的值提取出来
+		editor.setValue(proinfo);//赋值给UEditor
+	});
+</script>
+</body>
+</html>

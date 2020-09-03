@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.AndrpicMapper">
+
+    <resultMap type="com.sixin.village.domain.Andrpic" id="AndrpicResult">
+        <result property="aid"    column="aid"    />
+        <result property="tname"    column="tname"    />
+        <result property="pic"    column="pic"    />
+        <result property="creadate"    column="creadate"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectAndrpicVo">
+        select aid, tname, pic, creadate, remark from tb_andrpic
+    </sql>
+
+    <select id="selectAndrpicList" parameterType="com.sixin.village.domain.Andrpic" resultMap="AndrpicResult">
+        <include refid="selectAndrpicVo"/>
+        <where>
+            <if test="aid != null "> and aid = #{aid}</if>
+            <if test="tname != null  and tname != '' "> and tname LIKE CONCAT(CONCAT('%', #{tname}),'%')</if>
+            <if test="pic != null  and pic != '' "> and pic = #{pic}</if>
+            <if test="creadate != null  and creadate != '' "> and creadate LIKE CONCAT(CONCAT('%', #{creadate}),'%')</if>
+            <if test="remark != null "> and remark = #{remark}</if>
+        </where>
+        ORDER BY aid ASC
+    </select>
+
+    <select id="selectAndrpicById" parameterType="Integer" resultMap="AndrpicResult">
+        <include refid="selectAndrpicVo"/>
+        where aid = #{aid}
+    </select>
+
+    <select id="selectAndrpicListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="AndrpicResult">
+        <include refid="selectAndrpicVo"/>
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="tname != null  and tname != '' "> and tname LIKE CONCAT(CONCAT('%', #{tname}),'%')</if>
+        </where>
+        ORDER BY aid ASC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

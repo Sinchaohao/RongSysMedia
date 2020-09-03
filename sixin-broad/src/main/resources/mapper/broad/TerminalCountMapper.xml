@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.TerminalCountMapper">
+    <resultMap type="com.sixin.broad.domain.TerminalCount" id="TerminalCountResult">
+            <result property="time" column="stime"/>
+            <result property="tmid" column="sid"/>
+            <result property="deptId" column="dept_id"/>
+    </resultMap>
+    <select id="getAllTerminal" parameterType="Long" resultMap="TerminalCountResult">
+        select count(tid) as sid,createtime as stime
+        from terminal_maintain
+        where 1=1
+        <if test="deptId!=null and deptId !=''">
+            and dept_id =#{deptId} or dept_id in(select t.dept_id from ry.sys_dept t where FIND_IN_SET(#{deptId},ancestors))
+        </if>
+        group by tid
+        order by sid desc
+    </select>
+
+</mapper>

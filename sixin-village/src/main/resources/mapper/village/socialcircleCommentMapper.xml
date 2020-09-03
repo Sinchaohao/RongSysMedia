@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.SocialcircleCommentMapper">
+    
+    <resultMap type="com.sixin.village.domain.SocialcircleComment" id="SocialCircleCommentResult">
+        <result property="coid"    column="coid"    />
+        <result property="pcid"    column="pcid"    />
+        <result property="replyid"    column="replyid"    />
+        <result property="uid"    column="uid"    />
+        <result property="ccontent"    column="ccontent"    />
+        <result property="issensitive"    column="issensitive"    />
+        <result property="cdate"    column="cdate"    />
+        <result property="aid"    column="aid"    />
+        <result property="to_uid"    column="to_uid"    />
+    </resultMap>
+	
+	<sql id="selectSocialCircleCommentVo">
+        select coid, aid, pcid, replyid, uid, ccontent, cdate, issensitive, to_uid from tb_pccomment
+    </sql>
+	
+    <select id="selectAllByPcid" parameterType="Integer" resultMap="SocialCircleCommentResult">
+        <include refid="selectSocialCircleCommentVo"/>
+        where pcid = #{pcid}
+        order by pcid desc
+    </select>
+    
+</mapper>

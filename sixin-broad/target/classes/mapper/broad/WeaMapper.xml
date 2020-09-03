@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.WeaMapper">
+    
+    <resultMap type="com.sixin.broad.domain.Wea" id="WeaResult">
+        <result property="wid"    column="wid"    />
+        <result property="tid"    column="tid"    />
+        <result property="wnum"    column="wnum"    />
+        <result property="userid"    column="userid"    />
+        <result property="company"    column="company"    />
+        <result property="qid"    column="qid"    />
+        <result property="means"    column="means"    />
+        <result property="wstate"    column="wstate"    />
+        <result property="mes"    column="mes"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="isread"    column="isread"    />
+    </resultMap>
+	
+	<sql id="selectWeaVo">
+        select wid, tid, wnum, userid, company, qid, means, wstate, mes, createtime, isread from ann_wea
+    </sql>
+	
+    <select id="selectWeaList" parameterType="com.sixin.broad.domain.Wea" resultMap="WeaResult">
+        <include refid="selectWeaVo"/>
+        <where>  
+            <if test="wid != null "> and wid like '%${wid}%'</if>
+             <if test="tid != null  and tid != '' "> and tid like '%${tid}%'</if>
+             <if test="wnum != null  and wnum != '' "> and wnum like '%${wnum}%'</if>
+             <if test="userid != null  and userid != '' "> and userid like '%${userid}%'</if>
+             <if test="company != null  and company != '' "> and company like '%${company}%'</if>
+             <if test="qid != null  and qid != '' "> and qid like '%${qid}%'</if>
+             <if test="means != null  and means != '' "> and means like '%${means}%'</if>
+             <if test="wstate != null  and wstate != '' "> and wstate like '%${wstate}%'</if>
+             <if test="mes != null  and mes != '' "> and mes like '%${mes}%'</if>
+             <if test="createtime != null  and createtime != '' "> and createtime like '%${createtime}%'</if>
+             <if test="isread != null "> and isread like '%${isread}%'</if>
+         </where>
+        ORDER BY createtime DESC
+    </select>
+    
+    <select id="selectWeaById" parameterType="Integer" resultMap="WeaResult">
+        <include refid="selectWeaVo"/>
+        where wid = #{wid}
+    </select>
+        
+    <insert id="insertWea" parameterType="com.sixin.broad.domain.Wea">
+        insert into ann_wea
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="wid != null  ">wid,</if>
+			<if test="tid != null  and tid != ''  ">tid,</if>
+			<if test="wnum != null  and wnum != ''  ">wnum,</if>
+			<if test="userid != null  and userid != ''  ">userid,</if>
+			<if test="company != null  and company != ''  ">company,</if>
+			<if test="qid != null  and qid != ''  ">qid,</if>
+			<if test="means != null  and means != ''  ">means,</if>
+			<if test="wstate != null  and wstate != ''  ">wstate,</if>
+			<if test="mes != null  and mes != ''  ">mes,</if>
+			<if test="createtime != null  and createtime != ''  ">createtime,</if>
+			<if test="isread != null  ">isread,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="wid != null  ">#{wid},</if>
+			<if test="tid != null  and tid != ''  ">#{tid},</if>
+			<if test="wnum != null  and wnum != ''  ">#{wnum},</if>
+			<if test="userid != null  and userid != ''  ">#{userid},</if>
+			<if test="company != null  and company != ''  ">#{company},</if>
+			<if test="qid != null  and qid != ''  ">#{qid},</if>
+			<if test="means != null  and means != ''  ">#{means},</if>
+			<if test="wstate != null  and wstate != ''  ">#{wstate},</if>
+			<if test="mes != null  and mes != ''  ">#{mes},</if>
+			<if test="createtime != null  and createtime != ''  ">#{createtime},</if>
+			<if test="isread != null  ">#{isread},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateWea" parameterType="com.sixin.broad.domain.Wea">
+        update ann_wea
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">tid = #{tid},</if>
+            <if test="wnum != null  and wnum != ''  ">wnum = #{wnum},</if>
+            <if test="userid != null  and userid != ''  ">userid = #{userid},</if>
+            <if test="company != null  and company != ''  ">company = #{company},</if>
+            <if test="qid != null  and qid != ''  ">qid = #{qid},</if>
+            <if test="means != null  and means != ''  ">means = #{means},</if>
+            <if test="wstate != null  and wstate != ''  ">wstate = #{wstate},</if>
+            <if test="mes != null  and mes != ''  ">mes = #{mes},</if>
+            <if test="createtime != null  and createtime != ''  ">createtime = #{createtime},</if>
+            <if test="isread != null  ">isread = #{isread},</if>
+        </trim>
+        where wid = #{wid}
+    </update>
+
+	<delete id="deleteWeaById" parameterType="Integer">
+        delete from ann_wea where wid = #{wid}
+    </delete>
+	
+    <delete id="deleteWeaByIds" parameterType="String">
+        delete from ann_wea where wid in 
+        <foreach item="wid" collection="array" open="(" separator="," close=")">
+            #{wid}
+        </foreach>
+    </delete>
+    
+</mapper>

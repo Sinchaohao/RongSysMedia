@@ -1,0 +1,40 @@
+{
+  "groups": [
+    {
+      "name": "",
+      "type": "com.sixin.common.config.RedisConfig$DataJedisProperties",
+      "sourceType": "com.sixin.common.config.RedisConfig$DataJedisProperties"
+    },
+    {
+      "name": "sixin",
+      "type": "com.sixin.common.config.Global",
+      "sourceType": "com.sixin.common.config.Global"
+    },
+    {
+      "name": "sixin",
+      "type": "com.sixin.common.config.sixinConfig2",
+      "sourceType": "com.sixin.common.config.sixinConfig2"
+    }
+  ],
+  "properties": [
+    {
+      "name": "sixin.copyright-year",
+      "type": "java.lang.String",
+      "description": "版权年份",
+      "sourceType": "com.sixin.common.config.sixinConfig2"
+    },
+    {
+      "name": "sixin.name",
+      "type": "java.lang.String",
+      "description": "项目名称",
+      "sourceType": "com.sixin.common.config.sixinConfig2"
+    },
+    {
+      "name": "sixin.version",
+      "type": "java.lang.String",
+      "description": "版本",
+      "sourceType": "com.sixin.common.config.sixinConfig2"
+    }
+  ],
+  "hints": []
+}

@@ -1,0 +1,11 @@
+{
+  "groups": [
+    {
+      "name": "gen",
+      "type": "com.sixin.generator.config.GenConfig",
+      "sourceType": "com.sixin.generator.config.GenConfig"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}

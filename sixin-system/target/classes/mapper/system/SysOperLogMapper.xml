@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.system.mapper.SysOperLogMapper">
+
+	<resultMap type="com.sixin.system.domain.SysOperLog" id="SysOperLogResult">
+		<id     property="operId"         column="oper_id"        />
+		<result property="title"          column="title"          />
+		<result property="businessType"   column="business_type"  />
+		<result property="method"         column="method"         />
+		<result property="requestMethod"  column="request_method" />
+		<result property="operatorType"   column="operator_type"  />
+		<result property="operName"       column="oper_name"      />
+		<result property="deptName"       column="dept_name"      />
+		<result property="operUrl"        column="oper_url"       />
+		<result property="operIp"         column="oper_ip"        />
+		<result property="operLocation"   column="oper_location"  />
+		<result property="operParam"      column="oper_param"     />
+		<result property="jsonResult"     column="json_result"    />
+		<result property="status"         column="status"         />
+		<result property="errorMsg"       column="error_msg"      />
+		<result property="operTime"       column="oper_time"      />
+	</resultMap>
+
+	<sql id="selectOperLogVo">
+        select oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time
+        from sys_oper_log
+    </sql>
+
+	<insert id="insertOperlog" parameterType="com.sixin.system.domain.SysOperLog">
+		insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
+        values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, sysdate())
+	</insert>
+
+	<select id="selectOperLogList" parameterType="com.sixin.system.domain.SysOperLog" resultMap="SysOperLogResult">
+		<include refid="selectOperLogVo"/>
+		<where>
+			<if test="title != null and title != ''">
+				AND title like concat('%', #{title}, '%')
+			</if>
+			<if test="businessType != null">
+				AND business_type = #{businessType}
+			</if>
+			<if test="businessTypes != null and businessTypes.length > 0">
+				AND business_type in
+				<foreach collection="businessTypes" item="businessType" open="(" separator="," close=")">
+					#{businessType}
+				</foreach>
+			</if>
+			<if test="status != null">
+				AND status = #{status}
+			</if>
+			<if test="operName != null and operName != ''">
+				AND oper_name like concat('%', #{operName}, '%')
+			</if>
+			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+				and date_format(oper_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+			</if>
+			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+				and date_format(oper_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+			</if>
+		</where>
+	</select>
+
+	<delete id="deleteOperLogByIds" parameterType="String">
+ 		delete from sys_oper_log where oper_id in
+ 		<foreach collection="array" item="operId" open="(" separator="," close=")">
+ 			#{operId}
+        </foreach>
+ 	</delete>
+
+ 	<select id="selectOperLogById" parameterType="Long" resultMap="SysOperLogResult">
+		<include refid="selectOperLogVo"/>
+		where oper_id = #{operId}
+	</select>
+
+	<update id="cleanOperLog">
+        truncate table sys_oper_log
+    </update>
+
+	<!--用在展示在首页的操作记录查询-->
+	<select id="selectOperLogforIndex" resultType="HashMap">
+		select
+		user_name as user,
+		title,
+		oper_url as url,
+		case sys_oper_log.business_type
+			when '1' then '新增数据'
+			when '2' then '修改数据'
+			when '3' then '删除数据'
+			when '4' then '授权'
+			when '5' then '导出数据'
+			when '6' then '导入数据'
+			when '7' then '强退'
+			when '8' then '生成代码'
+			when '9' then '清空数据'
+		end as type,
+		case  sys_oper_log.status
+			when '0' then '成功'
+			when '1' then '异常'
+		end as res,
+		oper_ip as ip,
+		oper_location as loc,
+		date_format(oper_time,'%m月%d日 %T') as Time,
+		(select
+		count(sys_oper_log_2.oper_name)
+		from
+		sys_oper_log as sys_oper_log_2
+		where
+		DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(oper_time)
+		AND
+		sys_oper_log.oper_name = sys_oper_log_2.oper_name
+		)as times
+		from
+		sys_oper_log,
+		sys_user
+		where
+		sys_oper_log.oper_name = sys_user.login_name
+		order by oper_time desc
+		limit 0,10
+	</select>
+
+	<!--最近一个月的操作前五名-->
+	<select id="CountLogDescForMonth" resultType="HashMap">
+		select
+		ANY_VALUE(sys_user.user_name) as user,
+		count(oper_name) as cn
+		from
+		sys_oper_log,
+		sys_user
+		where
+		sys_oper_log.oper_name = sys_user.login_name
+		and
+		DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= date(oper_time)
+		group by oper_name
+		order by cn desc
+		limit 0,5
+	</select>
+
+	<insert id="batchInsertOperlog">
+		insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)VALUES
+		<foreach item="item" index="index" collection="list"  separator="," >
+			(#{item.title}, #{item.businessType}, #{item.method}, #{item.requestMethod}, #{item.operatorType}, #{item.operName}, #{item.deptName}, #{item.operUrl}, #{item.operIp}, #{item.operLocation}, #{item.operParam}, #{item.jsonResult}, #{item.status}, #{item.errorMsg}, sysdate())
+		</foreach>
+	</insert>
+
+	<select id="selectOperlogListByids" parameterType="java.util.List" resultMap="SysOperLogResult">
+		select oper_id, title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time
+		from sys_oper_log a
+		where a.oper_id in
+		<foreach collection="list" item="sfid" open="(" close=")" separator=",">
+			#{sfid}
+		</foreach>
+	</select>
+</mapper>

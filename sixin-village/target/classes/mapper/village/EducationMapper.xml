@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.EducationMapper">
+	<resultMap type="com.sixin.village.domain.Education" id="EducationResult">
+		<id column="eid" property="eid"/>
+		<result column="courtit" property="courtit"/>
+		<result column="coursum" property="coursum"/>
+		<result column="courass" property="courass"/>
+		<result column="adddate" property="adddate"/>
+		<result column="uid" property="uid"/>
+		<result column="uname" property="uname"/>
+		<result column="courread" property="courread"/>
+		<result column="courpic" property="courpic"/>
+		<result column="aid" property="aid"/>
+		<result column="remark" property="remark"/>
+	</resultMap>
+	<!-- 字段值 -->
+	<sql id="Field">
+		eid, courtit, coursum, courass, adddate, uid, uname, courread, courpic, aid, remark
+	</sql>
+
+	<sql id="FieldValue">
+		#{eid},#{courtit}, #{coursum}, #{courass}, #{adddate}, #{uid}, #{uname}, #{courread},  #{courpic},  #{aid}, #{remark}
+	</sql>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		tb_education
+	</sql>
+	<!--获取所有政策信息 -->
+	<select id="selectEducationList" parameterType="com.sixin.village.domain.Education" resultMap="EducationResult">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		<where>
+			<if test="courtit != null and courtit != ''"> and courtit like '%${courtit}%'</if>
+			<if test="coursum != null  and coursum != ''"> and coursum like '%${coursum}%'</if>
+			<if test="courass != null  and courass != ''"> and courass like '%${courass}%'</if>
+			<if test="adddate != null  and adddate != ''"> and adddate like '%${adddate}%'</if>
+			<if test="uid != null  and uid != ''"> and uid like '%${uid}%'</if>
+			<if test="uname != null  and uname != '' "> and uname like '%${uname}%'</if>
+			<if test="courread != null and courread != ''"> and courread like '%${courread}%'</if>
+			<if test="courpic != null and courpic != ''"> and courpic like '%${courpic}%'</if>
+			<if test="aid != null and aid != ''"> and aid like '%${aid}%'</if>
+			<if test="remark != null  and remark != ''"> and remark like '%${remark}%'</if>
+		</where>
+		ORDER BY eid desc
+	</select>
+	<insert id="inserteducation" parameterType="com.sixin.village.domain.Education">
+		insert into <include refid="tableName"/>
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+
+			<if test="courtit != null  and courtit != ''  ">courtit,</if>
+			<if test="coursum != null  and coursum != ''  ">coursum,</if>
+			<if test="courass != null  and courass != ''  ">courass,</if>
+			<if test="adddate != null  and adddate != ''  ">adddate,</if>
+			<if test="uid != null  and uid != ''  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="courread != null  and courread != ''  ">courread,</if>
+			<if test="courpic != null  and courpic != ''  ">courpic,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+
+			<if test="courtit != null  and courtit != ''  ">#{courtit},</if>
+			<if test="coursum != null  and coursum != ''  ">#{coursum},</if>
+			<if test="courass != null  and courass != ''  ">#{courass},</if>
+			<if test="adddate != null  and adddate != '' ">#{adddate},</if>
+			<if test="uid != null  and uid != ''  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="courread  != null  and courread  != ''  ">#{courread },</if>
+			<if test="courpic  != null  and courpic  != ''  ">#{courpic },</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+		</trim>
+	</insert>
+	<!--根据eid删除数据-->
+	<delete id="deleteEducationByIds" parameterType="String">
+		delete from
+		<include refid="tableName"/>
+		where eid = #{eid}
+	</delete>
+	<!--批量删除-->
+	<delete id="deleteEducationByids" parameterType="String">
+		delete from <include refid="tableName"/> where eid in
+		<foreach item="eid" collection="array" open="(" separator="," close=")">
+			#{eid}
+		</foreach>
+	</delete>
+
+	<select id="selectByeid" resultMap="EducationResult" parameterType="Integer">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		where eid= #{eid}
+	</select>
+
+	<update id="updateEducation" parameterType="Integer">
+		update <include refid="tableName"/>
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="courtit != null  and courtit != ''  ">courtit = #{courtit},</if>
+			<if test="coursum != null  and coursum != ''  ">coursum = #{coursum},</if>
+			<if test="courass != null  and courass != ''  ">courass = #{courass},</if>
+			<if test="adddate != null  and adddate != '' ">adddate = #{adddate},</if>
+			<if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+			<if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+			<if test="courread != null  and courread != ''  ">courread = #{courread},</if>
+			<if test="courpic != null  and courpic != ''  ">courpic = #{courpic},</if>
+			<if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+		</trim>
+		where eid = #{eid}
+	</update>
+
+	<select id="selectEducationListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="EducationResult">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		<where>
+			<if test="title != null  and title != ''  ">courtit = #{title}</if>
+			<if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+		</where>
+		ORDER BY adddate desc
+		limit #{pageSize} offset #{pageIndex}
+	</select>
+</mapper>

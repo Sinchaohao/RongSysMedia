@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.VillagegroupStatisticsInfoMapper">
+    
+    <resultMap type="com.sixin.village.domain.VillagegroupStatisticsInfo" id="VillagegroupStatisticsInfoResult">
+        <result property="vgsid"    column="vgsid"    />
+        <result property="aid"    column="aid"    />
+        <result property="grouptype"    column="grouptype"    />
+        <result property="area"    column="area"    />
+        <result property="farmland"    column="farmland"    />
+        <result property="plowland"    column="plowland"    />
+        <result property="orchard"    column="orchard"    />
+        <result property="forest"    column="forest"    />
+        <result property="fland"    column="fland"    />
+        <result property="aqarea"    column="aqarea"    />
+        <result property="otherland"    column="otherland"    />
+    </resultMap>
+	
+	<sql id="selectVillagegroupStatisticsInfoVo">
+        select vgsid, aid, grouptype, area, farmland, plowland, orchard, forest, fland, aqarea, otherland from villagegroup_statistics_info
+    </sql>
+	
+    <select id="selectVillagegroupStatisticsInfoList" parameterType="com.sixin.village.domain.VillagegroupStatisticsInfo" resultMap="VillagegroupStatisticsInfoResult">
+        <include refid="selectVillagegroupStatisticsInfoVo"/>
+        <where>  
+            <if test="vgsid != null and vgsid != '' "> and vgsid = #{vgsid}</if>
+             <if test="aid != null  and aid != '' "> and aid LIKE CONCAT('%', #{aid},'%')</if>
+             <if test="grouptype != null  and grouptype != '' "> and grouptype = #{grouptype}</if>
+             <if test="area != null  and area != '' "> and area = #{area}</if>
+             <if test="farmland != null  and farmland != '' "> and farmland = #{farmland}</if>
+             <if test="plowland != null  and plowland != '' "> and plowland = #{plowland}</if>
+             <if test="orchard != null  and orchard != '' "> and orchard = #{orchard}</if>
+             <if test="forest != null  and forest != '' "> and forest = #{forest}</if>
+             <if test="fland != null  and fland != '' "> and fland = #{fland}</if>
+             <if test="aqarea != null  and aqarea != '' "> and aqarea = #{aqarea}</if>
+             <if test="otherland != null  and otherland != '' "> and otherland = #{otherland}</if>
+         </where>
+    </select>
+    
+    <select id="selectVillagegroupStatisticsInfoById" parameterType="Integer" resultMap="VillagegroupStatisticsInfoResult">
+        <include refid="selectVillagegroupStatisticsInfoVo"/>
+        where vgsid = #{vgsid}
+    </select>
+
+    <select id="selectVillagegroupStatisticsInfoByIds" parameterType="java.util.List" resultMap="VillagegroupStatisticsInfoResult">
+        <include refid="selectVillagegroupStatisticsInfoVo"/>
+        where vgsid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertVillagegroupStatisticsInfo" parameterType="com.sixin.village.domain.VillagegroupStatisticsInfo">
+        insert into villagegroup_statistics_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="vgsid != null  ">vgsid,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="grouptype != null  and grouptype != ''  ">grouptype,</if>
+			<if test="area != null  and area != ''  ">area,</if>
+			<if test="farmland != null  and farmland != ''  ">farmland,</if>
+			<if test="plowland != null  and plowland != ''  ">plowland,</if>
+			<if test="orchard != null  and orchard != ''  ">orchard,</if>
+			<if test="forest != null  and forest != ''  ">forest,</if>
+			<if test="fland != null  and fland != ''  ">fland,</if>
+			<if test="aqarea != null  and aqarea != ''  ">aqarea,</if>
+			<if test="otherland != null  and otherland != ''  ">otherland,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="vgsid != null  ">#{vgsid},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="grouptype != null  and grouptype != ''  ">#{grouptype},</if>
+			<if test="area != null  and area != ''  ">#{area},</if>
+			<if test="farmland != null  and farmland != ''  ">#{farmland},</if>
+			<if test="plowland != null  and plowland != ''  ">#{plowland},</if>
+			<if test="orchard != null  and orchard != ''  ">#{orchard},</if>
+			<if test="forest != null  and forest != ''  ">#{forest},</if>
+			<if test="fland != null  and fland != ''  ">#{fland},</if>
+			<if test="aqarea != null  and aqarea != ''  ">#{aqarea},</if>
+			<if test="otherland != null  and otherland != ''  ">#{otherland},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateVillagegroupStatisticsInfo" parameterType="com.sixin.village.domain.VillagegroupStatisticsInfo">
+        update villagegroup_statistics_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="grouptype != null  and grouptype != ''  ">grouptype = #{grouptype},</if>
+            <if test="area != null  and area != ''  ">area = #{area},</if>
+            <if test="farmland != null  and farmland != ''  ">farmland = #{farmland},</if>
+            <if test="plowland != null  and plowland != ''  ">plowland = #{plowland},</if>
+            <if test="orchard != null  and orchard != ''  ">orchard = #{orchard},</if>
+            <if test="forest != null  and forest != ''  ">forest = #{forest},</if>
+            <if test="fland != null  and fland != ''  ">fland = #{fland},</if>
+            <if test="aqarea != null  and aqarea != ''  ">aqarea = #{aqarea},</if>
+            <if test="otherland != null  and otherland != ''  ">otherland = #{otherland},</if>
+        </trim>
+        where vgsid = #{vgsid}
+    </update>
+
+	<delete id="deleteVillagegroupStatisticsInfoById" parameterType="Integer">
+        delete from villagegroup_statistics_info where vgsid = #{vgsid}
+    </delete>
+	
+    <delete id="deleteVillagegroupStatisticsInfoByIds" parameterType="String">
+        delete from villagegroup_statistics_info where vgsid in 
+        <foreach item="vgsid" collection="array" open="(" separator="," close=")">
+            #{vgsid}
+        </foreach>
+    </delete>
+    
+</mapper>

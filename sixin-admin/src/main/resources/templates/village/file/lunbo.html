@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.4.6/css/swiper.min.css">
+  <html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.4.6/js/swiper.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+  <style>
+    html, body {
+      position: relative;
+      height: 100%;
+    }
+    body {
+      background: #eee;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color:#000;
+      margin: 0;
+      padding: 0;
+    }
+    .swiper-container {
+      width: 100%;
+      height: 100%;
+      color: white;
+    }
+    .swiper-slide {
+      background-position: center;
+      background-size: cover;
+    }
+    img, video {
+      width: 100%;
+      height: 100%;
+    }
+    video {
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <!-- Swiper -->
+  <div class="swiper-container">
+    <div class="swiper-wrapper" id="swiperBox">
+    </div>
+  </div>
+  <!-- Initialize Swiper -->
+  <script>
+      var id ="[[${id}]]";
+      var prefix = ctx + "file";
+    window.onload = function() {
+      var md;
+      var utils = {
+        state: {
+          picTime: 2,// 图片时间
+          textTime: 2,// 文字时间
+          data: [],
+        },
+        countDown: function(count, callback){
+          var times = setInterval(function(){
+            if (count > 0) {
+              count--;
+            }else {
+              clearInterval(times)
+              if (callback) callback();
+            }
+
+          }, 1000);
+        },
+        picEle: function(data = {}, index){
+            var urls = "/profile/" +  "${data.fileName}" +"." +"${data.suffix}";
+          return  `<div class="swiper-slide" style="background: white">
+                  <img src="/profile/${data.fileName}.${data.suffix}" alt="">
+                </div>`;
+        },
+        videoEle: function(data = {}, index){
+          var urls = "/profile/" +  "${data.fileName}" +"." +"${data.suffix}";
+          return  `<div class="swiper-slide" style="background: white">
+                    <video id="media${index}" class="media${index}" width="100%" height="100%" muted autoplay="true">
+                      <source src="/profile/${data.fileName}.${data.suffix}" >
+                    </video>
+                  </div>`;
+        },
+        textEle: function(data = {}, index){
+          return  `<div class="swiper-slide" style="background: blue">
+                  ${data.content}
+                </div>`;
+        },
+        getChildEle: function(data = []){
+          var childEle = '';
+          for (var i = 0; i < data.length; i++) {
+            if(data[i].types == 0) {
+              childEle += utils.picEle(data[i]);
+            }else if(data[i].types == 1) {
+              childEle += utils.videoEle(data[i], i);
+            }else if(data[i].types == 2) {
+              childEle += utils.textEle(data[i]);
+            }
+          }
+          return childEle;
+        },
+        getListData: function(){
+            $.ajax({
+                url: prefix + "/listOrder?channelId="+id,
+                type: "get",
+                async: false,//同步
+                data: {},//传出的数据
+                dataType: "json",//返回的数据类型，常用：html/text/json
+                success: function (data) {
+                    utils.state.data = data.rows;
+                    var parentEle = document.getElementById("swiperBox");
+                    parentEle.innerHTML = utils.getChildEle(utils.state.data);
+                }
+            })
+        }
+
+      };
+      utils.getListData()
+
+      var mySwiper = new Swiper('.swiper-container', {
+        spaceBetween: 30,
+        effect: 'fade',
+        direction: 'horizontal', // 垂直切换选项
+        loop: true, // 循环模式选项
+        width: window.innerWidth,
+        height: window.innerHeight,
+        on: {
+          init: function(){
+            //Swiper初始化了
+            document.body.click();
+            document.body.click();
+          },
+          slideChangeTransitionEnd: function(){
+            document.body.click();
+            document.body.click();
+            this.myActiveIndex = this.activeIndex > utils.state.data.length? 1 : this.activeIndex;
+            if(utils.state.data[this.myActiveIndex-1].type == 0) {
+              utils.countDown(utils.state.picTime, function() {mySwiper.slideNext()});
+
+            }else if(utils.state.data[this.myActiveIndex-1].type == 1) {
+              // md = document.getElementById("media" + (this.myActiveIndex-1));
+              console.log(this.activeIndex)
+              console.log(utils.state.data.length)
+              if(this.activeIndex >= utils.state.data.length){
+                md1 = document.querySelectorAll(`.media${this.myActiveIndex-1}`)[1];
+                md1.currentTime=0;
+                md1.removeAttribute('muted')
+                md1.play();
+                md1.addEventListener("ended",function(){
+                  md1.currentTime=0;
+                  mySwiper.slideNext();
+                })
+              }else {
+                md = document.querySelectorAll(`.media${this.myActiveIndex-1}`)[0];
+                md.currentTime=0;
+                md.removeAttribute('muted')
+                md.play();
+                md.addEventListener("ended",function(){
+                  md.currentTime=0;
+                  mySwiper.slideNext();
+                })
+              }
+
+            }else if(utils.state.data[this.myActiveIndex-1].type == 2) {
+              utils.countDown(utils.state.textTime, function() {mySwiper.slideNext()})
+
+            }else {
+              utils.countDown(utils.state.picTime, function() {mySwiper.slideNext()})
+
+            }
+          },
+        },
+      });
+     
+    }
+
+  </script>
+</body>
+</html>

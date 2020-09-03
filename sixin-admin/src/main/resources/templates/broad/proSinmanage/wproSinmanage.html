@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="col-sm-12 search-collapse">
+    <form id="formId">
+        <div class="select-list">
+            <ul>
+                <li>
+                    播出单ID：<input type="text" name="sfid"/>
+                </li>
+
+                <li>
+                    节目名称：<input type="text" name="pname"/>
+                </li>
+
+                <li class="select-time">
+                    <label>时间：</label><input class="laydate-icon  layer-date"
+                                                 name="downtime"
+                                                 id="recivedtime"
+                                                 value=""
+                                                 readonly="readonly"
+                                                 style="width:120px;"
+                                                 placeholder="开始日期"
+                                                 title="开始日期"/>
+                    <span>-</span>
+
+                    <input class="laydate-icon  layer-date"
+                           name="endtime"
+                           id="endtime"
+                           value=""
+                           readonly="readonly"
+                           style="width:120px;"
+                           placeholder="结束日期"
+                           title="结束日期"/>
+                </li>
+                <li>
+                    <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+<div class="container-div">
+    <div class="row">
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="system:user:add">
+                <i class="fa fa-plus"></i> 新增
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="broad:proSinmanage:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+    var prefix = ctx + "broad/proSinmanage";
+
+    $(function() {
+        var options = {
+            url: prefix + "/listwarning",
+            exportUrl: prefix + "/export",
+            detailUrl: prefix + "/detail/{id}",
+            modalName: "紧急节目播出单",
+            createUrl: prefix + "/addtest/1",//1紧急节目单
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            search: false,
+            showExport: true,
+            columns: [{
+                field : 'sfid',
+                title : '播出单ID',
+                },
+                {
+                    field : 'scategory',
+                    title : '节目播出单类别',
+                },
+                {
+                    field : 'createtime',
+                    title : '建立日期',
+                },
+                {
+                    field : 'broaddate',
+                    title : '播出日期',
+                },
+                {
+                    field : 'uname',
+                    title : '操作用户',
+                },
+                {
+                    field : 'remark',
+                    title : '备注',
+                },{
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + '"onclick="$.operate.detail(\'' + row.sfid + '\')"><i class="fa fa-edit"></i>查看详情</a> ');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<script>
+    laydate({
+        elem:"#recivedtime",
+        event:"focus"
+    });
+    laydate({
+        elem:"#recivedtime",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#broad",
+            type: 'time',
+        });
+    });
+</script>
+<script>
+    laydate({
+        elem:"#endtime",
+        event:"focus"
+    });
+    laydate({
+        elem:"#endtime",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate2 = layui.laydate;
+
+        //执行一个laydate实例
+        laydate2.render({
+            elem:"#broad",
+            type: 'time',
+        });
+    });
+</script>
+</body>
+</html>

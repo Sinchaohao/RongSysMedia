@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+</head>
+<script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/views/metpannel.js}"></script>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg" onload="met_load();$.table.search()">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <div class="box-header">
+                <div class="box-title">
+                    <i class="fa icon-grid"></i> 气象数据分布
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-div ui-layout-center">
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>气象数据 - 大气压力数据</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="echarts" id="met-atmo_pressure"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>气象数据 - 风速数据</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="echarts" id="met-wind_speed"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <input type="hidden" id="deptid" name="deptid"/>
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            终端号IMEI:<input type="text" name="imei"/>
+                        </li>
+                        <li>
+                            采集时间:<input type="text" name="colltime"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <!--            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="iot:metpannel:add">-->
+            <!--                <i class="fa fa-plus"></i> 新增-->
+            <!--            </a>-->
+            <!--            <a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="iot:metpannel:edit">-->
+            <!--                <i class="fa fa-edit"></i> 修改-->
+            <!--            </a>-->
+            <!--            <a class="btn btn-danger btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="iot:metpannel:remove">-->
+            <!--                <i class="fa fa-remove"></i> 删除-->
+            <!--            </a>-->
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="iot:metpannel:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+            <!-- <a class="btn btn-success" onclick="$.operate.exportExcelBySingle()" shiro:hasPermission="system:user:add">
+                 <i class="fa fa-plus"></i> 导出-->
+            </a>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: layout-latest-js" />
+<th:block th:include="include :: ztree-js" />
+<script th:inline="javascript">
+    var addFlage=[[${@permission.hasPermi('iot:metpannel:add')}]];
+    var editFlag = [[${@permission.hasPermi('iot:metpannel:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('iot:metpannel:remove')}]];
+    var prefix = ctx + "iot/metpannel";
+    $(function() {
+        var panehHidden = false;
+        if ($(this).width() < 769) {
+            panehHidden = true;
+        }
+        $('body').layout({ initClosed: panehHidden, west__size: 185 });
+        queryMetDataList();
+        queryAreaTree();
+    });
+    function queryMetDataList() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            importUrl: prefix + "/importData",
+            importTemplateUrl: prefix + "/importTemplate",
+            // sortName: "createTime",
+            sortOrder: "desc",
+            modalName: "用户",
+            search: false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'id',
+                    title: '编号',
+                    sortable: true
+                },
+                {
+                    field: 'imei',
+                    title: '终端设备IMEI',
+                    sortable: true
+                },
+                {
+                    field: 'dept.deptName',
+                    title: '地址',
+                    sortable: true
+                },
+                {
+                    field: 'deptid',
+                    title: '采集地址编号',
+                    sortable: true
+                },
+                {
+                    field: 'ambient_temp',
+                    title: '环境温度',
+                    sortable: true
+                },
+                {
+                    field: 'ambient_hum',
+                    title: '环境湿度',
+                    sortable: true
+                },
+                {
+                    field: 'ambient_light',
+                    title: '环境照度',
+                    sortable: true
+                },
+                {
+                    field: 'atmo_pressure',
+                    title: '大气压力',
+                    sortable: true
+                },
+                {
+                    field: 'wind_speed',
+                    title: '风速',
+                    sortable: true
+                },
+                {
+                    field: 'wind_direction',
+                    title: '风向',
+                    sortable: true
+                },
+                {
+                    field: 'pm25',
+                    title: 'PM2.5',
+                    sortable: true
+                },
+                {
+                    field: 'co2',
+                    title: 'CO2浓度',
+                    sortable: true
+                },
+                {
+                    field: 'co',
+                    title: 'CO浓度',
+                    sortable: true
+                },
+                {
+                    field: 'so2',
+                    title: 'SO2浓度',
+                    sortable: true
+                },
+                {
+                    field: 'colltime',
+                    title: '测量时间',
+                    sortable: true
+                }
+            ]
+        };
+        $.table.init(options);
+    };
+    function queryAreaTree(){
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            $("#deptid").val(treeNode.id);
+            $.table.search();
+            // $("#deptId").val(treeNode.id);
+            // $("#parentId").val(treeNode.pId);
+            onClick :
+                met_data();
+        }
+        $.tree.init(options);
+    }
+    $('#form-group11').on('change', function (e) {
+        $("#form-group1").attr("name",$("#form-group11").val())
+    });
+    $('#form-group22').on('change', function (e) {
+        $("#form-group2").attr("name",$("#form-group22").val())
+    });
+    $('#form-group33').on('select2:select', function (e) {
+        $("#form-group3").attr("name",$("#form-group33").val())
+    });
+    $('#form-group44').on('change', function (e) {
+        $("#form-group4").attr("value",$("#form-group44").val());
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ProgramMapper">
+
+    <!-- 字段 -->
+    <sql id="Field">
+		 fid,
+	     fname,
+	     userid,
+	     remark,
+	     ispublic,
+	     filename,
+	     urls,
+	     address,
+	     createdtime,
+         flenth,
+         fsize,
+         ptype
+	</sql>
+
+    <!-- 字段值 -->
+    <sql id="FieldValue">
+		 #{fid},
+	     #{fname},
+	     #{userid},
+	     #{remark},
+	     #{ispublic},
+	     #{filename},
+	     #{urls},
+	      #{address},
+	     #{createdtime},
+         #{flenth},
+         #{fsize},
+         #{ptype}
+	</sql>
+    <!--表名 -->
+    <sql id="tableName">
+		programs
+	</sql>
+    <sql id="areatableName">
+		area
+	</sql>
+    <sql id="userstable">
+		userinfo
+	</sql>
+    <resultMap type="Program" id="programMap">
+        <result property="fid"    column="fid"    />
+        <result property="fname"    column="fname"    />
+        <result property="userid"    column="userid"    />
+        <result property="remark"    column="remark"    />
+        <result property="ispublic"    column="ispublic"    />
+        <result property="filename"    column="filename"    />
+        <result property="urls"    column="urls"    />
+        <result property="address"    column="address"    />
+        <result property="createdtime"    column="createdtime"    />
+        <result property="ptype"    column="ptype"    />
+        <result property="flenth"    column="flenth"    />
+        <result property="fsize"    column="fsize"    />
+        <result property="uname"    column="uname"    />
+    </resultMap>
+    <!--根据programe查询节目列表 -->
+    <select id="selectProList" parameterType="com.sixin.broad.domain.Program" resultMap="programMap">
+        SELECT * FROM
+        (SELECT `broad`.`programs`.*,`ry`.sys_user.user_name AS uname
+        FROM
+        programs,`ry`.sys_user
+        WHERE
+        `ry`.sys_user.user_id = `broad`.`programs`.userid
+        <if test="userid != null and userid != '' "> and  `broad`.`programs`.userid like '%${userid}%'</if>
+        <if test="uname != null and uname != '' "> and `ry`.`sys_user`.`user_name` like '%${uname}%'</if>
+        <if test="fname != null  and fname != '' "> and `broad`.`programs`.`fname` like '%${fname}%'</if>
+        <if test="ispublic != null "> and `broad`.`programs`.`ispublic` = ${ispublic}</if>
+        <if test="downtime != null and downtime != ''"><!-- 开始时间检索 -->
+            AND date_format(`broad`.`programs`.createdtime,'%y%m%d') &gt;= date_format(#{downtime},'%y%m%d')
+        </if>
+        <if test="endtime != null and endtime != ''"><!-- 结束时间检索 -->
+            AND date_format(`broad`.`programs`.createdtime,'%y%m%d') &lt;= date_format(#{endtime},'%y%m%d')
+        </if>
+        ) temp1
+        WHERE temp1.fid not in
+        (SELECT programs.fid
+        FROM prore_apply, `broad`.`programs`
+        WHERE
+        prore_apply.replyprogramid = `broad`.`programs`.fid
+        AND prore_apply.listenpass != true
+        )
+        order by  createdtime desc,fid desc
+    </select>
+
+    <!--得到当年最大的文件标号-->
+    <select id="getMaxFileidofYear" parameterType="String" resultType="String">
+        SELECT SUBSTRING(MAX(SUBSTRING(filename,3)),1,5)
+        FROM <include refid="tableName"></include>
+        where SUBSTRING(filename,1,2) = SUBSTRING(#{year},3)
+    </select>
+    <!--新增-->
+    <insert id="insertProgram" parameterType="com.sixin.broad.domain.Program">
+        insert into
+        programs
+        (fname,filename,userid,ispublic,urls,address,flenth,fsize,createdtime,ptype)
+        values
+        (#{fname},#{filename},#{userid},#{ispublic},#{urls},#{address},#{flenth},#{fsize},now(),#{ptype})
+        <selectKey keyProperty="fid" order="AFTER" resultType="java.lang.String">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!--批量删除-->
+    <delete id="deleteProgram" parameterType="String">
+        delete from programs where fid in
+        <foreach item="fid" collection="array" open="(" separator="," close=")">
+            #{fid}
+        </foreach>
+    </delete>
+
+    <select id="selectProgramListByfids" parameterType="java.util.List" resultMap="programMap">
+        select
+        `broad`.`programs`.*,
+        `ry`.sys_user.user_name as uname
+        from
+        programs,`ry`.sys_user
+        where
+        fid in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+        order by  createdtime desc,fid desc
+    </select>
+
+    <update id="setIsPublic" parameterType="String">
+        update programs SET ispublic= not ispublic where fid=#{fid}
+    </update>
+</mapper>

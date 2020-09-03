@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.EnergyMapper">
+    <resultMap type="com.sixin.iot.domain.Energy" id="EnergyResult">
+        <id property="id"    column="id"    />
+        <result property="imei"    column="imei"    />
+        <result property="pow1"    column="pow1"    />
+        <result property="grouppow"    column="grouppow"  />
+        <result property="vol18v1"    column="vol18v1"    />
+        <result property="vol18v2"    column="vol18v2"    />
+        <result property="vol24"    column="vol24"    />
+        <result property="vol28" column="vol28"/>
+        <result property="extendpow" column="extendpow"/>
+        <result property="solarpow" column="solarpow"/>
+        <result property="operating_temp" column="operating_temp"/>
+        <result property="charge" column="charge"/>
+        <result property="work" column="work"/>
+        <result property="colltime" column="colltime"/>
+        <result property="deptid" column="deptid"/>
+        <result property="status" column="status"/>
+    </resultMap>
+    <!--定义selectEnergy为查询整表命令-->
+    <sql id="selectEnergy">
+    select distinct(a.id),a.imei,pow1,grouppow,vol18v1,vol18v2,vol24,vol28,extendpow,solarpow,operating_temp,charge,work,colltime,b.deptid,b.status from iotdata.tb_energy a inner join iotdata.tb_ioterminal b
+        on a.imei=b.imei
+    </sql>
+
+    <!--        inner join iotdata.tb_control d on a.deptid=d.cid-->
+    <!--查询表的所有列表信息-->
+    <select id="selectEnergyList" parameterType="com.sixin.iot.domain.Energy" resultMap="EnergyResult">
+        select distinct(a.id),a.imei,pow1,grouppow,vol18v1,vol18v2,vol24,vol28,extendpow,solarpow,operating_temp,charge,work,colltime,b.deptid,b.status from iotdata.tb_energy a inner join iotdata.tb_ioterminal b
+        on a.imei=b.imei
+        <where>
+            <if test="id != null and id !='' ">
+                AND a.id like concat('%', #{id},'%')
+            </if>
+            <if test="imei !=null and imei !='' ">
+                AND a.imei like concat('%', #{imei},'%')
+            </if>
+            <if test="pow1 !=null and pow1 !='' ">
+                AND pow1 like concat('%', #{pow1},'%')
+            </if>
+            <if test="grouppow !=null and grouppow !='' ">
+                AND grouppow like concat('%', #{grouppow},'%')
+            </if>
+            <if test="vol18v1 !=null and vol18v1 !='' ">
+                AND vol18v1 like concat('%', #{vol18v1},'%')
+            </if>
+            <if test="vol18v2 !=null and vol18v2 !='' ">
+                AND vol18v2 like concat('%', #{vol18v2},'%')
+            </if>
+            <if test="vol24 !=null and vol24 !='' ">
+                AND vol24 like concat('%', #{vol24},'%')
+            </if>
+            <if test="vol28 !=null and vol28 !='' ">
+                AND vol28 like concat('%', #{vol28},'%')
+            </if>
+            <if test="extendpow !=null and extendpow !='' ">
+                AND extendpow like concat('%', #{extendpow},'%')
+            </if>
+            <if test="solarpow !=null and solarpow !='' ">
+                AND solarpow like concat('%', #{solarpow},'%')
+            </if>
+            <if test="operating_temp !=null and operating_temp !='' ">
+                AND operating_temp like concat('%', #{operating_temp},'%')
+            </if>
+            <if test="charge !=null and charge !='' ">
+                AND charge like concat('%', #{charge},'%')
+            </if>
+            <if test="work !=null and work !='' ">
+                AND work like concat('%', #{work},'%')
+            </if>
+            <if test="colltime != null ">
+                and date_format(colltime,'%y%m%d') >= date_format(#{colltime},'%y%m%d')
+            </if>
+            <if test="endtime != null and endtime != ''">
+                and date_format(colltime,'%y%m%d') &lt;= date_format(#{endtime},'%y%m%d')
+            </if>
+            <if test="deptid !=null and deptid !='' ">
+                AND b.deptid like concat('%', #{deptid},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="queryList" parameterType="com.sixin.iot.domain.Torrent" resultType="com.sixin.iot.domain.Torrent">
+        select a.id,a.imei,a.ctype,a.deptid from iotdata.tb_ioterminal a inner join ry.sys_dept d on a.deptid=d.dept_id
+        where ctype='能源'
+        <if test="deptid != null and deptid != ''">
+            AND a.deptid like concat('%', #{deptid}, '%')
+        </if>
+    </select>
+
+    <!--根据id查询信息-->
+    <select id="selectByid" parameterType="String" resultMap="EnergyResult">
+     select a.id,a.imei,pow1,grouppow,vol18v1,vol18v2,vol24,vol28,extendpow,solarpow,operating_temp,charge,work,colltime,deptid from tb_energy a,tb_ioterminal b
+        where a.id=#{id}and a.imei=b.imei
+    </select>
+
+    <select id="selectEnergyListByids" parameterType="java.util.List" resultMap="EnergyResult">
+        <include refid="selectEnergy"/>
+
+        where a.id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
+    </select>
+
+    <!--向表中插入新数据-->
+    <insert id="insertEnergy" parameterType="com.sixin.iot.domain.Energy">
+        insert into tb_energy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id!='' ">id,</if>
+            <if test="imei != null  and imei != ''  ">imei,</if>
+            <if test="pow1 != null  and pow1 != ''  ">pow1,</if>
+            <if test="grouppow != null  and grouppow != ''  ">grouppow,</if>
+            <if test="vol18v1 != null  and vol18v1 != ''  ">vol18v1,</if>
+            <if test="vol18v2 != null  and vol18v2 != ''  ">vol18v2,</if>
+            <if test="vol24 != null  and vol24 != ''  ">vol24,</if>
+            <if test="vol28 != null  and vol28 != ''  ">vol28,</if>
+            <if test="extendpow != null  and extendpow != ''  ">extendpow,</if>
+            <if test="solarpow != null  and solarpow != ''  ">solarpow,</if>
+            <if test="operating_temp != null  and operating_temp != ''  ">operating_temp,</if>
+            <if test="charge != null  and charge != ''  ">charge,</if>
+            <if test="work != null  and work != ''  ">work,</if>
+            <if test="colltime != null  ">colltime,</if>
+        </trim>
+        values<trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null and id!='' ">#{id},</if>
+        <if test="imei != null  and imei != ''  ">#{imei},</if>
+        <if test="pow1 != null  and pow1 != ''  ">#{pow1},</if>
+        <if test="grouppow != null  and grouppow != ''  ">#{grouppow},</if>
+        <if test="vol18v1 != null  and vol18v1 != ''  ">#{vol18v1},</if>
+        <if test="vol18v2 != null  and vol18v2 != ''  ">#{vol18v2},</if>
+        <if test="vol24 != null  and vol24 != ''  ">#{vol24},</if>
+        <if test="vol28 != null  and vol28 != ''  ">#{vol28},</if>
+        <if test="extendpow != null  and extendpow != ''  ">#{extendpow},</if>
+        <if test="solarpow != null  and solarpow != ''  ">#{solarpow},</if>
+        <if test="operating_temp != null  and operating_temp != ''  ">#{operating_temp},</if>
+        <if test="charge != null  and charge != ''  ">#{charge},</if>
+        <if test="work != null  and work != ''  ">#{work},</if>
+        <if test="colltime != null  ">#{colltime},</if>
+    </trim>
+    </insert>
+    <!--更新数据-->
+    <update id="updateEnergy" parameterType="com.sixin.iot.domain.Energy">
+        update iotdata.tb_energy
+        <set>
+            <if test="imei != null  and imei != ''  ">imei = #{imei},</if>
+            <if test="pow1 != null  and pow1 != ''  ">pow1 = #{pow1},</if>
+            <if test="grouppow != null  and grouppow != ''  ">grouppow = #{grouppow},</if>
+            <if test="vol18v1 != null  and vol18v1 != ''  ">vol18v1 = #{vol18v1},</if>
+            <if test="vol18v2 != null  and vol18v2 != ''  ">vol18v2 = #{vol18v2},</if>
+            <if test="vol24 != null  and vol24 != ''  ">vol24 = #{vol24},</if>
+            <if test="vol28 != null  and vol28 != ''  ">vol28 = #{vol28},</if>
+            <if test="extendpow != null  and extendpow != ''  ">extendpow = #{extendpow},</if>
+            <if test="solarpow != null  and solarpow != ''  ">solarpow = #{solarpow},</if>
+            <if test="operating_temp != null  and operating_temp != ''  ">operating_temp = #{operating_temp},</if>
+            <if test="charge!= null  and charge != ''  ">charge = #{charge},</if>
+            <if test="work != null  and work != ''  ">work = #{work},</if>
+            <if test="colltime != null    ">colltime = #{colltime},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id删除-->
+    <delete id="deleteEnergyByid" parameterType="String">
+        delete from tb_energy where id = #{id}
+    </delete>
+
+    <!--清空-->
+    <delete id="deleteAllEnergy" parameterType="String">
+        delete from tb_energy
+    </delete>
+    <!--批量删除-->
+    <delete id="deleteEnergyByids" parameterType="String">
+        delete from tb_energy where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="selectEnergyByids" parameterType="java.util.List" resultMap="EnergyResult">
+        <include refid="selectEnergy"/>
+
+        <if test="list!=null">
+            where a.id in
+            <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+                #{sfid}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="updateEnergy1" parameterType="com.sixin.iot.domain.Energy">
+        update iotdata.tb_control
+        <set>
+            <if test="status != null  and status != ''  ">status = #{status},</if>
+        </set>
+        where cid = #{imei}
+    </update>
+
+</mapper>

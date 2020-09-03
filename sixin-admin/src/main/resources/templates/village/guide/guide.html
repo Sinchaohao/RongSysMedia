@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								指南名称：<input type="text" name="guname"/>
+							</li>
+
+							<!--<li>
+								指南图片路径：<input type="text" name="gupic"/>
+							</li>-->
+
+							<li>
+								指南类别：<input type="text" name="gutype"/>
+							</li>
+
+							<li>
+								指南内容：<input type="text" name="content"/>
+							</li>
+
+							<li>
+								指南地址：<input type="text" name="address"/>
+							</li>
+
+							<!--<li>
+								负责人姓名：<input type="text" name="fname"/>
+							</li>-->
+
+							<!--<li>
+								负责人手机号：<input type="text" name="fphone"/>
+							</li>-->
+
+							<!--<li>
+								指南点击数：<input type="text" name="greadtotal"/>
+							</li>-->
+
+							<!--<li>
+								指南发布日期：<input type="text" name="pushdate"/>
+							</li>-->
+
+							<!--<li>
+								发布人姓名：<input type="text" name="uname"/>
+							</li>-->
+
+							<li>
+								是否有效：<input type="text" name="remark"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:guide:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="village:guide:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:guide:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="village:guide:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('village:guide:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('village:guide:remove')}]];
+        var prefix = ctx + "village/guide";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "常用办事指南",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'guid', 
+					title : '指南数据编号',
+					visible: false
+				},
+				{
+					field : 'guname', 
+					title : '指南名称',
+					sortable: true
+				},
+				{
+					field : 'gupic',
+					title : '指南图片路径',
+					sortable: true
+				},
+				{
+					field : 'gutype', 
+					title : '指南类别',
+					sortable: true
+				},
+				{
+					field : 'content', 
+					title : '指南内容',
+					sortable: true
+				},
+				{
+					field : 'address', 
+					title : '指南地址',
+					sortable: true
+				},
+				{
+					field : 'fname', 
+					title : '负责人姓名',
+					sortable: true
+				},
+				{
+					field : 'fphone', 
+					title : '负责人手机号',
+					sortable: true
+				},
+				{
+					field : 'greadtotal',
+					title : '指南点击数',
+					sortable: true
+				},
+				{
+					field : 'pushdate', 
+					title : '指南发布日期',
+					sortable: true
+				},
+				{
+					field : 'uname', 
+					title : '发布人姓名',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '是否有效',
+					sortable: true
+				}]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

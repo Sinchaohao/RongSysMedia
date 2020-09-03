@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.GuideMapper">
+    
+    <resultMap type="com.sixin.village.domain.Guide" id="GuideResult">
+        <result property="guid"    column="guid"    />
+        <result property="guname"    column="guname"    />
+        <result property="gupic"    column="gupic"    />
+        <result property="gutype"    column="gutype"    />
+        <result property="content"    column="content"    />
+        <result property="address"    column="address"    />
+        <result property="fname"    column="fname"    />
+        <result property="fphone"    column="fphone"    />
+        <result property="greadtotal"    column="greadtotal"    />
+        <result property="pushdate"    column="pushdate"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="aid"    column="aid"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+	
+	<sql id="selectGuideVo">
+        select guid, guname, gupic, gutype, content, address, fname, fphone, greadtotal, pushdate, uid, uname, aid, remark from tb_guide
+    </sql>
+	
+    <select id="selectGuideList" parameterType="com.sixin.village.domain.Guide" resultMap="GuideResult">
+        <include refid="selectGuideVo"/>
+        <where>
+             <if test="guname != null  and guname != '' "> and guname LIKE CONCAT(CONCAT('%', #{guname}),'%') </if>
+             <if test="gupic != null  and gupic != '' "> and gupic LIKE CONCAT(CONCAT('%', #{gupic}),'%') </if>
+             <if test="gutype != null  and gutype != '' "> and gutype LIKE CONCAT(CONCAT('%', #{gutype}),'%') </if>
+             <if test="content != null  and content != '' "> and content LIKE CONCAT(CONCAT('%', #{content}),'%') </if>
+             <if test="address != null  and address != '' "> and address LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+             <if test="fname != null  and fname != '' "> and fname LIKE CONCAT(CONCAT('%', #{fname}),'%')</if>
+             <if test="fphone != null  and fphone != '' "> and fphone LIKE CONCAT(CONCAT('%', #{fphone}),'%')}</if>
+             <if test="greadtotal != null "> and greadtotal LIKE CONCAT(CONCAT('%', #{greadtotal}),'%')}</if>
+             <if test="pushdate != null  and pushdate != '' "> and pushdate LIKE CONCAT(CONCAT('%', #{pushdate}),'%')}</if>
+             <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')}</if>
+             <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+         </where>
+    </select>
+    
+    <select id="selectGuideById" parameterType="Integer" resultMap="GuideResult">
+        <include refid="selectGuideVo"/>
+        where guid = #{guid}
+    </select>
+        
+    <insert id="insertGuide" parameterType="com.sixin.village.domain.Guide">
+        insert into tb_guide
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="guid != null  ">guid,</if>
+			<if test="guname != null  and guname != ''  ">guname,</if>
+			<if test="gupic != null  and gupic != ''  ">gupic,</if>
+			<if test="gutype != null  and gutype != ''  ">gutype,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="address != null  and address != ''  ">address,</if>
+			<if test="fname != null  and fname != ''  ">fname,</if>
+			<if test="fphone != null  and fphone != ''  ">fphone,</if>
+			<if test="greadtotal != null  ">greadtotal,</if>
+			<if test="pushdate != null  and pushdate != ''  ">pushdate,</if>
+			<if test="uid != null  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="guid != null  ">#{guid},</if>
+			<if test="guname != null  and guname != ''  ">#{guname},</if>
+			<if test="gupic != null  and gupic != ''  ">#{gupic},</if>
+			<if test="gutype != null  and gutype != ''  ">#{gutype},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="address != null  and address != ''  ">#{address},</if>
+			<if test="fname != null  and fname != ''  ">#{fname},</if>
+			<if test="fphone != null  and fphone != ''  ">#{fphone},</if>
+			<if test="greadtotal != null  ">#{greadtotal},</if>
+			<if test="pushdate != null  and pushdate != ''  ">#{pushdate},</if>
+			<if test="uid != null  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateGuide" parameterType="com.sixin.village.domain.Guide">
+        update tb_guide
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="guname != null  and guname != ''  ">guname = #{guname},</if>
+            <if test="gupic != null  and gupic != ''  ">gupic = #{gupic},</if>
+            <if test="gutype != null  and gutype != ''  ">gutype = #{gutype},</if>
+            <if test="content != null  and content != ''  ">content = #{content},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="fname != null  and fname != ''  ">fname = #{fname},</if>
+            <if test="fphone != null  and fphone != ''  ">fphone = #{fphone},</if>
+            <if test="greadtotal != null  ">greadtotal = #{greadtotal},</if>
+            <if test="pushdate != null  and pushdate != ''  ">pushdate = #{pushdate},</if>
+            <if test="uid != null  ">uid = #{uid},</if>
+            <if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where guid = #{guid}
+    </update>
+
+	<delete id="deleteGuideById" parameterType="Integer">
+        delete from tb_guide where guid = #{guid}
+    </delete>
+	
+    <delete id="deleteGuideByIds" parameterType="String">
+        delete from tb_guide where guid in 
+        <foreach item="guid" collection="array" open="(" separator="," close=")">
+            #{guid}
+        </foreach>
+    </delete>
+    
+</mapper>

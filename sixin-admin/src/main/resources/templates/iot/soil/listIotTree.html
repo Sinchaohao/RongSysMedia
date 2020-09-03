@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.imei"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <form id="user-form">
+                <li>
+                    <input type="hidden" name="deptid"  id="deptid" style="width: 100px"/>
+                </li>
+            </form>
+            <div class="ui-layout-content">
+                <div id="tree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+            <a class="btn btn-success btn-del disabled" onclick="addProIdAll()">
+                <i class="fa fa-edit"></i> 终端选择
+            </a>
+        </div>
+        <div>
+            <input id="org" name="org"  width="50%" placeholder=""  readonly="true">
+            <input id="tname" type="hidden" name="tname"  width="50%" placeholder="">
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+    var prefix = ctx + "iot/soil";
+
+    $(function() {
+        $('body').layout({ west__size: 230 });
+        queryAreaList();
+        queryAreaTree();
+    });
+
+    function queryAreaList() {
+        var options = {
+            url: prefix + "/listIot",
+            modalName: "终端管理",
+            search: false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field : 'ctype',
+                    title : '类型',
+                    visible: true
+                },
+                {
+                    field : 'imei',
+                    title : '终端设备IMEI',
+                    visible: true
+                },
+                {
+                    field : 'deptid',
+                    title : '区域编号',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    };
+
+    function queryAreaTree(){
+        var url = ctx + "system/dept/treeData";
+        var options = {
+            url: url,
+            onClick : zOnClick
+        };
+        $.tree.init(options);
+
+        function zOnClick(event, treeId, treeNode) {
+            //aid1 = treeNode.id;
+            $("#deptid").val(treeNode.id);
+            $.table.search();
+        }
+        $.tree.init(options);
+    }
+</script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/plugins/layer/layui-v2.4.5/layui/layui.js"></script>
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#soil",
+            type: 'time',
+        });
+    });
+    function addProIdAll() {
+        /*通过选择框去获取终端的IMEI号*/
+        var rows = $.table.selectColumns('imei');
+        var rowsdep = $.table.selectColumns('deptid');
+        var dataDep = { "deptid": rowsdep.join() };
+        var dataName = { "imei": rows.join() };
+        var testname = dataName;
+        var testdep = dataDep;
+        var j;
+        var i;
+        var imei;
+        var deptid;
+        for(i in testdep){
+            deptid =  testdep[i];
+            console.log(deptid);
+            console.log("deptid:",testdep[i]);
+        }
+        for(j in testname){
+            imei =  testname[j];
+            console.log(imei);
+            console.log("cid:",testname[j]);
+        }
+        var selectName = testname[j];
+        var selectDep = testdep[i];
+        document.getElementById("org").value = selectName;
+        document.getElementById("tname").value = selectDep;
+        //这里在子页面通过调用父页面方法，将子页面的值传给父页面
+        parent.ccc(selectName);
+        parent.ddd(selectDep);
+    }
+</script>
+</body>
+</html>

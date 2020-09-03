@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-12 search-collapse">
+			<form id="ordinary-form">
+				<div class="select-list">
+					<ul>
+						<li>
+							<input type="text" name="username" placeholder="所属用户"/>
+						</li>
+						<li>
+							<input type="text" name="tname" placeholder="终端编号"/>
+						</li>
+						<li>
+							<select name="lastaccesstime">
+								<option value=""></option>
+								<option value="-1">正常</option>
+								<option value="0">异常</option>
+								<option value="1">异常1天</option>
+								<option value="2">异常2天</option>
+							</select>
+						</li>
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+		<div class="btn-group-sm" id="toolbar" role="group">
+			<a class="btn btn-primary" onclick="timeedit()">
+				<i class="fa fa-edit"></i> 终端交互时间
+			</a>
+			<a class="btn btn-primary" onclick="rdsedit()">
+				<i class="fa fa-edit"></i> RDS设置
+			</a>
+			<a class="btn btn-primary" onclick="frequencyedit()">
+				<i class="fa fa-edit"></i> 调频接收频率
+			</a>
+			<a class="btn btn-primary" onclick="phoneedit()">
+				<i class="fa fa-edit"></i> 添加授权号码
+			</a>
+			<a class="btn btn-primary" onclick="phonedelete()">
+				<i class="fa fa-edit"></i> 删除授权号码
+			</a>
+		</div>
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table"></table>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:inline="javascript">
+	var prefix = ctx + "broad/terstatusinfo";
+	$(function() {
+		var options = {
+			url: prefix + "/list",
+			uniqueId: "tid",
+			striped:true,
+			modalName: "终端管理",
+			columns: [{
+					checkbox: true
+				},
+				{
+					field : 'tid',
+					title : '终端IMEI',
+					visible: true,
+					align: 'center'
+				},
+				{
+					field : 'tname',
+					title : '终端名称',
+					align: 'center'
+				},
+				{
+					field : 'uname',
+					title : '所属用户',
+					align: 'center'
+				},
+				{
+					field : 'aname',
+					title : '所属分组',
+					align: 'center'
+				},
+				{
+					field : 'lastaccesstime',
+					title : '最后访问日期',
+					align: 'center'
+				},
+				{
+					field : 'intertime',
+					title : '交互时间',
+					align: 'center'
+				},
+				{
+					field : 'rds',
+					title : 'RDS码',
+					visible: true,
+					align: 'center'
+				},
+				{
+					field : 'brfrequency',
+					title : '终端接收频率',
+					visible: true,
+					align: 'center'
+				},
+				{
+					field : 'fault',
+					title : '故障情况',
+					formatter:function (field,row,index) {
+						var html = "";
+						var time = parseInt(((new Date()) - (new Date(row.lastaccesstime)))/86400000)
+						if(row.lastaccesstime){
+							if(time >= 1 ){
+								html += "<label style='color: #ff5909'>异常"+time+"天</label>";
+							}else{
+								html += "<label style='color: #ff5909'>正常</label>";
+							}
+							return html;
+						}
+					}
+				}
+			]
+		};
+		$.table.init(options);
+	});
+
+	function timeedit() {
+		layer.open({
+			type: 2,
+			maxmin: false,
+			shade: 0.3,
+			title: '批量设置终端交互时间',
+			fix: false,
+			area: ["1200" + 'px', ($(window).height() - 50) + 'px'],
+			content: "/broad/terstatusinfo/timeedit",
+			shadeClose: false,
+			btn: ['<i class="fa fa-chat"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			success:function(layero, index){
+
+			},
+			yes: function (index, layero) {
+				let selecteddata = $(layero).find("iframe")[0].contentWindow.$.fn.zTree.getZTreeObj("tree").getCheckedNodes();
+				var arr =[]
+				selecteddata.map(function(item){
+					if(item.aid && item.aid.length==15){
+						arr.push(item.aid)
+						return item.aid;
+					}
+				});
+
+				let time = $(layero).find("iframe")[0].contentWindow.$('#laydate-demo-3')[0].value;
+				var params ={
+					tids:arr.toString(),
+					time:time
+				}
+				layer.close(index);
+				$.post("/broad/terstatusinfo/timeedit",params,function (data) {
+					if(data.code==0){
+						alert("修改成功")
+					}
+				});
+				$.table.refresh();
+			},
+			cancel: function () {
+				return true;
+			}
+		});
+	}
+
+	function rdsedit() {
+		layer.open({
+			type: 2,
+			maxmin: false,
+			shade: 0.3,
+			title: '批量设置RDS码',
+			fix: false,
+			area: ["1200" + 'px', ($(window).height() - 50) + 'px'],
+			content: "/broad/terstatusinfo/rdsedit",
+			shadeClose: false,
+			btn: ['<i class="fa fa-chat"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			success:function(layero, index){
+
+			},
+			yes: function (index, layero) {
+				let selecteddata = $(layero).find("iframe")[0].contentWindow.$.fn.zTree.getZTreeObj("tree").getCheckedNodes();
+				var arr =[]
+				selecteddata.map(function(item){
+					if(item.aid && item.aid.length==15){
+						arr.push(item.aid)
+						return item.aid;
+					}
+				});
+
+				let time = $(layero).find("iframe")[0].contentWindow.$('#laydate-demo-3')[0].value;
+				var params ={
+					tids:arr.toString(),
+					time:time
+				}
+				layer.close(index);
+				$.post("/broad/terstatusinfo/rdsedit",params,function (data) {
+					if(data.code==0){
+						alert("修改成功")
+					}
+				});
+				$.table.refresh();
+			},
+			cancel: function () {
+				return true;
+			}
+		});
+	}
+
+	function frequencyedit() {
+		layer.open({
+			type: 2,
+			maxmin: false,
+			shade: 0.3,
+			title: '批量设置调频接收频率',
+			fix: false,
+			area: ["1200" + 'px', ($(window).height() - 50) + 'px'],
+			content: "/broad/terstatusinfo/frequencyedit",
+			shadeClose: false,
+			btn: ['<i class="fa fa-chat"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			success:function(layero, index){
+
+			},
+			yes: function (index, layero) {
+				let selecteddata = $(layero).find("iframe")[0].contentWindow.$.fn.zTree.getZTreeObj("tree").getCheckedNodes();
+				var arr =[]
+				selecteddata.map(function(item){
+					if(item.aid && item.aid.length==15){
+						arr.push(item.aid)
+						return item.aid;
+					}
+				});
+
+				let time = $(layero).find("iframe")[0].contentWindow.$('#laydate-demo-3')[0].value;
+				var params ={
+					tids:arr.toString(),
+					time:time
+				}
+				layer.close(index);
+				$.post("/broad/terstatusinfo/frequencyedit",params,function (data) {
+					if(data.code==0){
+						alert("修改成功")
+					}
+				});
+				$.table.refresh();
+			},
+			cancel: function () {
+				return true;
+			}
+		});
+	}
+
+	function phoneedit() {
+		layer.open({
+			type: 2,
+			maxmin: false,
+			shade: 0.3,
+			title: '批量设置授权号码',
+			fix: false,
+			area: ["1200" + 'px', ($(window).height() - 50) + 'px'],
+			content: "/broad/terstatusinfo/phoneedit",
+			shadeClose: false,
+			btn: ['<i class="fa fa-chat"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			success:function(layero, index){
+
+			},
+			yes: function (index, layero) {
+				let selecteddata = $(layero).find("iframe")[0].contentWindow.$.fn.zTree.getZTreeObj("tree").getCheckedNodes();
+				var arr =[]
+				selecteddata.map(function(item){
+					if(item.aid && item.aid.length==15){
+						arr.push(item.aid)
+						return item.aid;
+					}
+				});
+
+				let tel = $(layero).find("iframe")[0].contentWindow.$('#laydate-demo-3')[0].value;
+				let telperson = $(layero).find("iframe")[0].contentWindow.$('#telperson')[0].value;
+				var params ={
+					tids:arr.toString(),
+					tel:tel,
+					telperson:telperson
+				}
+				layer.close(index);
+				$.post("/broad/terstatusinfo/phoneedit",params,function (data) {
+					if(data.code==0){
+						alert("修改成功")
+					}
+				});
+				$.table.refresh();
+			},
+			cancel: function () {
+				return true;
+			}
+		});
+	}
+
+	function phonedelete() {
+		layer.open({
+			type: 2,
+			maxmin: false,
+			shade: 0.3,
+			title: '批量删除授权号码',
+			fix: false,
+			area: ["1200" + 'px', ($(window).height() - 50) + 'px'],
+			content: "/broad/terstatusinfo/phonedelete",
+			shadeClose: false,
+			btn: ['<i class="fa fa-chat"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			success:function(layero, index){
+
+			},
+			yes: function (index, layero) {
+				let selecteddata = $(layero).find("iframe")[0].contentWindow.$.fn.zTree.getZTreeObj("tree").getCheckedNodes();
+				var arr =[]
+				selecteddata.map(function(item){
+					if(item.aid && item.aid.length==15){
+						arr.push(item.aid)
+						return item.aid;
+					}
+				});
+
+				let time = $(layero).find("iframe")[0].contentWindow.$('#laydate-demo-3')[0].value;
+				var params ={
+					tids:arr.toString(),
+					time:time
+				}
+				layer.close(index);
+				$.post("/broad/terstatusinfo/phonedelete",params,function (data) {
+					if(data.code==0){
+						alert("修改成功")
+					}
+				});
+				$.table.refresh();
+			},
+			cancel: function () {
+				return true;
+			}
+		});
+	}
+</script>
+</body>
+</html>

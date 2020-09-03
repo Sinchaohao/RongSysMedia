@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ProListMapper">
+    
+    <resultMap type="com.sixin.broad.domain.ProList" id="ProListResult">
+        <result property="id"    column="id"    />
+        <result property="pid"    column="Pid"    />
+        <result property="ptp"    column="Ptp"    />
+        <result property="fN"    column="FN"    />
+        <result property="fid"    column="Fid"    />
+        <result property="bt"    column="Bt"    />
+        <result property="broadtime"    column="broadtime"    />
+        <result property="remark"    column="Remark"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.Progbroad" id="ProgBroadResult">
+        <result property="pid"    column="Pid"    />
+        <result property="ptp"    column="Ptp"    />
+        <result property="fN"    column="FN"    />
+        <result property="fid"    column="Fid"    />
+        <result property="bt"    column="Bt"    />
+        <result property="broadtime"    column="broadtime"    />
+        <result property="remark"    column="Remark"    />
+        <result property="id" column="id"/>
+    </resultMap>
+	
+	<sql id="selectProListVo">
+        select Pid, Ptp, FN, Fid, Bt, broadtime, Remark from pro_list
+    </sql>
+	
+    <select id="selectProListList" parameterType="com.sixin.broad.domain.ProList" resultMap="ProListResult">
+        <include refid="selectProListVo"/>
+        <where>  
+            <if test="pid != null "> and Pid = #{pid}</if>
+             <if test="ptp != null  and ptp != '' "> and Ptp = #{ptp}</if>
+             <if test="fN != null  and fN != '' "> and FN = #{fN}</if>
+             <if test="fid != null "> and Fid = #{fid}</if>
+             <if test="bt != null  and bt != '' "> and Bt = #{bt}</if>
+             <if test="broadtime != null  and broadtime != '' "> and broadtime = #{broadtime}</if>
+             <if test="remark != null  and remark != '' "> and Remark = #{remark}</if>
+         </where>
+         order by pid desc
+    </select>
+
+    <select id="selectProListListByPid" parameterType="String" resultMap="ProListResult">
+        select
+            a.Pid,
+            a.Ptp,
+            a.FN,
+            b.fname as Fid,
+            a.Bt,
+            a.broadtime,
+            a.Remark,
+            b.urls
+        from pro_list as a left join programs as b
+        on
+        a.fid= b.fid
+        where
+        pid = #{pid}
+        order by Bt
+    </select>
+    <select id="selectProListByAll" parameterType="CwProList" resultMap="ProListResult">
+        select SQL_CALC_FOUND_ROWS distinct pro_list.id,pro_list.Pid,pro_list.Ptp,pro_list.FN,pro_list.Fid,pro_list.Bt,pro_list.broadtime,pro_list.Remark,
+        pro_sinmanage.sfid,pro_sinmanage.userid,pro_sinmanage.broaddate,
+        pro_terminals.terminalID,pro_terminals.programmeID
+        from (pro_list left join pro_sinmanage on pro_list.pid= pro_sinmanage.sfid)
+        left join pro_terminals on pro_list.pid= pro_terminals.programmeID
+        <where>
+        <if test="terminalsID != null "> and pro_terminals.terminalID in
+            <foreach item="terminalsID" collection="terminalsID" open="(" separator="," close=")">
+                #{terminalsID}
+            </foreach>
+        </if>
+        <if test="userid != null "> and pro_sinmanage.userid = #{userid}</if>
+        <if test="broaddate != null  and broaddate  != '' "> and pro_sinmanage.broaddate  = #{broaddate }</if>
+        <if test="pid != null "> and pro_list.Pid = #{pid}</if>
+        <if test="ptp != null  and ptp != '' "> and pro_list.Ptp = #{ptp}</if>
+        <if test="fN != null  and fN != '' "> and pro_list.FN = #{fN}</if>
+        <if test="bt != null  and bt != '' "> and pro_list.Bt = #{bt}</if>
+        <if test="broadtime != null  and broadtime != '' "> and pro_list.broadtime = #{broadtime}</if>
+        </where>
+        order by Bt desc
+    </select>
+    <select id="selectProListById" parameterType="String" resultMap="ProListResult">
+        <include refid="selectProListVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProList" parameterType="com.sixin.broad.domain.ProList">
+        insert into pro_list
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null  ">Pid,</if>
+			<if test="ptp != null  and ptp != ''  ">Ptp,</if>
+			<if test="fN != null  and fN != ''  ">FN,</if>
+			<if test="fid != null  ">Fid,</if>
+			<if test="bt != null  and bt != ''  ">Bt,</if>
+			<if test="broadtime != null  and broadtime != ''  ">broadtime,</if>
+			<if test="remark != null  and remark != ''  ">Remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null  ">#{pid},</if>
+			<if test="ptp != null  and ptp != ''  ">#{ptp},</if>
+			<if test="fN != null  and fN != ''  ">#{fN},</if>
+			<if test="fid != null  ">#{fid},</if>
+			<if test="bt != null  and bt != ''  ">#{bt},</if>
+			<if test="broadtime != null  and broadtime != ''  ">#{broadtime},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+         </trim>
+    </insert>
+	 
+    <update id="updateProList" parameterType="com.sixin.broad.domain.ProList">
+        update pro_list
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ptp != null  and ptp != ''  ">Ptp = #{ptp},</if>
+            <if test="fN != null  and fN != ''  ">FN = #{fN},</if>
+            <if test="fid != null  ">Fid = #{fid},</if>
+            <if test="bt != null  and bt != ''  ">Bt = #{bt},</if>
+            <if test="broadtime != null  and broadtime != ''  ">broadtime = #{broadtime},</if>
+            <if test="remark != null  and remark != ''  ">Remark = #{remark},</if>
+        </trim>
+        where Pid = #{pid}
+    </update>
+
+	<delete id="deleteProListById" parameterType="Integer">
+        delete from pro_list where Pid = #{pid}
+    </delete>
+	
+    <delete id="deleteProListByIds" parameterType="String">
+        delete from pro_list where Pid in 
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+
+</mapper>

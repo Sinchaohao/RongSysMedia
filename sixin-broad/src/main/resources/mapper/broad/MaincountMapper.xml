@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.MaincountMapper">
+
+    <resultMap type="com.sixin.broad.domain.Maincount" id="MaincountResult">
+        <result property="tmid"    column="tmid"    />
+        <result property="tid"    column="tid"    />
+        <result property="fault"    column="fault"    />
+        <result property="mstaff"    column="mstaff"    />
+        <result property="createtime"    column="createtime"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectMaincountVo">
+        select
+            tmid,
+            tm.tid as tid,
+            fault,
+            mstaff,
+            tm.remark as remark,
+            tname,
+            intertime,
+            phone,
+            address,
+            tm.createtime as createtime,
+            t.aid as aid,
+            aname,
+            ui.userid as userid,
+            uname,
+            nettype,
+            basestation,
+            count(tm.tid) as mnum
+        from
+            (((terminal_maintain tm  JOIN terminals t on tm.tid=t.tid)
+        left join ter_conditions tc on tm.tid = tc.tid)
+        left join area a on t.aid = a.aid)
+        left join userinfo ui on ui.userid = t.userid
+
+    </sql>
+    <select id="selectMaincountList" parameterType="com.sixin.broad.domain.Maincount" resultMap="MaincountResult">
+        <include refid="selectMaincountVo"/>
+        <where>
+            <if test="tid != null  and tid != '' "> and tm.tid like '%${tid}%'</if>
+            <if test="tname != null  and tname != '' "> and tname like '%${tname}%'</if>
+            <if test="aname != null  and aname != '' "> and aname like '%${aname}%'</if>
+            <if test="fault != null  and fault != '' "> and fault like '%${fault}%'</if>
+            <if test="aid != null  and aid != ''  ">and t.aid = #{aid}</if>
+        </where>
+        GROUP BY tm.tid
+        <if test="mnum != null  and mnum != ''  ">having count(tm.tid) = #{mnum}</if>
+    </select>
+
+    <select id="selectMaincountById" parameterType="String" resultMap="MaincountResult">
+         select
+            tmid,
+            tm.tid as tid,
+            fault,
+            mstaff,
+            tm.remark as remark,
+            tname,
+            intertime,
+            phone,
+            address,
+            tm.createtime as createtime,
+            t.aid as aid,
+            aname,
+            ui.userid as userid,
+            uname,
+            nettype,
+            basestation
+         from
+         (((terminal_maintain tm  JOIN terminals t on tm.tid=t.tid)
+         left join ter_conditions tc on tm.tid = tc.tid)
+         left join area a on t.aid = a.aid)
+         left join userinfo ui on ui.userid = t.userid
+         where tm.tid = #{tid}
+    </select>
+
+    <!-- 根据ids批量查询数据，主要用于导出   -->
+    <!--    <select id="selectMaincountByIds" resultMap="MaincountResult">-->
+    <!--        SELECT-->
+    <!--            tmid,-->
+    <!--            tm.tid as tid,-->
+    <!--            fault,-->
+    <!--            mstaff,-->
+    <!--            tm.remark as remark,-->
+    <!--            tname,-->
+    <!--            intertime,-->
+    <!--            phone,-->
+    <!--            address,-->
+    <!--            tm.createtime as createtime,-->
+    <!--            t.aid as aid,-->
+    <!--            aname,-->
+    <!--            ui.userid as userid,-->
+    <!--            uname,-->
+    <!--            nettype,-->
+    <!--            basestation,-->
+    <!--            count(tm.tid) as mnum-->
+    <!--        from-->
+    <!--            (((terminal_maintain tm  JOIN terminals t on tm.tid=t.tid)-->
+    <!--        left join ter_conditions tc on tm.tid = tc.tid)-->
+    <!--        left join area a on t.aid = a.aid)-->
+    <!--        left join userinfo ui on ui.userid = t.userid-->
+    <!--        WHERE-->
+    <!--        tmid in-->
+    <!--        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">-->
+    <!--            #{item}-->
+    <!--        </foreach>-->
+
+    <!--    </select>-->
+
+    <!--<insert id="insertMaincount" parameterType="String">-->
+    <!--insert into terminal_maintain-->
+    <!--<trim prefix="(" suffix=")" suffixOverrides=",">-->
+    <!--<if test="tid != null  and tid != ''  ">tid,</if>-->
+    <!--<if test="fault != null  and fault != ''  ">fault,</if>-->
+    <!--<if test="mstaff != null  and mstaff != ''  ">mstaff,</if>-->
+    <!--<if test="remark != null  and remark != ''  ">remark,</if>-->
+    <!--</trim>-->
+    <!--<trim prefix="values (" suffix=")" suffixOverrides=",">-->
+    <!--<if test="tid != null  and tid != ''  ">#{tid},</if>-->
+    <!--<if test="fault != null  and fault != ''  ">#{fault},</if>-->
+    <!--<if test="mstaff != null  and mstaff != ''  ">#{mstaff},</if>-->
+    <!--<if test="remark != null  and remark != ''  ">#{remark},</if>-->
+    <!--</trim>-->
+    <!--</insert>-->
+    <!---->
+    <!--<update id="updateMaincount" parameterType="Maincount">-->
+    <!--update terminal_maintain-->
+    <!--<trim prefix="SET" suffixOverrides=",">-->
+    <!--<if test="tid != null  and tid != ''  ">tid = #{tid},</if>-->
+    <!--<if test="fault != null  and fault != ''  ">fault = #{fault},</if>-->
+    <!--<if test="mstaff != null  and mstaff != ''  ">mstaff = #{mstaff},</if>-->
+    <!--<if test="createtime != null  and createtime != ''  ">createtime = #{createtime},</if>-->
+    <!--<if test="remark != null  and remark != ''  ">remark = #{remark},</if>-->
+    <!--</trim>-->
+    <!--where tmid = #{tmid}-->
+    <!--</update>-->
+
+    <!--<delete id="deleteMaincountById" parameterType="Integer">-->
+    <!--delete from terminal_maintain where tmid = #{tmid}-->
+    <!--</delete>-->
+    <!---->
+    <!--<delete id="deleteMaincountByIds" parameterType="String">-->
+    <!--delete from terminal_maintain where tmid in -->
+    <!--<foreach item="tmid" collection="array" open="(" separator="," close=")">-->
+    <!--#{tmid}-->
+    <!--</foreach>-->
+    <!--</delete>-->
+
+</mapper>

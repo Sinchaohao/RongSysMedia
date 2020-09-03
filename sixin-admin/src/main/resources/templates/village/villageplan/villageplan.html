@@ -1,0 +1,294 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+<div class="ui-layout-west">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa icon-grid"></i> 组织机构
+			</div>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+				<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+				<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+			</div>
+		</div>
+		<div class="ui-layout-content">
+			<div id="tree" class="ztree"></div>
+		</div>
+	</div>
+</div>
+<div class="ui-layout-center">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list" >
+						<ul>
+							<li>
+								类别：<input list="vtype"  name="vtype" />
+								<datalist id="vtype">
+									<option value="0">乡村规划</option>
+									<option value="1">我爱我村</option>
+									<option value="2">文化活动</option>
+									<option value="3">农家乐</option>
+									<option value="4">民宿管理</option>
+									<option value="5">宣传文案</option>
+									<option value="6">信息咨询</option>
+								</datalist>
+							</li>
+
+							<li>
+								标题：<input type="text" name="mtitle"/>
+							</li>
+
+							<li>
+								发布人：<input type="text" name="uname"/>
+							</li>
+
+							<li>
+								<input class="laydate-icon  layer-date"
+									   name="pushdate"
+									   id="pushdate"
+									   value=""
+									   readonly="readonly"
+									   style="width:150px;"
+									   placeholder="建立日期"
+									   title="建立日期"/>
+							</li>
+
+							<li>
+								状态：<input list="mtype" name="mtype"/>
+								<datalist id="mtype">
+									<option value=0>无效</option>
+									<option value=1>有效</option>
+								</datalist>
+							</li>
+
+							<li>
+								备注：<input type="text" name="note"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:villageplan:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="village:villageplan:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:villageplan:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="village:villageplan:export">
+					<i class="fa fa-download"></i> 导出
+				</a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+	var editFlag = [[${@permission.hasPermi('village:villageplan:edit')}]];
+	var removeFlag = [[${@permission.hasPermi('village:villageplan:remove')}]];
+	var prefix = ctx + "village/villageplan";
+	$(function() {
+		var panehHidden = false;
+		if ($(this).width() < 769) {
+			panehHidden = true;
+		}
+		$('body').layout({ initClosed: panehHidden, west__size: 185 });
+		queryList();
+		queryAreaTree();
+	});
+	function queryList() {
+		var options = {
+			url: prefix + "/list",
+			createUrl: prefix + "/add",
+			updateUrl: prefix + "/edit/{id}",
+			removeUrl: prefix + "/remove",
+			exportUrl: prefix + "/export",
+			detailUrl: prefix + "/detail/{id}",
+			modalName: "美丽乡村",
+			search: false,
+			showExport: true,
+			columns: [{
+				checkbox: true
+			},
+				{
+					field : 'mid',
+					title : '数据编号',
+					visible: false
+				},
+				{
+					field : 'vtype',
+					title : '类别',
+					sortable: true,
+					formatter:function(value,row,index){
+						var html = "";
+						if(value == "0"){
+							html += "<label>乡村规划</label>";
+							return html;
+						}else if(value == "1"){
+							html += "<label>我爱我村</label>";
+							return html;
+						}else if(value == "2"){
+							html += "<label>文化活动</label>";
+							return html;
+						}else if(value == "3"){
+							html += "<label>农家乐</label>";
+							return html;
+						}else if(value == "4"){
+							html += "<label>民宿管理</label>";
+							return html;
+						}else if(value == "5"){
+							html += "<label>宣传文案</label>";
+							return html;
+						}else if(value == "6"){
+							html += "<label>信息咨询</label>";
+							return html;
+						}
+					}
+				},
+				{
+					field : 'mtitle',
+					title : '标题',
+					sortable: true
+				},
+				/*{
+					field : 'mpic', 
+					title : '图片地址',
+					sortable: true
+				},*/
+				/*{
+					field : 'mcontent', 
+					title : '内容',
+					sortable: true
+				},*/
+				/*{
+					field : 'uid', 
+					title : '发布人编号',
+					sortable: true
+				},*/
+				{
+					field : 'uname',
+					title : '发布人',
+					sortable: true
+				},
+				{
+					field : 'greadtotal',
+					title : '阅读数',
+					sortable: true
+				},
+				{
+					field : 'pushdate',
+					title : '建立日期',
+					sortable: true
+				},
+				{
+					field : 'mtype',
+					title : '状态',
+					sortable: true,
+					formatter:function(value,row,index){
+						var html = "";
+						if(value == "0"){
+							html += "<label style='color: #ff5909'>无效</label>";
+							return html;
+						}else {
+							html += "<label>有效</label>";
+							return html;
+						}
+					}
+				},
+				/*{
+					field : 'aid', 
+					title : '用户所属地区编号',
+					sortable: true
+				},*/
+				{
+					field : 'note',
+					title : '备注',
+					sortable: true
+				},
+				{
+					title: '操作',
+					align: 'center',
+					formatter: function(value, row, index) {
+						var actions = [];
+						actions.push('<a class="btn btn-success btn-xs ' + '"onclick="$.operate.detail(\'' + row.mid + '\')"><i class="fa fa-edit"></i>查看详情</a> ');
+						return actions.join('');
+					}
+				}]
+		};
+		$.table.init(options);
+	}
+
+	function queryAreaTree()
+	{
+		var url = ctx + "system/dept/treeData";
+		var options = {
+			url: url,
+			expandLevel: 2,
+			onClick : zOnClick
+		};
+		$.tree.init(options);
+
+		function zOnClick(event, treeId, treeNode) {
+			$("#deptId").val(treeNode.id);
+			$("#parentId").val(treeNode.pId);
+			$.table.search();
+		}
+	}
+
+	$('#btnExpand').click(function() {
+		$._tree.expandAll(true);
+		$(this).hide();
+		$('#btnCollapse').show();
+	});
+
+	$('#btnCollapse').click(function() {
+		$._tree.expandAll(false);
+		$(this).hide();
+		$('#btnExpand').show();
+	});
+
+	$('#btnRefresh').click(function() {
+		queryAreaTree();
+	});
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+	laydate({
+		elem:"#pushdate",
+		event:"focus"
+	});
+	layui.use('laydate', function(){
+		var laydate = layui.laydate;
+		//执行一个laydate实例
+		laydate.render({
+			elem:"#village",
+			type: 'time',
+		});
+	});
+</script>
+</body>
+</html>

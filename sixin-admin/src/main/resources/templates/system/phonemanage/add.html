@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-led-add">
+<!--        <div class="form-group">-->
+<!--            <label class="col-sm-3 control-label">LED显示编号：</label>-->
+<!--            <div class="col-sm-8">-->
+<!--                <input id="pid" name="pid" class="form-control" type="text">-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="form-group">
+            <label class="col-sm-3 control-label">授权号码：</label>
+            <div class="col-sm-8">
+                <input id="phone" name="phone" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">用户编号：</label>
+            <div class="col-sm-8">
+                <input id="uid" name="uid" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">用户姓名：</label>
+            <div class="col-sm-8">
+                <input id="uname" name="uname" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">部门编号：</label>
+            <div class="col-sm-8">
+                <input id="deptid" name="deptid" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">权限编码：</label>
+            <div class="col-sm-8">
+                <input id="rolecode" name="rolecode" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">批准人编号：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="allowid" id="allowid">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">批准人姓名：</label>
+            <div class="col-sm-8">
+                <input class="form-control" type="text" name="allowname" id="allowname">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">再次批准人编号：</label>
+            <div class="col-sm-8">
+                <input id="reallowid" name="reallowid" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">再次批准人姓名：</label>
+            <div class="col-sm-8">
+                <input id="reallowname" name="reallowname" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">批准证明：</label>
+            <div class="col-sm-8">
+                <input id="allowpic" name="allowpic" class="form-control" type="text">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">是否有效：</label>
+            <div class="col-sm-4">
+<!--                <input id="remark" name="remark" class="form-control" type="text">-->
+                <select id="remark" name="remark" type="text" class="form-control select2-multiple" required>
+                    <option value="1">有效</option>
+                    <option value="0">无效</option>
+                </select>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "system/phonemanage"
+
+    $("#form-energy-add").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+
+
+    function add() {
+        var phone = $("input[name='phone']").val();
+        var uid = $("input[name='uid']").val();
+        var uname = $("input[name='uname']").val();
+        var rolecode = $("input[name='rolecode']").val();
+        var allowid = $("input[name='allowid']").val();
+        var allowname = $("input[name='allowname']").val();
+        var reallowid = $("input[name='reallowid']").val();
+        var reallowname = $("input[name='reallowname']").val();
+        var allowpic = $("input[name='allowpic']").val();
+        var remark = $("input[name='remark']").val();
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : ctx + "system/phonemanage",
+            data : {
+                "phone": phone,
+                "uid": uid,
+                "uname": uname,
+                "rolecode": rolecode,
+                "allowid": allowid,
+                "allowname": allowname,
+                "reallowid": reallowid,
+                "reallowname": reallowname,
+                "allowpic": allowpic,
+                "remark": remark,
+            },
+            async : false,
+            error : function(request) {
+                $.modal.alertError("系统错误");
+            },
+            success : function(data) {
+                $.operate.successCallback(data);
+            }
+        });
+    }
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            add();
+        }
+    }
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-led-add').serialize());
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+
+    <table class="table table-hover">
+        <tr>
+            <th>终端地址</th>
+            <th>联系人</th>
+            <th>联系电话</th>
+            <th>故障时间</th>
+        </tr>
+        <tr  th:each="list : ${listById}">
+            <td th:text="${list.teraddress}"></td>
+            <td th:text="${list.linkman}"></td>
+            <td th:text="${list.linkphone}"></td>
+            <td th:text="${list.downtime}"></td>
+        </tr>
+    </table>
+
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

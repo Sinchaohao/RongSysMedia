@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+    
+     <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="formId">
+					<div class="select-list">
+						<ul>
+							<li>
+								标题：<input type="text" name="title"/>
+							</li>
+
+							<li>
+								类型：<input type="text" name="type"/>
+							</li>
+
+							<!--<li>
+								添加日期：<input type="text" name="adddate"/>
+							</li>-->
+
+							<li>
+								内容：<input type="text" name="content"/>
+							</li>
+
+							<!--<li>
+								发送人姓名：<input type="text" name="uname"/>
+							</li>-->
+
+							<li>
+								是否有效：<input type="text" name="remark"/>
+							</li>
+
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+	        <div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:shishi:add">
+					<i class="fa fa-plus"></i> 添加
+				</a>
+				<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="village:shishi:edit">
+					<i class="fa fa-edit"></i> 修改
+				</a>
+				<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:shishi:remove">
+					<i class="fa fa-remove"></i> 删除
+				</a>
+				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="village:shishi:export">
+						<i class="fa fa-download"></i> 导出
+				 </a>
+			</div>
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table" data-mobile-responsive="true"></table>
+			</div>
+		</div>
+	</div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('village:shishi:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('village:shishi:remove')}]];
+        var prefix = ctx + "village/shishi";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+				exportUrl: prefix + "/export",
+                modalName: "实时政事",
+				search: false,
+		        showExport: true,
+                columns: [{
+		            checkbox: true
+		        },
+				{
+					field : 'shiid', 
+					title : '实时政事数据编号',
+					visible: false
+				},
+				{
+					field : 'title', 
+					title : '文章标题',
+					sortable: true
+				},
+				{
+					field : 'type', 
+					title : '类型',
+					sortable: true
+				},
+				{
+					field : 'adddate', 
+					title : '添加日期',
+					sortable: true
+				},
+				{
+					field : 'content', 
+					title : '文章内容',
+					sortable: true
+				},
+				{
+					field : 'pic', 
+					title : '文章照片路径',
+					sortable: true
+				},
+				{
+					field : 'uname', 
+					title : '发送人姓名',
+					sortable: true
+				},
+				{
+					field : 'remark', 
+					title : '是否有效',
+					sortable: true
+				}/*,
+		        {
+		            title: '操作',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		            	var actions = [];
+		            	actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="#" onclick="$.operate.edit(\'' + row.shiid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="#" onclick="$.operate.remove(\'' + row.shiid + '\')"><i class="fa fa-remove"></i>删除</a>');
+						return actions.join('');
+		            }
+		        }*/]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

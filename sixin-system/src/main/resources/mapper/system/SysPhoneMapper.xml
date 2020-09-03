@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.system.mapper.SysPhoneMapper">
+
+    <resultMap type="SysPhone" id="SysPhoneResult">
+        <result property="pid"        column="pid"       />
+        <result property="phone"      column="phone"     />
+        <result property="uid"      column="uid"     />
+        <result property="uname"      column="uname"     />
+        <result property="deptid"  column="deptid"/>
+        <result property="rolecode"        column="rolecode"        />
+        <result property="allowid"      column="allowid"     />
+        <result property="allowname"    column="allowname"   />
+        <result property="allowdate"      column="allowdate"     />
+        <result property="reallowid"    column="reallowid"   />
+        <result property="reallowname"        column="reallowname"        />
+        <result property="allowpic"        column="allowpic"        />
+        <result property="remark"        column="remark"        />
+        <association property="dept"    column="deptid" javaType="com.sixin.system.domain.SysDept" resultMap="deptResult" />
+    </resultMap>
+
+    <resultMap id="deptResult" type="com.sixin.system.domain.SysDept">
+        <id     property="deptId"   column="dept_id"     />
+        <result property="parentId" column="parent_id"   />
+        <result property="deptName" column="dept_name"   />
+        <result property="orderNum" column="order_num"   />
+        <result property="leader"   column="leader"      />
+        <result property="status"   column="dept_status" />
+    </resultMap>
+
+    <sql id="selectPhone">
+    select p.pid,p.phone,p.uid,p.deptid,p.uname,p.deptid,p.rolecode,p.allowid,p.allowname,p.allowdate,p.reallowid,p.reallowname,p.allowpic,p.remark,
+    b.dept_id, b.parent_id, b.dept_name, b.order_num, b.leader, b.status as dept_status
+    from ry.sys_phonemanage p
+    left join ry.sys_dept b on p.deptid=b.dept_id
+    </sql>
+
+    <select id="selectPhonelist" parameterType="com.sixin.system.domain.SysPhone" resultMap="SysPhoneResult">
+        <include refid="selectPhone"/>where 1=1
+        <!--        <if test="pid != null and pid !=''">-->
+        <!--            AND p.pid=#{pid}-->
+        <!--        </if>-->
+        <!--        <if test="phone != null and phone != ''">-->
+        <!--            AND p.phone like concat('%', #{phone}, '%')-->
+        <!--        </if>-->
+        <if test="deptid != null and deptid != ''">
+            and (b.dept_id = #{deptid} OR b.dept_id IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptid},ancestors) ))
+        </if>
+        <!--        <if test="uname != null and uname != ''">-->
+        <!--            AND p.uname like concat('%', #{uname}, '%')-->
+        <!--        </if>-->
+        <!--        <if test="rolecode != null and rolecode != ''">-->
+        <!--            AND p.rolecode like concat('%', #{rolecode}, '%')-->
+        <!--        </if>-->
+        <!--        <if test="allowid != null and allowid != ''">-->
+        <!--            AND p.allowid=#{allowid}-->
+        <!--        </if>-->
+        <!--        <if test="allowname != null and allowname != ''">-->
+        <!--            AND p.allowname like concat('%', #{allowname}, '%')-->
+        <!--        </if>-->
+        <!--        <if test="reallowid != null and reallowid != 0">-->
+        <!--            AND p.reallowid=#{reallowid}-->
+        <!--        </if>-->
+        <!--        <if test="reallowname != null and reallowname != ''">-->
+        <!--            AND p.reallowname like concat('%', #{reallowname}, '%')-->
+        <!--        </if>-->
+        <!--        <if test="allowpic != null and allowpic != ''">-->
+        <!--            AND p.allowpic like concat('%', #{allowpic}, '%')-->
+        <!--        </if>-->
+        <!--        <if test="remark != null and remark != ''">-->
+        <!--            AND p.remark=#{remark}-->
+        <!--        </if>-->
+    </select>
+
+    <insert id="insertPhone" parameterType="SysPhone">
+        insert into sys_phonemanage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <!--            <if test="pid != null  ">pid,</if>-->
+            <if test="phone != null  ">phone,</if>
+            <if test="uid!= null  and uid!= ''  ">uid,</if>
+            <if test="uname != null  and uname != ''  ">uname,</if>
+            <if test="deptid !=null and deptid !=''">deptid,</if>
+            <if test="rolecode != null  and rolecode != ''  ">rolecode,</if>
+            <if test="allowid != null  and allowid != ''  ">allowid,</if>
+            <if test="allowname != null  and allowname != ''  ">allowname,</if>
+            <if test="reallowid != null  and reallowid != ''  ">reallowid,</if>
+            <if test="reallowname != null  and reallowname !=''  ">reallowname,</if>
+            <if test="allowpic != null  and allowpic!= ''  ">allowpic,</if>
+            <if test="remark != null  and remark !=''  ">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <!--            <if test="pid != null  ">#{pid},</if>-->
+            <if test="phone != null  ">#{phone},</if>
+            <if test="uid!= null  and uid!= ''  ">#{uid},</if>
+            <if test="uname != null  and uname != ''  ">#{uname},</if>
+            <if test="deptid !=null and deptid !=''">#{deptid},</if>
+            <if test="rolecode != null  and rolecode != ''  ">#{rolecode},</if>
+            <if test="allowid != null  and allowid != ''  ">#{allowid},</if>
+            <if test="allowname != null  and allowname != ''  ">#{allowname},</if>
+            <if test="reallowid != null  and reallowid != ''  ">#{reallowid},</if>
+            <if test="reallowname != null  and reallowname !=''  ">#{reallowname},</if>
+            <if test="allowpic != null  and allowpic!= ''  ">#{allowpic},</if>
+            <if test="remark != null  and remark !=''  ">#{remark},</if>
+        </trim>
+    </insert>
+    <delete id="deletePhone" parameterType="String">
+        delete from sys_phonemanage where pid in
+        <foreach item="pid" collection="array" open="(" separator="," close=")">
+            #{pid}
+        </foreach>
+    </delete>
+    <select id="selectPhoneById" parameterType="Long" resultMap="SysPhoneResult">
+        select pid,phone,uid,uname,deptid,rolecode,allowid,allowname,allowdate,reallowid,reallowname,allowpic,remark
+        from sys_phonemanage where pid=#{pid}
+    </select>
+    <update id="updatePhone" parameterType="com.sixin.system.domain.SysPhone">
+        update sys_phonemanage
+        <set>
+            <!--            <if test="phone != null  ">phone=#{phone},</if>-->
+            <!--            <if test="uid!= null  and uid!= ''  ">uid=#{uid},</if>-->
+            <!--            <if test="uname != null  and uname != ''  ">uname=#{uname},</if>-->
+            <!--            <if test="rolecode != null  and rolecode != ''  ">rolecode=#{rolecode},</if>-->
+            <!--            <if test="allowid != null  and allowid != ''  ">allowid=#{allowid},</if>-->
+            <!--            <if test="allowname != null  and allowname != ''  ">allowname=#{allowname},</if>-->
+            <!--            <if test="reallowid != null  and reallowid != ''  ">reallowid#{reallowid},</if>-->
+            <!--            <if test="reallowname != null  and reallowname !=''  ">reallowname#{reallowname},</if>-->
+            <!--            <if test="allowpic != null  and allowpic!= ''  ">allowpic#{allowpic},</if>-->
+            <!--            <if test="remark != null  and remark !=''  ">remark=#{remark},</if>-->
+            phone=#{phone},uid=#{uid},uname=#{uname},deptid=#{deptid},rolecode=#{rolecode},allowid=#{allowid},
+            allowname=#{allowname},reallowname=#{reallowname},allowpic=#{allowpic}
+        </set>
+        where pid=#{pid}
+    </update>
+</mapper>

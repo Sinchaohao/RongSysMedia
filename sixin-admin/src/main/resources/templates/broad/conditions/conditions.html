@@ -1,0 +1,291 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-12 search-collapse">
+			<form id="formId">
+				<div class="select-list">
+					<ul>
+						<!--<li>-->
+							<!--硬件版本：<input type="text" name="hversion"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--软件版本：<input type="text" name="sversion"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--内核温度：<input type="text" name="temp"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--网络类型：<input type="text" name="nettype"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--信号质量：<input type="text" name="qsignal"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--SD卡容量：<input type="text" name="sd"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--MP3音量：<input type="text" name="mp3"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--FM音量：<input type="text" name="fm"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--GSM音量：<input type="text" name="gsm"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--NULL音量：<input type="text" name="nullv"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--终端接入基站编号：<input type="text" name="basestation"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--创建时间：<input type="text" name="createtime"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--备注：<input type="text" name="remark"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--发射机的发射功率：<input type="text" name="transmitpower"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--反射功率：<input type="text" name="reflectedpower"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--工作电压：<input type="text" name="workvoltage"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--FM调频发射RDS码：<input type="text" name="rds"/>-->
+						<!--</li>-->
+
+						<!--<li>-->
+							<!--FM调频发射频率：<input type="text" name="fmfrequency"/>-->
+						<!--</li>-->
+
+						<li>
+							<input type="text" name="aid" th:type="hidden" id="aid" style="width: 100px"/>
+						</li>
+
+						<li class="form-group" style="display: inline-flex">
+							<select class="form-control noselect2 selectpicker" id="form-group11" style="width: 120px;padding: 0">
+								<option value="hversion">硬件版本</option>
+								<option value="sversion">软件版本</option>
+								<option value="temp">内核温度</option>
+								<option value="nettype">网络类型</option>
+								<option value="qsignal">信号质量</option>
+								<option value="sd">SD卡容量</option>
+								<option value="mp3">MP3音量</option>
+								<option value="fm">FM音量</option>
+								<option value="gsm">GSM音量</option>
+								<option value="basestation">终端接入基站编号</option>
+								<option value="createtime">创建时间</option>
+								<option value="remark">备注</option>
+								<option value="updatetime">更新时间</option>
+							</select>
+							<input type="text" name="hversion" id="form-group1" style="width: 100px"/>
+						</li>
+						<li class="form-group" style="display: inline-flex">
+							<select class="form-control noselect2 selectpicker" id="form-group22" style="width: 120px;padding: 0">
+								<option value="sversion">软件版本</option>
+								<option value="hversion">硬件版本</option>
+								<option value="temp">内核温度</option>
+								<option value="nettype">网络类型</option>
+								<option value="qsignal">信号质量</option>
+								<option value="sd">SD卡容量</option>
+								<option value="mp3">MP3音量</option>
+								<option value="fm">FM音量</option>
+								<option value="gsm">GSM音量</option>
+								<option value="basestation">终端接入基站编号</option>
+								<option value="createtime">创建时间</option>
+								<option value="remark">备注</option>
+								<option value="updatetime">更新时间</option>
+							</select>
+							<input type="text" name="sversion" id="form-group2" style="width: 100px"/>
+						</li>
+						<li class="form-group" style="display: inline-flex">
+							<select class="form-control noselect2 selectpicker" id="form-group33" style="width: 120px;padding: 0">
+								<option value="temp">内核温度</option>
+								<option value="hversion">硬件版本</option>
+								<option value="sversion">软件版本</option>
+								<option value="nettype">网络类型</option>
+								<option value="qsignal">信号质量</option>
+								<option value="sd">SD卡容量</option>
+								<option value="mp3">MP3音量</option>
+								<option value="fm">FM音量</option>
+								<option value="gsm">GSM音量</option>
+								<option value="basestation">终端接入基站编号</option>
+								<option value="createtime">创建时间</option>
+								<option value="updatetime">更新时间</option>
+								<option value="remark">备注</option>
+							</select>
+							<input type="text" name="temp" id="form-group3" style="width: 100px"/>
+						</li>
+
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<!--<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="broad:conditions:add">-->
+			<!--<i class="fa fa-plus"></i> 添加-->
+			<!--</a>-->
+			<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="broad:conditions:edit">-->
+			<!--<i class="fa fa-edit"></i> 修改-->
+			<!--</a>-->
+			<!--<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="broad:conditions:remove">-->
+			<!--<i class="fa fa-remove"></i> 删除-->
+			<!--</a>-->
+			<!--<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="broad:conditions:export">-->
+			<!--<i class="fa fa-download"></i> 导出-->
+			<!--</a>-->
+		</div>
+
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+	</div>
+</div>
+<div th:include="include :: footer"></div>
+<style>
+	input{
+		width:inherit!important;
+	}
+</style>
+<script th:inline="javascript">
+	var editFlag = [[${@permission.hasPermi('broad:conditions:edit')}]];
+	var removeFlag = [[${@permission.hasPermi('broad:conditions:remove')}]];
+	var prefix = ctx + "broad/conditions";
+
+	$(function() {
+		var options = {
+			url: prefix + "/list",
+			createUrl: prefix + "/add",
+			updateUrl: prefix + "/edit/{id}",
+			removeUrl: prefix + "/remove",
+			exportUrl: prefix + "/export",
+			modalName: "设备报",
+			search: false,
+			showExport: true,
+			columns: [
+				{
+					checkbox: true
+				},
+				{
+					field : 'tid',
+					title : '终端号IMEI',
+					visible: true
+				},
+				{
+					field : 'hversion',
+					title : '硬件版本',
+					sortable: true
+				},
+				{
+					field : 'sversion',
+					title : '软件版本',
+					sortable: true
+				},
+				{
+					field : 'temp',
+					title : '内核温度',
+					sortable: true
+				},
+				{
+					field : 'nettype',
+					title : '网络类型',
+					sortable: true
+				},
+				{
+					field : 'qsignal',
+					title : '信号质量',
+					sortable: true
+				},
+				{
+					field : 'sd',
+					title : 'SD卡容量',
+					sortable: true
+				},
+				{
+					field : 'mp3',
+					title : 'MP3音量',
+					sortable: true
+				},
+				{
+					field : 'fm',
+					title : 'FM音量',
+					sortable: true
+				},
+				{
+					field : 'gsm',
+					title : 'GSM音量',
+					sortable: true
+				},
+				{
+					field : 'nullv',
+					title : 'NULL音量',
+					sortable: true
+				},
+				{
+					field : 'basestation',
+					title : '终端接入基站编号',
+					sortable: true
+				},
+				{
+					field : 'createtime',
+					title : '创建时间',
+					sortable: true
+				},
+				{
+					field : 'remark',
+					title : '备注',
+					sortable: true
+				},
+				{
+					field : 'updatetime',
+					title : '更新时间',
+					sortable: true
+				}
+			]
+		};
+		$.table.init(options);
+	});
+</script>
+<script>
+
+    $('#form-group11').on('change', function (e) {
+        $("#form-group1").attr("name",$("#form-group11").val())
+    });
+    $('#form-group22').on('change', function (e) {
+        $("#form-group2").attr("name",$("#form-group22").val())
+    });
+    $('#form-group33').on('change', function (e) {
+        $("#form-group3").attr("name",$("#form-group33").val())
+    });
+</script>
+</body>
+</html>

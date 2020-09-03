@@ -1,0 +1,452 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header">
+	<style>
+		#canvasOne {
+			border: 1px solid #ddd;
+		}
+	</style>
+</head>
+<body class="gray-bg" onload="init();">
+<script th:src="@{/js/plugins/live/recorder-core.js}"></script>
+<script th:src="@{/js/plugins/live/FileSaver.js}"></script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/content.min.js}"></script>
+<script th:src="@{/js/views/live/swfobject.min.js}"></script>
+<script th:src="@{/js/views/live/livestreamtest.js}"></script>
+<script th:src="@{/ajax/libs/select/select2.js}"></script>
+<script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+<script th:src="@{/js/plugins/live/engine/mp3.js}"></script>
+<script th:src="@{/js/plugins/live/engine/mp3-engine.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+<script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>流媒体直播</h5>
+					<div class="ibox-tools">
+					</div>
+				</div>
+				<div class="ibox-content">
+					<p class="text-warning">测试直播IMEI为：<span id="test"></span></p>
+					<div id="livestatus">
+						<p class="text-primary" >未直播</p>
+					</div>
+					<div id="rtmp-streamer" >
+						<h3>请先安装flash插件</h3>
+						<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="下载 Adobe Flash player 插件" /></a></p>
+					</div>
+					<div >
+						<button class="btn btn-primary"  name="organName" onclick="selectOrganTree()" id="treeName">选择终端</button>
+						<button id="start" class="btn btn-primary"   onclick="startlive(this);"  >
+							<i  class="ace-icon fa fa-play bigger-110 "></i>&nbsp;开启直播</button>
+						<button id="end" class="btn btn-danger"  disabled onclick="endlive();"   >
+							<i  class="ace-icon fa fa-stop bigger-110 " ></i>&nbsp;关闭直播</button>
+					</div>
+					<div style="font-size:12px;margin-top:20px;">
+						<p  class="text-warning" >直播终端：<span id="liveternum">0</span> 个，开启直播：<span id="startternum">0</span> 个</p>
+					</div>
+					<div>
+						<h1>直播声音频域图</h1>
+						<canvas id="canvasOne" width="401" height="401"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-8">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>终端直播状态</h5>
+				</div>
+				<div class="ibox-content">
+					<form action="" method="post" name="Form" id="Form">
+						<div style="overflow: scroll;height: 250px">
+							<table id="simple-table"  class="table table-striped table-bordered table-hover" >
+								<thead>
+								<tr>
+									<th class="center">终端IMEI</th>
+									<th class="center">终端设备名称</th>
+									<th class="center">流媒体ID</th>
+									<th class="center">记录状态</th>
+								</tr>
+								</thead>
+								<tbody id="tbody"></tbody>
+							</table>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-4">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>终端数量以及直播状态统计</h5>
+					<div class="ibox-tools">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+							<i class="fa fa-superpowers"></i>
+						</a>
+						<ul class="dropdown-menu dropdown-user">
+							<li><a onclick="terminalStateCount()">原始数据</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="ibox-content">
+					<div class="echarts" id="bd_terminalstate"></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-sm-4" >
+			<div class="ibox float-e-margins">
+				<div class="ibox-content">
+					<h5>终端数量以及直播状态统计</h5>
+					<audio class="recPlay" style="width:100%"></audio>
+				</div>
+				<input name="deptId"  type="hidden" id="treeId"/>
+				<input name="deptId"  type="hidden" id="tname"/>
+				<div class="ibox-content">
+					<div id="imea"  style="overflow: scroll;height: 200px"></div>
+				</div>
+				<div class="ibox-content">
+					<audio class="recPlay" style="width:70%" id="vid"></audio>
+					<div class="reclog"></div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+</div>
+<script>
+
+	$("#test").html(imeilist);
+
+	var imea = new Array();
+	var imeiName = new Array();
+
+	function terminalStateCount(){
+		var bds_mbygroup = echarts.init(document.getElementById('bd_terminalstate'));
+		$.ajax({
+			type: "GET",
+			url: "/api/bcount/bindex",
+			datatype: "JSON",
+			success: function (data) {
+				var bd_all = data.data.dev;
+				option = {
+					tooltip: {
+						trigger: 'item',
+						formatter: "{a} <br/>{b} : {c} ({d}%)"
+					},
+					legend: {
+						orient: 'vertical',
+						left: 'left',
+						data: ['终端总数', '直播终端数']
+					},
+					series: [{
+						color: ['#fc4945','#00fc1a'],
+						name: '访问来源',
+						type: 'pie',
+						radius: '55%',
+						center: ['50%', '60%'],
+						data: [
+							{value: bd_all, name: '终端总数'},
+							{value: terminalCount, name: '直播终端数'}
+						],
+						itemStyle: {
+							emphasis: {
+								shadowBlur: 10,
+								shadowOffsetX: 0,
+								shadowColor: 'rgba(0, 0, 0, 0.5)'
+							}
+						}
+					}]
+				};
+				bds_mbygroup.setOption(option);
+			}
+		});
+	}
+
+	$(window).bind("error",function(e){
+		$(".reclog").prepend('<div>['+new Date().toLocaleTimeString()+']'+'<span style="color:red">【Error】:<pre>'+(e.error?e.error.stack:event.message)+'</pre></span>'+'</div>');
+	});
+
+//文件转播选择
+	function doFile() {
+		if($("#broaddate").val() == ""){
+			layer.tips('请选择播出日期','#broaddate', {
+				tips: [1, '#3595CC'],
+				time: 4000
+			});
+			return false;
+		}
+
+		var _url = "/broad/live/getdofile";
+		var _title = '文件选择';
+		var _width = "1200";
+		var _height = ($(window).height() - 50);
+		layer.open({
+			type: 2,
+			maxmin: true,
+			shade: 0.3,
+			title: _title,
+			fix: false,
+			area: [_width + 'px', _height + 'px'],
+			content: _url,
+			shadeClose: true,
+			btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			yes: function (index, layero) {
+				layer.close(index);
+				//获取子页面关闭前的回调函数获取到的值
+				var res = $(layero).find("iframe")[0].contentWindow.callbackfile();
+				var filename = res.data_filename;
+				var fid = res.data_file;
+				console.log("文件id:"+fid+",文件名称："+filename);
+				$("#file").attr("name",fid);
+				$("#file").val(filename);
+				fid = "../"+fid;
+				fid = "../"+fid;
+				var audio=$(".recPlay")[0];
+				audio.controls=true;
+				if(!(audio.ended || audio.paused)){
+					audio.pause();
+				};
+				audio.src=fid;
+			}, cancel: function () {
+				return true;
+			}
+		});
+	}
+
+//播放文件
+	function vid(){
+		streamid = getCurTime();
+		if(rec){
+			rec.start();
+		};
+		$(".buttonsd").attr("disabled","disabled");
+		$(".buttonsb").removeAttr("disabled");
+		$("#start").attr("disabled","disabled");
+		$("#end").attr("disabled","disabled");
+
+		var audio=$(".recPlay")[0];
+		if(audio.paused){
+			audio.play();// 播放
+		}
+		publishRtmp();
+	}
+
+//生成随机id作为下载连接地址
+	function RandomKey(){
+		return "randomkey"+(RandomKey.idx++);
+	};
+	RandomKey.idx=0;
+
+	var ctx;
+	var audioContext;
+	var mic;
+//定义为Recoder用到的变量，录音机、音频文件、波浪
+	var rec;
+	var recblob={};
+	var wave;
+
+//页面初始化-》初始化录音机和波形图
+	function init() {
+		initcpt();//初始化录音机
+		canvasOne = document.getElementById('canvasOne');
+		ctx = canvasOne.getContext("2d");//getContext() 方法返回一个用于在画布上绘图的环境。
+	}
+
+//初始化录音机
+	function initcpt() {
+		rec=Recorder({
+			type:"mp3",
+			bitRate:16,
+			sampleRate:16000,
+			onProcess:function(buffers,level,time,sampleRate){
+
+			}
+		});
+		rec.open(function(){//打开麦克风授权获得相关资源
+			console.log("已打开录音，可以点击录制开始录音了");
+		},function(e,isUserNotAllow){
+			console.log((isUserNotAllow?"UserNotAllow，":"")+"打开录音失败："+e);
+		});
+	}
+
+//格式编码为MP3所需时长
+	function intp(s,len){
+		s=""+s;
+		if(s.length>=len)return s;
+		return (""+s).substr(-len);
+	};
+
+//使用打印日志方法
+	function reclog(s,color){
+		var now=new Date();
+		var t=("0"+now.getHours()).substr(-2)
+				+":"+("0"+now.getMinutes()).substr(-2)
+				+":"+("0"+now.getSeconds()).substr(-2);
+		var div=document.createElement("div");
+		var elem=document.querySelector(".reclog");
+		elem.insertBefore(div,elem.firstChild);
+		div.innerHTML='<div style="color:'+(!color?"":color==1?"red":color==2?"#0b1":color)+'">['+t+']'+s+'</div>';
+	};
+
+//播放录制好的MP3文件
+	function recplay(key){
+		var o=recblob[key];
+		if(o){
+			var audio=$(".recPlay")[0];
+			audio.controls=true;
+			if(!(audio.ended || audio.paused)){
+				audio.pause();
+			};
+			o.play=(o.play||0)+1;
+			var logmsg=function(msg){
+				$(".p"+key).html('<span style="color:green">'+o.play+'</span> '+new Date().toLocaleTimeString()+" "+msg);
+			};
+			logmsg("");
+
+			var end=function(blob){
+				audio.src=URL.createObjectURL(blob);
+				audio.play();
+			};
+			var wav=Recorder[o.set.type+"2wav"];
+			if(wav){
+				logmsg("正在转码成wav...");
+				wav(o.blob,function(blob){
+					end(blob);
+					logmsg("已转码成wav播放");
+				},function(msg){
+					logmsg("转码成wav失败："+msg);
+				});
+			}else{
+				end(o.blob);
+			};
+		};
+	};
+
+//开始直播
+	function startlive(obj){
+		//获取到终端
+		list = imeilist.toString().split(",");
+		for(var i = 0; i < imea.length; i++) {
+			list[i] = imea[i];
+			nameList[i] = imeiName[i];
+		}
+		imeilist += "," + String(document.getElementById("treeId").value);
+		if(imeilist==null || imeilist==""){
+			$.modal.confirm("无测试终端，请查看源码调试 ----》 方法startlive(obj)");
+			return false;
+		}else{
+			//检查终端设备是否为空，录音机是否为空，然后开始录音直播
+			streamid = getCurTime();
+			if(rec&&Recorder.IsOpen()){
+				rec.start();
+			}
+			setLiveButton(0);
+			list.splice(list.length-1,1);
+			terminalCount = list.length;
+			message_1 = "start:"+streamid+":"+list;
+			setLiveButton(1);
+			publishRtmp()
+		}
+	}
+
+//结束直播
+	function endlive(){
+		setLiveButton(3);
+		scrollStatus("text-info","正在关闭直播...");
+		addlog("close",streamid,list, nameList);
+		if(rec){
+			rec.stop(function(blob,time){
+				var id=RandomKey(16);
+				recblob[id]={blob:blob,set:$.extend({},rec.set),time:time};
+				recdown(id);
+				var t1=Date.now();
+				reclog("已录制:"+intp(rec.set.bitRate,3)+"kbps "+intp(rec.set.sampleRate,5)+"hz 花"+intp(Date.now()-t1,4)+"ms编码"+intp(blob.size,6)+"b ["+rec.set.type+"]"+intp(time,6)+'ms <button onclick="recdown(\''+id+'\')">下载</button> <button onclick="recplay(\''+id+'\')">播放</button> <span class="p'+id+'"></span> <span class="d'+id+'"></span>');
+			},function(s){
+			});
+		};
+		if(isOpen) streamerDisconnect();
+		if (ws != null) {
+			var message = "end:"+streamid;
+			ws.send(message);
+		} else {
+			setLiveButton(2);
+		}
+		scrollStatus("text-info","已关闭");
+	};
+
+//下载MP3音频文件
+	function recdown(key){
+		var o=recblob[key];
+		if(o){
+			var cls=RandomKey(16);
+			var name="rec-"+o.time+"ms-"+o.set.bitRate+"kbps-"+o.set.sampleRate+"hz."+o.set.type;
+			o.down=(o.down||0)+1;
+			var downA=document.createElement("A");
+			downA.innerHTML="下载 "+name;
+			downA.href=URL.createObjectURL(o.blob);
+			downA.download=name;
+			$("."+cls).prepend(downA);
+			downA.click();
+		};
+	};
+
+	var context1;
+	try {
+		context1 = new (window.AudioContext || window.webkitAudioContext);
+	} catch(e) {
+		throw new Error('The Web Audio API is unavailable');
+	}
+	window.addEventListener('load', function(e) {
+		drawSpectrumfa();
+	}, false);
+
+//画波浪图
+	function drawSpectrumfa() {
+		requestAnimationFrame(drawSpectrumfa);
+	}
+
+//查询终端树表
+	function selectOrganTree() {
+		$('#imea').html('');
+		var _height = ($(window).height() - 50);
+		layer.open({
+			type: 2,
+			maxmin: true,
+			shade: 0.3,
+			title: '选择终端',
+			fix: false,
+			area: ['1200' + 'px', _height + 'px'],
+			content: "/broad/organization/selectOrganizationTree/01",
+			shadeClose: true,
+			btn: ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'],
+			yes: function (index, layero) {
+				imea = String(document.getElementById("treeId").value).split(',');
+				imeiName = String(document.getElementById("tname").value).split(',');
+				doSubmit(index, layero)
+			}, cancel: function () {
+				return true;
+			}
+		});
+	}
+
+//从弹窗中提交终端数据到主界面
+	function doSubmit(index){
+		var body = layer.getChildFrame('body', index);
+		$("#treeId").val(body.find('#treeId').val());
+		$("#treeName").val(body.find('#treeName').val());
+		layer.close(index);
+	}
+</script>
+
+</body>
+</html>

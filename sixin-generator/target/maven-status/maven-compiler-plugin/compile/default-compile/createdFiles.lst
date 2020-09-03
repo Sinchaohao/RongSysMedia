@@ -1,0 +1,14 @@
+com\sixin\generator\domain\GenTableColumn.class
+com\sixin\generator\util\VelocityUtils.class
+com\sixin\generator\mapper\GenTableColumnMapper.class
+com\sixin\generator\service\impl\GenTableServiceImpl.class
+META-INF\spring-configuration-metadata.json
+com\sixin\generator\service\impl\GenTableColumnServiceImpl.class
+com\sixin\generator\controller\GenController.class
+com\sixin\generator\domain\GenTable.class
+com\sixin\generator\util\VelocityInitializer.class
+com\sixin\generator\service\IGenTableService.class
+com\sixin\generator\service\IGenTableColumnService.class
+com\sixin\generator\mapper\GenTableMapper.class
+com\sixin\generator\config\GenConfig.class
+com\sixin\generator\util\GenUtils.class

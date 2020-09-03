@@ -1,0 +1,220 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-tbStaff-add">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">工作人员编号：</label>
+			<div class="col-sm-8">
+				<input id="stid" name="stid" class="form-control" type="text" placeholder="请填入工作人员编号">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">用户编号：</label>
+			<div class="col-sm-8">
+				<input id="userid" name="userid" class="form-control" type="text" placeholder="请填入用户编号">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">地域编号：</label>
+			<div class="col-sm-8">
+				<input  class="form-control" type="text" id="aid" name="aid" onclick="selectAidTree()" placeholder="点击选择区域">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">姓名：</label>
+			<div class="col-sm-8">
+				<input id="username" name="username" class="form-control" type="text" placeholder="请输入姓名">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">年龄：</label>
+			<div class="col-sm-8">
+				<input id="age" name="age" class="form-control" type="text" placeholder="请输入年龄">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">性别：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="sex" name="sex"  type="text">
+					<option value="男">男</option>
+					<option value="女">女</option>
+					<option value="未知">未知</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">籍贯：</label>
+			<div class="col-sm-8">
+				<input id="nativeplace" name="nativeplace" class="form-control" type="text" placeholder="请输入省份与县（市）">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">家庭地址：</label>
+			<div class="col-sm-8">
+				<input id="address" name="address" class="form-control" type="text" placeholder="请填入现居地址">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">民族：</label>
+			<div class="col-sm-8">
+				<input id="nation" name="nation" class="form-control" type="text" placeholder="请填入民族">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">政治面貌：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="politics" name="politics"  type="text">
+					<option value=""></option>
+					<option value="群众">群众</option>
+					<option value="中共党员">中共党员</option>
+					<option value="中共预备党员">中共预备党员</option>
+					<option value="共青团员">共青团员</option>
+					<option value="民革党员">民革党员</option>
+					<option value="民盟盟员">民盟盟员</option>
+					<option value="民建会员">民建会员</option>
+					<option value="民进会员">民进会员</option>
+					<option value="台盟盟员">台盟盟员</option>
+					<option value="农工党党员">农工党党员</option>
+					<option value="致公党党员">致公党党员</option>
+					<option value="无党派人士">无党派人士</option>
+					<option value="九三学社社员">九三学社社员</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">文化程度：</label>
+			<div class="col-sm-8">
+				<select class="chosen-select form-control" id="edulevel" name="edulevel"  type="text">
+					<option value=""></option>
+					<option value="本科">本科</option>
+					<option value="研究生">研究生</option>
+					<option value="大专">大专</option>
+					<option value="中专">中专</option>
+					<option value="高中">高中</option>
+					<option value="初中">初中</option>
+					<option value="小学">小学</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">身份证号码：</label>
+			<div class="col-sm-8">
+				<input id="idcard" name="idcard" class="form-control" type="text" placeholder="请输入身份证号码">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">联系方式：</label>
+			<div class="col-sm-8">
+				<input id="phone" name="phone" class="form-control" type="text" placeholder="请输入手机号码">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">职业：</label>
+			<div class="col-sm-8">
+				<input id="job" name="job" class="form-control" type="text" placeholder="请填入职业信息">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">工作单位：</label>
+			<div class="col-sm-8">
+				<input id="employeeunit" name="employeeunit" class="form-control" type="text" placeholder="请填入工作单位">
+			</div>
+		</div>
+		<!--②使用input去接收数据，textare去作为文本输入框-->
+		<div class="form-group">
+			<label class="col-sm-3 control-label">获奖情况：</label>
+			<div class="col-sm-8">
+				<textarea id="winaward" name="winaward"  autofocus></textarea>
+				<!--②使用textare去作为富文本输入框-->
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">处分情况：</label>
+			<div class="col-sm-8">
+				<textarea id="punish" name="punish"  autofocus></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">身份证照片：</label>
+			<div class="col-sm-8">
+				<input id="idphoto" name="idphoto" class="form-control" type="text">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+
+<script type="text/javascript">
+	var prefix = ctx + "village/tbStaff"
+	$("#form-tbStaff-add").validate({
+		rules:{
+			xxxx:{
+				required:true,
+			},
+		}
+	});
+
+	/*用户管理-新增-选择用户所属区域树*/
+	function selectAidTree() {
+		var url = "/broad/organization/selectAidTree";
+		var options = {
+			title: '选择区域',
+			width: "380",
+			url: "/broad/organization/selectAidTree",
+			callBack: doSubmitAid
+		};
+		$.modal.openOptions(options);
+	}
+
+	/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+	function doSubmitAid(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#aid").val(body.find('#treeId').val());
+			$("#aidName").val(body.find('#treeName').val());
+			/*console.log(body.find('#treeId').val());
+            console.log(body.find('#treeName').val());*/
+			layer.close(index);
+		}
+	}
+
+
+
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/add", $('#form-tbStaff-add').serialize());
+		}
+	}
+</script>
+<!--③引入富文本框需要的js文件-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+
+<!--④定义富文本框-->
+<script>
+	var editor = new Simditor({toolbar: ['title', 'bold', 'underline', 'color', '|', 'ol', 'ul', 'table'], textarea: '#punish',});
+	var editor = new Simditor({toolbar: ['title', 'bold', 'underline', 'color', '|', 'ol', 'ul', 'table'], textarea: '#winaward',});
+</script>
+<script>
+	$(document).ready(function(){Dropzone.options.myAwesomeDropzone={autoProcessQueue:false,uploadMultiple:true,parallelUploads:100,maxFiles:100,init:function(){var myDropzone=this;this.element.querySelector("button[type=submit]").addEventListener("click",function(e){e.preventDefault();e.stopPropagation();myDropzone.processQueue()});this.on("sendingmultiple",function(){});this.on("successmultiple",function(files,response){});this.on("errormultiple",function(files,response){})}}});
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+</body>
+</html>

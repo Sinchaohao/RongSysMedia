@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-management-edit" th:object="${management}">
+		<input id="tid" name="tid" th:field="*{tid}"  type="hidden">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">节目播出主管单位：</label>
+			<div class="col-sm-8">
+				<input id="supervisionUnit" name="supervisionUnit" readonly="true" th:field="*{supervisionUnit}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">安全播出责任单位：</label>
+			<div class="col-sm-8">
+				<input id="accountabilityUnit" name="accountabilityUnit" readonly="true" th:field="*{accountabilityUnit}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">安装点经度：</label>
+			<div class="col-sm-8">
+				<input id="longitude" name="longitude" th:field="*{longitude}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">纬度：</label>
+			<div class="col-sm-8">
+				<input id="latitude" name="latitude" th:field="*{latitude}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">覆盖用户：</label>
+			<div class="col-sm-8">
+				<input id="families" name="families" readonly="true" th:field="*{families}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">覆盖人口数：</label>
+			<div class="col-sm-8">
+				<input id="population" name="population" readonly="true" th:field="*{population}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">二次覆盖模式：</label>
+			<div class="col-sm-8">
+				<input id="twoOverlayMode" name="twoOverlayMode" readonly="true" th:field="*{twoOverlayMode}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">二次覆盖发射频率：</label>
+			<div class="col-sm-8">
+				<input id="twoTransmitFrequency" name="twoTransmitFrequency" readonly="true" th:field="*{twoTransmitFrequency}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">二次覆盖终端数：</label>
+			<div class="col-sm-8">
+				<input id="twoOverlayNumber" name="twoOverlayNumber" readonly="true" th:field="*{twoOverlayNumber}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">二次覆盖用户数：</label>
+			<div class="col-sm-8">
+				<input id="twoOverlayFamiles" name="twoOverlayFamiles" readonly="true" th:field="*{twoOverlayFamiles}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">二次覆盖人口数：</label>
+			<div class="col-sm-8">
+				<input id="twoOverlayPopulations" name="twoOverlayPopulations" readonly="true" th:field="*{twoOverlayPopulations}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">耗电指数：</label>
+			<div class="col-sm-8">
+				<input id="powerConsumption" name="powerConsumption" readonly="true" th:field="*{powerConsumption}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">其它应急系统技术：</label>
+			<div class="col-sm-8">
+				<input id="otherTechnology" name="otherTechnology" readonly="true"  th:field="*{otherTechnology}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">应急演练期限：</label>
+			<div class="col-sm-8">
+				<input id="drillingPeriod" name="drillingPeriod" readonly="true" th:field="*{drillingPeriod}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">备用电瓶配置：</label>
+			<div class="col-sm-8">
+				<input id="standbyBattery" name="standbyBattery" readonly="true" th:field="*{standbyBattery}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">回传数据技术模块：</label>
+			<div class="col-sm-8">
+				<input id="playbacksMode" name="playbacksMode" readonly="true" th:field="*{playbacksMode}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">维护经费：</label>
+			<div class="col-sm-8">
+				<input id="maintenanceFunds" name="maintenanceFunds" readonly="true" th:field="*{maintenanceFunds}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">是否有效：</label>
+			<div class="col-sm-8">
+				<input id="remark" name="remark" readonly="true" th:field="*{remark}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">备用电池电压：</label>
+			<div class="col-sm-8">
+				<input id="backupBatteryVoltage" name="backupBatteryVoltage"  readonly="true" th:field="*{backupBatteryVoltage}" class="form-control" type="text">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+	var prefix = ctx + "broad/management"
+	$("#form-management-edit").validate({
+		rules:{
+			xxxx:{
+				required:true,
+			},
+		}
+	});
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/edit", $('#form-management-edit').serialize());
+		}
+	}
+</script>
+</body>
+</html>

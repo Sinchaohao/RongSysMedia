@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.ManagementMapper">
+
+    <resultMap type="com.sixin.broad.domain.Management" id="ManagementResult">
+        <result property="tname"         column="tname"        />
+        <result property="tid"       column="tid"      />
+        <result property="address"     column="address"    />
+        <result property="uname"       column="uname"      />
+        <result property="aname"       column="aname"      />
+        <result property="phone"            column="phone"            />
+        <result property="basestation"       column="basestation"      />
+        <result property="latitude"        column="latitude"        />
+        <result property="longitude"          column="longitude"          />
+        <result property="receivetime"           column="receivetime"           />
+        <result property="createdtime"       column="createdtime"      />
+        <result property="manageruserid"     column="manageruserid"    />
+        <result property="managername"     column="managername"    />
+        <result property="isuse"     column="isuse"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.Tersga" id="TersgaResult">
+        <result property="aname"    column="aname"    />
+        <result property="sum"    column="sum"    />
+        <result property="run"    column="run"    />
+        <result property="down"    column="down"    />
+        <result property="req" column="req" />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.Termap" id="ManagementgpsResult">
+        <result property="tid"    column="tid"    />
+        <result property="longitude"    column="Longitude"    />
+        <result property="latitude"    column="Latitude"    />
+        <result property="uname"       column="uname"      />
+        <result property="aname"       column="aname"      />
+        <result property="address"     column="address"    />
+        <result property="phone"            column="phone"            />
+        <result property="isuse"     column="isuse"    />
+    </resultMap>
+
+    <sql id="tableName">
+		terminal_management
+	</sql>
+    <sql id="terminalreceivesTable">
+		terminal_receives
+	</sql>
+    <sql id="terconditiontable">
+		ter_conditions
+	</sql>
+    <sql id="managertertable">
+		termanager_ter
+	</sql>
+    <sql id="terminaltableName">
+		terminals
+	</sql>
+    <sql id="areatable">
+		area
+	</sql>
+    <sql id="usertable">
+		userinfo
+	</sql>
+    <sql id="userinfotable">
+		userinfo
+	</sql>
+
+    <sql id="selectManagementVo">
+        select tid, SupervisionUnit, AccountabilityUnit, Longitude, Latitude, Families, Population, TwoOverlayMode, TwoTransmitFrequency, TwoOverlayNumber, TwoOverlayFamiles, TwoOverlayPopulations, PowerConsumption, OtherTechnology, DrillingPeriod, StandbyBattery, PlaybacksMode, MaintenanceFunds, Remark, BackupBatteryVoltage from terminal_management
+    </sql>
+
+    <!--<select id="selectManagementList" parameterType="String" resultMap="ManagementResult">-->
+    <!--select a.tid,b.aid as aid,Longitude,Latitude from terminal_management a join terminals b-->
+    <!--on a.tid  = b.tid-->
+    <!--<if test="_parameter != null  and _parameter != ''  ">-->
+    <!--where aid = #{aid}-->
+    <!--</if>-->
+    <!--</select>-->
+    <select id="selectManagementList" parameterType="String" resultMap="ManagementResult">
+        SELECT DISTINCT tname,m.tid as tid,t.address as address,ui.uname as uname,a.aname,phone,basestation,m.latitude,m.longitude,manageruserid,managername,t.isuse as isuse
+        from (((((<include refid="tableName"/> m  JOIN <include refid="terminaltableName"/> t on m.tid=t.tid)
+        LEFT JOIN <include refid="areatable"/> a on t.aid= a.aid)
+        LEFT JOIN <include refid="usertable"/> ui on t.userid = ui.userid)
+        LEFT JOIN <include refid="terconditiontable"/> tc on m.tid=tc.tid))
+        left join (SELECT GROUP_CONCAT(tmt.userid) as manageruserid,GROUP_CONCAT(uname) as managername,tid from
+        <include refid="managertertable"/> tmt LEFT JOIN <include refid="userinfotable"/> ui on tmt.userid=ui.userid  GROUP BY tid ) manager on m.tid=manager.tid
+        <where>
+            <if test="tid != null  and tid != '' "> and t.tid like '%${tid}%'</if>
+            <if test="tname != null  and tname != '' "> and tname like '%${tname}%'</if>
+            <if test="aid != null  and aid != '' "> and t.aid = #{aid}</if>
+            <if test="aname != null  and aname != '' "> and a.aname  like '%${aname}%'</if>
+            <if test="uname != null  and uname != '' "> and ui.uname like '%${uname}%'</if>
+            <if test="address != null  and address != '' "> and t.address like '%${address}%'</if>
+            <if test="latitude != null  and latitude != '' "> and latitude = #{latitude}</if>
+            <if test="longitude != null  and longitude != '' "> and longitude = #{longitude}</if>
+
+        </where>
+    </select>
+
+    <select id="selectManagementById" parameterType="String" resultMap="ManagementResult">
+        <include refid="selectManagementVo"/>
+        where tid = #{tid}
+    </select>
+
+    <select id="selectManagementByRandom" resultMap="ManagementgpsResult">
+        SELECT DISTINCT m.tid as tid,t.address as address,ui.uname as uname,a.aname,phone,latitude,longitude,t.isuse as isuse
+        from (((terminal_management m  JOIN terminals t on m.tid=t.tid)
+        LEFT JOIN user.area a on t.aid= a.aid)
+        LEFT JOIN userinfo ui on t.userid = ui.userid)
+        ORDER BY  RAND() LIMIT 100
+    </select>
+
+    <select id="selectManagementAll" resultMap="ManagementgpsResult">
+        SELECT DISTINCT m.tid as tid,t.address as address,ui.uname as uname,a.aname,phone,m.latitude as latitude,longitude,t.isuse as isuse
+        from (((terminal_management m  JOIN terminals t on m.tid=t.tid)
+        LEFT JOIN user.area a on t.aid= a.aid)
+        LEFT JOIN userinfo ui on t.userid = ui.userid)
+    </select>
+
+    <insert id="insertManagement" parameterType="com.sixin.broad.domain.Management">
+        insert into terminal_management
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">tid,</if>
+            <if test="supervisionUnit != null  and supervisionUnit != ''  ">SupervisionUnit,</if>
+            <if test="accountabilityUnit != null  and accountabilityUnit != ''  ">AccountabilityUnit,</if>
+            <if test="longitude != null  ">Longitude,</if>
+            <if test="latitude != null  ">Latitude,</if>
+            <if test="families != null  ">Families,</if>
+            <if test="population != null  ">Population,</if>
+            <if test="twoOverlayMode != null  and twoOverlayMode != ''  ">TwoOverlayMode,</if>
+            <if test="twoTransmitFrequency != null  and twoTransmitFrequency != ''  ">TwoTransmitFrequency,</if>
+            <if test="twoOverlayNumber != null  ">TwoOverlayNumber,</if>
+            <if test="twoOverlayFamiles != null  ">TwoOverlayFamiles,</if>
+            <if test="twoOverlayPopulations != null  ">TwoOverlayPopulations,</if>
+            <if test="powerConsumption != null  ">PowerConsumption,</if>
+            <if test="otherTechnology != null  and otherTechnology != ''  ">OtherTechnology,</if>
+            <if test="drillingPeriod != null  and drillingPeriod != ''  ">DrillingPeriod,</if>
+            <if test="standbyBattery != null  and standbyBattery != ''  ">StandbyBattery,</if>
+            <if test="playbacksMode != null  and playbacksMode != ''  ">PlaybacksMode,</if>
+            <if test="maintenanceFunds != null  ">MaintenanceFunds,</if>
+            <if test="remark != null  and remark != ''  ">Remark,</if>
+            <if test="backupBatteryVoltage != null  ">BackupBatteryVoltage,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tid != null  and tid != ''  ">#{tid},</if>
+            <if test="supervisionUnit != null  and supervisionUnit != ''  ">#{supervisionUnit},</if>
+            <if test="accountabilityUnit != null  and accountabilityUnit != ''  ">#{accountabilityUnit},</if>
+            <if test="longitude != null  ">#{longitude},</if>
+            <if test="latitude != null  ">#{latitude},</if>
+            <if test="families != null  ">#{families},</if>
+            <if test="population != null  ">#{population},</if>
+            <if test="twoOverlayMode != null  and twoOverlayMode != ''  ">#{twoOverlayMode},</if>
+            <if test="twoTransmitFrequency != null  and twoTransmitFrequency != ''  ">#{twoTransmitFrequency},</if>
+            <if test="twoOverlayNumber != null  ">#{twoOverlayNumber},</if>
+            <if test="twoOverlayFamiles != null  ">#{twoOverlayFamiles},</if>
+            <if test="twoOverlayPopulations != null  ">#{twoOverlayPopulations},</if>
+            <if test="powerConsumption != null  ">#{powerConsumption},</if>
+            <if test="otherTechnology != null  and otherTechnology != ''  ">#{otherTechnology},</if>
+            <if test="drillingPeriod != null  and drillingPeriod != ''  ">#{drillingPeriod},</if>
+            <if test="standbyBattery != null  and standbyBattery != ''  ">#{standbyBattery},</if>
+            <if test="playbacksMode != null  and playbacksMode != ''  ">#{playbacksMode},</if>
+            <if test="maintenanceFunds != null  ">#{maintenanceFunds},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="backupBatteryVoltage != null  ">#{backupBatteryVoltage},</if>
+        </trim>
+    </insert>
+
+    <update id="updateManagement" parameterType="com.sixin.broad.domain.Management">
+        update terminal_management
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="supervisionUnit != null  and supervisionUnit != ''  ">SupervisionUnit = #{supervisionUnit},</if>
+            <if test="accountabilityUnit != null  and accountabilityUnit != ''  ">AccountabilityUnit = #{accountabilityUnit},</if>
+            <if test="longitude != null  ">Longitude = #{longitude},</if>
+            <if test="latitude != null  ">Latitude = #{latitude},</if>
+            <if test="families != null  ">Families = #{families},</if>
+            <if test="population != null  ">Population = #{population},</if>
+            <if test="twoOverlayMode != null  and twoOverlayMode != ''  ">TwoOverlayMode = #{twoOverlayMode},</if>
+            <if test="twoTransmitFrequency != null  and twoTransmitFrequency != ''  ">TwoTransmitFrequency = #{twoTransmitFrequency},</if>
+            <if test="twoOverlayNumber != null  ">TwoOverlayNumber = #{twoOverlayNumber},</if>
+            <if test="twoOverlayFamiles != null  ">TwoOverlayFamiles = #{twoOverlayFamiles},</if>
+            <if test="twoOverlayPopulations != null  ">TwoOverlayPopulations = #{twoOverlayPopulations},</if>
+            <if test="powerConsumption != null  ">PowerConsumption = #{powerConsumption},</if>
+            <if test="otherTechnology != null  and otherTechnology != ''  ">OtherTechnology = #{otherTechnology},</if>
+            <if test="drillingPeriod != null  and drillingPeriod != ''  ">DrillingPeriod = #{drillingPeriod},</if>
+            <if test="standbyBattery != null  and standbyBattery != ''  ">StandbyBattery = #{standbyBattery},</if>
+            <if test="playbacksMode != null  and playbacksMode != ''  ">PlaybacksMode = #{playbacksMode},</if>
+            <if test="maintenanceFunds != null  ">MaintenanceFunds = #{maintenanceFunds},</if>
+            <if test="remark != null  and remark != ''  ">Remark = #{remark},</if>
+            <if test="backupBatteryVoltage != null  ">BackupBatteryVoltage = #{backupBatteryVoltage},</if>
+        </trim>
+        where tid = #{tid}
+    </update>
+
+    <delete id="deleteManagementById" parameterType="String">
+        delete from terminal_management where tid = #{tid}
+    </delete>
+
+    <delete id="deleteManagementByIds" parameterType="String">
+        delete from terminal_management where tid in
+        <foreach item="tid" collection="array" open="(" separator="," close=")">
+            #{tid}
+        </foreach>
+    </delete>
+
+    <select id="selecttersga" resultMap="TersgaResult">
+        select
+            area.aname,
+            count(terminals.tid) as sum,
+            count(terminals.isuse = '1' or null) as run,
+            count(terminals.isuse = '0' or null) as down
+        from terminals,area
+        where terminals.aid = area.aid
+        group by area.aname
+    </select>
+
+    <select id="sumters" resultMap="TersgaResult">
+        select
+            count(tid) as sum,
+            count(isuse = '1' or null) as run,
+            count(isuse = '0' or null) as down
+        from terminals
+    </select>
+
+    <select id="sumterm" resultMap="TersgaResult">
+        select
+            area.aname,
+            count(terminals.tid) as sum,
+            count(terminals.isuse = '1' or null) as run,
+            count(terminals.isuse = '0' or null) as down,
+            count(terminal_maintain.createtime between '2018-03-10 07:00:00' and '2019-01-10 08:55:00') as  req
+        from
+            terminals,
+            area,
+            terminal_maintain
+        where
+            terminals.aid = area.aid
+            AND
+            terminals.tid = terminal_maintain.tid
+        group by
+            area.aname
+    </select>
+</mapper>

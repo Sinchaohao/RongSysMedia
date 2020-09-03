@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="multipart/form-data;charset=utf-8" />
+<link th:href="@{/css/plugins/dropzone/basic.css}" rel="stylesheet">
+<link th:href="@{/css/plugins/dropzone/dropzone.css}" rel="stylesheet">
+<!--①注意head是否有样式冲突，引入富文本框需要的css文件-->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-villageplan-add" enctype="multipart/form-data" th:action="@{add}" method="post">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">标题：</label>
+			<div class="col-sm-8">
+				<input id="mtitle" name="mtitle" class="form-control" type="text">
+			</div>
+		</div>
+
+		<input id="vtype" name="vtype" class="form-control" value="6" type="hidden">
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label">图片上传：</label>
+			<div class="col-sm-8">
+				<input id="files" name="files" class="form-control" type="file" multiple>
+			</div>
+		</div>
+		<input class="form-control" id="filesnum"  name="filesnum"  type="hidden"  readonly="true">
+
+		<!--因为文件上传功能隐藏的bug，故这文件时长、大小两个字段不能删掉-->
+		<input id="flenth" name="flenth" class="form-control" type="hidden" readonly value="">
+		<input id="fsize" name="fsize" class="form-control" type="hidden"  readonly value="">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">内容：</label>
+			<div class="col-sm-8">
+				<textarea id="mcontent" name="mcontent" placeholder="这里输入内容" autofocus></textarea>
+				<!--②使用textare去作为富文本输入框-->
+			</div>
+		</div>
+
+		<input id="uid" name="uid" th:value="${userid}" class="form-control" type="hidden">
+		<input id="uname" name="uname" th:value="${uname}" class="form-control" type="hidden">
+		<input id="aid" name="aid" th:value="${aid}" class="form-control" type="hidden">
+
+		<input id="mtype" name="mtype" value="1" class="form-control" type="hidden" >
+		<div class="form-group">
+			<label class="col-sm-3 control-label">状态：</label>
+			<div class="col-sm-8">
+				<div class="onoffswitch">
+					<input type="checkbox"  class="onoffswitch-checkbox" id="ctype1" name="ctype1" checked onclick="changevalue();" />
+					<label class="onoffswitch-label" for="ctype1">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+					</label>
+
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">备注：</label>
+			<div class="col-sm-8">
+				<input id="note" name="note" class="form-control" type="text">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<!--③引入富文本框需要的js文件-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+
+<!--④定义富文本框-->
+<script>
+	var editor = new Simditor({placeholder: "输入内容", toolbar: ['title', 'bold', 'underline', 'color', '|', 'ol', 'ul', 'table'], textarea: '#mcontent',});
+</script>
+<script>
+	$(document).ready(function(){Dropzone.options.myAwesomeDropzone={autoProcessQueue:false,uploadMultiple:true,parallelUploads:100,maxFiles:100,init:function(){var myDropzone=this;this.element.querySelector("button[type=submit]").addEventListener("click",function(e){e.preventDefault();e.stopPropagation();myDropzone.processQueue()});this.on("sendingmultiple",function(){});this.on("successmultiple",function(files,response){});this.on("errormultiple",function(files,response){})}}});
+</script>
+<script th:src="@{/js/plugins/dropzone/dropzone.js}"></script>
+<script th:src="@{/js/jquery-form.js}"></script>
+<script>
+	var prefix = ctx + "village/villageplan"
+
+	var Upload=document.getElementById("files");
+	//var formData=new FormData(); //通过FormData对象可以组装一组用 [XMLHttpRequest]发送请求的键/值对,它可以更灵活方便的发送表单数据。
+	Upload.onchange=function(){  //onchange在你选择完文件时触发
+		var fileList=Upload.files ; //通过input的files属性获得fileList
+		var filesnum = fileList.length;//获得文件数量
+		$("#filesnum").val(filesnum);//用于传至后台进行处理
+		for(let i=0;i<filesnum;i++)
+		{
+			var file=fileList[i];
+			//formData.append("file"+i,file);  //key:"file"+i,value:file,然后就可以把formData post到后台了
+			console.log(file.name+file.lastModifiedDate);
+		}
+	}
+
+	// 检测是否选择文件，如果选择，返回文件对象;如果没选择，返回false
+	function checkFile(){
+		// 获取文件对象(该对象的类型是[object FileList]，其下有个length属性)
+		var fileList = $('#files')[0].files;
+
+		// 如果文件对象的length属性为0，就是没文件
+		if (fileList.length === 0) {
+			console.log('没选择文件');
+			return false;
+		};
+		return fileList[0];
+	};
+	function aa(){
+		let  file = checkFile();
+		let size = file.size;
+		console.log("文件大小",size);
+		//获取录音时长
+		let url = URL.createObjectURL(file);
+		let audioElement = new Audio(url);
+		let duration = audioElement.duration/60; //音频长度 视频不行
+		$("#flenth").attr("value",duration);
+		$("#fsize").attr("value",size);
+		console.log(duration,size)
+	};
+	function submitHandler() {
+		if (!checkFile()) {
+			alert('请先选择文件');
+			return false;
+		}
+		else {
+			aa();
+			$.modal.loading("正在上传中，请稍后...");
+			/** 验证文件是否导入成功  */
+			$("#form-villageplan-add").ajaxSubmit(function (data) {
+				$.operate.successCallback({"code": data.code, "msg": data.msg});
+			});
+			return false;
+		}
+	}
+	function sleep(numberMillis) {
+		var now = new Date();
+		var exitTime = now.getTime() + numberMillis;
+		while (true) {
+			now = new Date();
+			if (now.getTime() > exitTime)
+				return;
+		}
+	}
+
+	function changevalue() {
+		var ctype2 = document.getElementsByName("ctype1");
+		if (ctype2.checked == true){
+			$("#mtype").val("1");
+		}else{
+			$("#mtype").val("0");
+		}
+	}
+</script>
+
+</body>
+</html>

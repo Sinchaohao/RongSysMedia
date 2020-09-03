@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+
+
+    <table class="table table-hover">
+        <tr>
+            <th>故障现象</th>
+            <th>维护人员</th>
+            <th>维护时间</th>
+            <th>备注</th>
+        </tr>
+        <tr  th:each="list : ${listById}">
+            <td th:text="${list.fault}"></td>
+            <td th:text="${list.mstaff}"></td>
+            <td th:text="${list.createtime}"></td>
+            <td th:text="${list.remark}"></td>
+        </tr>
+    </table>
+
+
+</div>
+<div th:include="include::footer"></div>
+</body>
+</html>

@@ -1,0 +1,10 @@
+redis:
+  pool:
+    maxIdle: 200
+    testOnBorrow: true
+    testOnReturn: true
+  ip: 127.0.0.1
+  port: 6379
+  password: 123456
+  timeout: 5000
+  database: 1

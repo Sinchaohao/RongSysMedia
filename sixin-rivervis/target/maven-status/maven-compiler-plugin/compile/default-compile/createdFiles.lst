@@ -1,0 +1,5 @@
+com\sixin\rivervis\service\IEnvDataService.class
+com\sixin\rivervis\domain\Riverbytl.class
+com\sixin\rivervis\mapper\EnvDataMapper.class
+com\sixin\rivervis\domain\EnvData.class
+com\sixin\rivervis\service\impl\EnvDataServiceImpl.class

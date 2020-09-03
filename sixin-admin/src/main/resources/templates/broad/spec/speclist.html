@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+<link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+<link href="../static/js/plugins/layer/layui-v2.4.5/layui/css/layui.css" th:href="@{/js/plugins/layer/layui-v2.4.5/layui/css/layui.css}" rel="stylesheet"/>
+
+<body class="gray-bg">
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            电台名称：<input type="text" name="cname" style="width: 130px;"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                        <li>
+                            原来播放时长:<input class="laydate-icon layer-date oldtimespec" name="broaddates" disabled id="broaddates" style="width:160px;" placeholder="播放时长" title="播放时长"/>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+
+<script th:inline="javascript">
+    var prefix = ctx + "broad/spec";
+
+    $(function queryAreaList() {
+        var options = {
+            url: prefix + "/list",
+            modalName: "特种节目",
+            search: false,
+            showExport: false,
+            columns: [
+                {
+                    radio:true
+                },
+                {
+                    field : 'fid',
+                    title : '节目ID',
+                    sortable: true
+                },
+                {
+                    field : 'fname',
+                    title : '节目名称',
+                    sortable: true
+                },
+                {
+                    field : 'filename',
+                    title : '保存名称',
+                    sortable: true
+                },
+                {
+                    field : 'flenth',
+                    title : '时长',
+                    sortable: true
+                }]
+        };
+        $.table.init(options);
+    })
+
+</script>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/jquery.tips.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<div th:include="include :: footer"></div>
+</body>
+</html>

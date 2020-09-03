@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.PhonemanageMapper">
+
+    <resultMap type="com.sixin.village.domain.Phonemanage" id="PhonemanageResult">
+        <result property="pid"    column="pid"    />
+        <result property="phone"    column="phone"    />
+        <result property="uid"    column="uid"    />
+        <result property="uname"    column="uname"    />
+        <result property="rolecode"    column="rolecode"    />
+        <result property="allowid"    column="allowid"    />
+        <result property="allowname"    column="allowname"    />
+        <result property="allowdate"    column="allowdate"    />
+        <result property="reallowid"    column="reallowid"    />
+        <result property="reallowname"    column="reallowname"    />
+        <result property="allowpic"    column="allowpic"    />
+        <result property="demo"    column="demo"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectPhonemanageVo">
+        select pid,phone,uid,uname,rolecode,allowid,allowname,allowdate,reallowid,reallowname,allowpic,demo,remark from ry.sys_phonemanage
+    </sql>
+
+    <select id="selectPhonemanageList" parameterType="com.sixin.village.domain.Phonemanage" resultMap="PhonemanageResult">
+        <include refid="selectPhonemanageVo"/>
+        <where>
+            <if test="pid != null "> and pid = #{pid}</if>
+            <if test="phone != null "> and phone = #{phone}</if>
+            <if test="uid != null  and uid != '' "> and uid LIKE CONCAT(CONCAT('%', #{uid}),'%')</if>
+            <if test="uname != null  and uname != '' "> and uname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+            <if test="rolecode != null  and rolecode != '' "> and rolecode LIKE CONCAT(CONCAT('%', #{rolecode}),'%')</if>
+            <if test="allowid != null "> and allowid = #{allowid}</if>
+            <if test="allowname != null and allowname != ''"> and allowname LIKE CONCAT(CONCAT('%', #{allowname}),'%')</if>
+            <if test="allowdate != null  and allowdate != '' "> and allowdate LIKE CONCAT(CONCAT('%', #{allowdate}),'%')</if>
+            <if test="reallowid != null "> and reallowid = #{reallowid}</if>
+            <if test="reallowname != null  and reallowname != '' "> and reallowname LIKE CONCAT(CONCAT('%', #{reallowname}),'%')</if>
+            <if test="allowpic != null  and allowpic != '' "> and allowpic LIKE CONCAT(CONCAT('%', #{allowpic}),'%')</if>
+            <if test="demo != null "> and demo = #{demo}</if>
+            <if test="remark != null "> and remark = #{remark}</if>
+        </where>
+        ORDER BY pid ASC
+    </select>
+
+    <select id="selectPhonemanageByPId" parameterType="Integer" resultMap="PhonemanageResult">
+        <include refid="selectPhonemanageVo"/>
+        where pid = #{pid}
+    </select>
+
+    <select id="selectPhonemanageListByPId" parameterType="com.sixin.village.domain.pubObjApi" resultMap="PhonemanageResult">
+        <include refid="selectPhonemanageVo"/>
+        <where>
+            <if test="pid != null  and pid != '' ">pid in
+                <foreach collection="listuid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="uid != null  and uid != '' "> and uid LIKE CONCAT(CONCAT('%', #{uid}),'%')</if>
+        </where>
+        ORDER BY uid ASC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+</mapper>

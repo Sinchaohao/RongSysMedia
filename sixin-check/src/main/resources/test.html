@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml;http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script>
+        var socket;
+        if (!window.WebSocket) {
+            window.WebSocket = window.MozWebSocket;
+        }
+        if (window.WebSocket) {
+            socket = new WebSocket("ws://localhost:8888/websocket");
+            socket.onmessage = function (event) {
+                var ta = document.getElementById('responseText');
+                ta.value = ta.value + event.data + '\n';
+            };
+            socket.onopen = function (event) {
+                var ta = document.getElementById('responseText');
+                ta.value = ta.value + "";
+            };
+            socket.onclose = function (event) {
+                var ta = document.getElementById('responseText');
+                ta.value = ta.value + "[系统]" + "连接已关闭\n";
+            };
+        } else {
+            alert("你的浏览器不支持 WebSocket！\n");
+        }
+        function send() {
+            var str = $.trim($('#name1').val()) + ": " + $.trim($("#text1").val());
+            socket.send(str);
+        }
+    </script>
+</head>
+<body>
+<div>
+    <textarea id="responseText" style="width: 500px;height:300px;" readonly></textarea>
+    <div>
+        <input type="text" id="name1" placeholder="用户名"><br>
+        <input type="text" id="text1" placeholder="信息">
+    </div>
+    <div>
+        <button onclick="send()">发送</button>
+    </div>
+</div>
+</body>
+</html>

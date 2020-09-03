@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>山洪面板</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.75">
+    <!--360浏览器优先以webkit内核解析-->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../../../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../../../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
+    <link href="../../../static/css/main/style.min862f.css" th:href="@{/css/main/style.min862f.css}" rel="stylesheet"/>
+    <!-- Morris -->
+    <link href="../../../static/css/plugins/morris/morris-0.4.3.min.css"
+          th:href="@{/css/plugins/morris/morris-0.4.3.min.css}" rel="stylesheet">
+    <!-- Gritter -->
+    <link href="../../../static/js/plugins/gritter/jquery.gritter.css"
+          th:href="@{/js/plugins/gritter/jquery.gritter.css}" rel="stylesheet">
+    <!--js-->
+    <!--<script th:src="@{/js/views/flood.js}"></script>-->
+    <!--echarts 可视化图形 插件-->
+    <script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+    <script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+    <script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+    <link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+</head>
+<body class="gray-bg" >
+<!--
+<div id="queryArea">
+    <form th:action="@{/api/flood/envbytl}" method="post" th:object="${floodbytl}">
+        学分范围：<input type="text" name="begintime" size="6" th:value="*{begintime}" /> - <input type="text" name="endtime" size="6" th:value="*{endtime}"  />&nbsp;&nbsp;
+        地域类型:
+        <select name="rid" id="rid">
+            <option>=请选择=</option>
+            <option th:each="list:${flood}" th:value="${list.rid}" th:text="${list.rname}"></option>
+        </select>
+    </form>
+</div>
+-->
+<div class="container-div">
+
+    <div class="row  border-bottom  dashboard-header">
+        <div class="wrapper wrapper-content">
+            <div class="row">
+
+                <div class="col-sm-12 search-collapse">
+                    <form class="form-horizontal m" id="form-flood-edit" th:object="${floodbytl}" >
+                        <div class="select-list">
+                            <ul>
+
+                                <li style="float: left; list-style-type:none ;width: 200px; ">
+                                    <span >地域名字:</span>
+                                    <select name="rid" id="rid"  >
+                                        <option>=请选择=</option>
+                                        <option th:each="list:${flood}" th:value="${list.rid}" th:text="${list.rname}"></option>
+                                    </select>
+                                </li>
+
+
+                                <li style="float: left; list-style-type:none ;width: 400px;">
+                                    <span>时间范围:</span>
+                                    <input   type="text" name="begintime" th:value="*{begintime}"  id="begintime"/> - <input   type="text" name="endtime"  th:value="*{endtime}" id="endtime"  />&nbsp;&nbsp;
+
+                                </li>
+
+
+
+                                <li style="float: left; list-style-type:none ;width: 200px;">
+                                    <a class="btn btn-primary btn-rounded btn-sm" onclick="init_rvis()"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                </li>
+
+                                <li style="float: right; list-style-type:none ;width: 200px;">
+                                    <a class="btn btn-primary btn-rounded btn-sm" onclick="javascript:window.location.href='/iot/flood'" >返回</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+
+
+
+
+
+                <div class="col-sm-12 select-table table-striped">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>山洪预警 - 雨量走势</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="echarts" id="rvis-rain"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 search-collapse">
+                    <form class="form-horizontal m" id="form-flood-edit" th:object="${floodbytl}">
+                        <div class="select-list">
+                            <ul>
+                                <!--
+                                <li style="float: left; list-style-type:none ;width: 200px;">
+                                    <span>地域名字:</span>
+                                    <select name="rid" id="rid1">
+                                        <option>=请选择=</option>
+                                        <option th:each="list:${flood}" th:value="${list.rid}" th:text="${list.rname}"></option>
+                                    </select>
+                                </li>
+
+                                <li style="float: left; list-style-type:none ;width: 200px;">
+                                    <span>日期:</span>
+                                    <input type="text" name="time" id="time1" >
+
+                                <li style="float: left; list-style-type:none ;width: 200px;">
+                                    <a class="btn btn-primary btn-rounded btn-sm" onClick="init_rvis1()"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                </li>
+        -->
+                                <li style="float: left; list-style-type:none ;width: 200px; ">
+                                    <span >地域名字:</span>
+                                    <select name="rid" id="rid1"  >
+                                        <option>=请选择=</option>
+                                        <option th:each="list:${flood}" th:value="${list.rid}" th:text="${list.rname}"></option>
+                                    </select>
+                                </li>
+
+
+                                <li style="float: left; list-style-type:none ;width: 400px;">
+                                    <span>时间范围:</span>
+                                    <input   type="text" name="begintime" th:value="*{begintime}"  id="begintime1"/> - <input   type="text" name="endtime"  th:value="*{endtime}" id="endtime1"  />&nbsp;&nbsp;
+
+                                </li>
+
+
+
+                                <li style="float: left; list-style-type:none ;width: 200px;">
+                                    <a class="btn btn-primary btn-rounded btn-sm" onclick="init_rvis1()"><i class="fa fa-search"></i>&nbsp;查询</a>
+                                </li>
+
+
+
+
+                            </ul>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="col-sm-12 select-table table-striped">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <h5>山洪预警 - 雨量走势</h5>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="echarts" id="rvis-rain1"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div th:include="include :: footer"></div>
+    <!--js-->
+    <script th:src="@{/js/plugins/simditor/module.js}"></script>
+
+    <!--echarts 可视化图形 插件-->
+    <script th:src="@{/js/plugins/echarts/echarts.min.js}"></script>
+    <script th:src="@{/js/plugins/echarts/echarts-gl.min.js}"></script>
+
+
+
+    <script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+    <script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+
+    <!--jquery图表float插件-->
+    <script th:src="@{/js/plugins/flot/jquery.flot.js}"></script>
+    <script th:src="@{/js/plugins/flot/jquery.flot.tooltip.min.js}"></script>
+    <script th:src="@{/js/plugins/flot/jquery.flot.spline.js}"></script>
+    <script th:src="@{/js/plugins/flot/jquery.flot.resize.js}"></script>
+    <script th:src="@{/js/plugins/flot/jquery.flot.pie.js}"></script>
+    <script th:src="@{/js/plugins/flot/jquery.flot.symbol.js}"></script>
+    <!--jquery图表peity插件-->
+    <script th:src="@{/js/plugins/peity/jquery.peity.min.js}"></script>
+    <script th:src="@{/js/demo/peity-demo.min.js}"></script>
+    <script th:src="@{/js/content.min.js}"></script>
+    <!--jquery交互UI插件-->
+    <script th:src="@{/js/plugins/jquery-ui/jquery-ui.min.js}"></script>
+    <!--jquery地图插件-->
+    <script th:src="@{/js/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js}"></script>
+    <script th:src="@{/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js}"></script>
+    <!--饼图数据统计插件-->
+    <script th:src="@{/js/plugins/easypiechart/jquery.easypiechart.js}"></script>
+    <!--小体积高密度图表插件-->
+    <script th:src="@{/js/plugins/sparkline/jquery.sparkline.min.js}"></script>
+    <script th:src="@{/js/demo/sparkline-demo.min.js}"></script>
+    <!--sparkline图表插件-->
+    <script th:src="@{/js/plugins/sparkline/jquery.sparkline.min.js}"></script>
+    <script th:src="@{/js/demo/sparkline-demo.min.js}"></script>
+
+
+    <script>
+
+        function init_rvis() {
+
+            $.modal.loading("正在查询，请稍后...");
+            var floodbytl={"endtime":$("#endtime").val(),"begintime":$("#begintime").val(),"rid":$("#rid").val()};
+            $.ajax({
+
+                type: "POST",
+                data: {"endtime":$("#endtime").val(),"begintime":$("#begintime").val(),"rid":$("#rid").val()},
+                url: "/api/flood/envbytl",
+                dataType: "json",
+                success: function (data_bt) {
+                    var pre_data = data_bt.data;
+                    var data = new Array();
+                    var common_time = new Array();
+
+                    // 遍历服务器数据显示到页面
+
+                    for (i in pre_data) {
+                        data.push(pre_data[i].data);
+                        common_time.push(pre_data[i].time);
+                    }
+                    $.modal.closeLoading();
+                    var ec_rvis_rain = echarts.init(document.getElementById('rvis-rain'));
+                    ec_rvis_rain_option1 = {
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        calculable: true,
+                        grid: {
+                            left: '0%',
+                            right: '0%',
+                            top: '5%',
+                            bottom: '0%',
+                            containLabel: true
+                        },
+                        xAxis: [
+                            {
+                                type: 'category',
+                                boundaryGap: false,
+                                data: common_time
+                            }
+                        ],
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series: [
+                            {
+                                name: '雨量走势',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {   //颜色渐变函数 前四个参数分别表示四个位置依次为左、下、右、上
+                                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                                offset: 0, color: '#d7f4f8' // 0% 处的颜色
+                                            }, {
+                                                offset: 0.5, color: '#eefcfd' // 100% 处的颜色
+                                            }, {
+                                                offset: 1, color: '#fff' // 100% 处的颜色
+                                            }]
+                                        ),  //背景渐变色
+                                        lineStyle: {        // 系列级个性化折线样式
+                                            width: 3,
+                                            type: 'solid',
+                                            color: "#cbd672"
+                                        }
+                                    },
+                                    emphasis: {
+                                        color: '#cbd672',
+                                        lineStyle: {        // 系列级个性化折线样式
+                                            width: 2,
+                                            type: 'dotted',
+                                            color: "#cbd672" //折线的颜色
+                                        }
+                                    }
+                                },//线条样式
+                                symbolSize: 5, //折线点的大小
+                                areaStyle: {normal: {}},
+                                data: data
+                            }
+                        ]
+                    };
+                    ec_rvis_rain.setOption(ec_rvis_rain_option1);
+
+                }
+            })
+        }
+    </script>
+
+    <script>
+        function init_rvis1() {
+            $.modal.loading("正在查询，请稍后...");
+            var rid=$("#rid1").val();
+            $.ajax({
+                type: "POST",
+                data: {"endtime":$("#endtime1").val(),"begintime":$("#begintime1").val(),"rid":$("#rid1").val()},
+                url: "/api/flood/envbytl",
+                dataType: "json",
+                success: function (data_bt1) {
+                    var pre_data1 = data_bt1.data;
+                    var data1 = new Array();
+                    var common_time1 = new Array();
+
+                    // 遍历服务器数据显示到页面
+
+                    for (i in pre_data1) {
+                        data1.push(pre_data1[i].data);
+                        common_time1.push(pre_data1[i].time);
+                    }
+                    $.modal.closeLoading();
+                    var ec_rvis_rain1 = echarts.init(document.getElementById('rvis-rain1'));
+                    option = {
+                        title: {
+                            text: '柱状图动画延迟'
+                        },
+                        legend: {
+                            data: ['bar'],
+                            align: 'left'
+                        },
+                        toolbox: {
+                            // y: 'bottom',
+                            feature: {
+                                magicType: {
+                                    type: ['stack', 'tiled']
+                                },
+                                dataView: {},
+                                saveAsImage: {
+                                    pixelRatio: 2
+                                }
+                            }
+                        },
+                        tooltip: {},
+                        xAxis: {
+                            data: common_time1,
+                            silent: false,
+                            splitLine: {
+                                show: false
+                            }
+                        },
+                        yAxis: {},
+                        series: [{
+                            name: 'bar',
+                            type: 'bar',
+                            data: data1,
+                            animationDelay: function (idx) {
+                                return idx * 10;
+                            }
+                        }
+                        ],
+                        animationEasing: 'elasticOut',
+                        animationDelayUpdate: function (idx) {
+                            return idx * 5;
+                        }
+                    };
+                    ec_rvis_rain1.setOption(option);
+                }
+            })
+        }
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.CompanyMapper">
+
+    <resultMap type="com.sixin.village.domain.Company" id="CompanyResult">
+        <result property="cid"    column="cid"    />
+        <result property="aid"    column="aid"    />
+        <result property="cname"    column="cname"    />
+        <result property="scode"    column="scode"    />
+        <result property="pname"    column="pname"    />
+        <result property="phone"    column="phone"    />
+        <result property="address"    column="address"    />
+        <result property="ctype"    column="ctype"    />
+        <result property="datetime"    column="datetime"    />
+        <result property="dflag"    column="dflag"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectCompanyVo">
+        select cid, aid, cname, scode, pname, phone, address, ctype,datetime, dflag, remark from company
+    </sql>
+
+    <select id="selectCompanyList" parameterType="com.sixin.village.domain.Company" resultMap="CompanyResult">
+        <include refid="selectCompanyVo"/>
+        <where>
+            <if test="cid != null "> and cid = #{cid}</if>
+            <if test="aid != null  and aid != '' "> and aid LIKE CONCAT(CONCAT('%', #{aid}),'%')</if>
+            <if test="cname != null  and cname != '' "> and cname LIKE CONCAT(CONCAT('%', #{cname}),'%')</if>
+            <if test="scode != null  and scode != '' "> and scode LIKE CONCAT(CONCAT('%', #{scode}),'%')</if>
+            <if test="pname != null  and pname != '' "> and pname LIKE CONCAT(CONCAT('%', #{pname}),'%')</if>
+            <if test="phone != null  and phone != '' "> and phone LIKE CONCAT(CONCAT('%', #{phone}),'%')</if>
+            <if test="address != null  and address != '' "> and address LIKE CONCAT(CONCAT('%', #{address}),'%')</if>
+            <if test="ctype != null  and ctype != '' "> and ctype LIKE CONCAT(CONCAT('%', #{ctype}),'%')</if>
+            <if test="datetime != null  and ctype != '' "> and datetime LIKE CONCAT(CONCAT('%', #{datetime}),'%')</if>
+            <if test="dflag != null  and dflag != '' "> and dflag = #{dflag}</if>
+            <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+        </where>
+    </select>
+
+    <select id="selectCompanyById" parameterType="Integer" resultMap="CompanyResult">
+        <include refid="selectCompanyVo"/>
+        where cid = #{cid}
+    </select>
+
+    <insert id="insertCompany" parameterType="com.sixin.village.domain.Company">
+        insert into company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cid != null  ">cid,</if>
+            <if test="aid != null  and aid != ''  ">aid,</if>
+            <if test="cname != null  and cname != ''  ">cname,</if>
+            <if test="scode != null  and scode != ''  ">scode,</if>
+            <if test="pname != null  and pname != ''  ">pname,</if>
+            <if test="phone != null  and phone != ''  ">phone,</if>
+            <if test="address != null  and address != ''  ">address,</if>
+            <if test="ctype != null  and ctype != ''  ">ctype,</if>
+            <if test="datetime != null  and datetime != ''  ">datetime,</if>
+            <if test="dflag != null  and dflag != ''  ">dflag,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cid != null  ">#{cid},</if>
+            <if test="aid != null  and aid != ''  ">#{aid},</if>
+            <if test="cname != null  and cname != ''  ">#{cname},</if>
+            <if test="scode != null  and scode != ''  ">#{scode},</if>
+            <if test="pname != null  and pname != ''  ">#{pname},</if>
+            <if test="phone != null  and phone != ''  ">#{phone},</if>
+            <if test="address != null  and address != ''  ">#{address},</if>
+            <if test="ctype != null  and ctype != ''  ">#{ctype},</if>
+            <if test="datetime != null  and datetime != ''  ">#{ctype},</if>
+            <if test="dflag != null  and dflag != ''  ">#{dflag},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCompany" parameterType="com.sixin.village.domain.Company">
+        update company
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+            <if test="cname != null  and cname != ''  ">cname = #{cname},</if>
+            <if test="scode != null  and scode != ''  ">scode = #{scode},</if>
+            <if test="pname != null  and pname != ''  ">pname = #{pname},</if>
+            <if test="phone != null  and phone != ''  ">phone = #{phone},</if>
+            <if test="address != null  and address != ''  ">address = #{address},</if>
+            <if test="ctype != null  and ctype != ''  ">ctype = #{ctype},</if>
+            <if test="datetime != null  and datetime != ''  ">datetime = #{datetime},</if>
+            <if test="dflag != null  and dflag != ''  ">dflag = #{dflag},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+        </trim>
+        where cid = #{cid}
+    </update>
+
+    <delete id="deleteCompanyById" parameterType="Integer">
+        delete from company where cid = #{cid}
+    </delete>
+
+    <delete id="deleteCompanyByIds" parameterType="String">
+        delete from company where cid in
+        <foreach item="cid" collection="array" open="(" separator="," close=")">
+            #{cid}
+        </foreach>
+    </delete>
+
+    <select id="selectCompanyListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="CompanyResult">
+        <include refid="selectCompanyVo"/>
+        <where>
+            <if test="aid != null  and aid != '' ">aid in
+                <foreach collection="listaid" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach></if>
+            <if test="uname != null  and uname != ''  ">and  cname LIKE CONCAT(CONCAT('%', #{uname}),'%')</if>
+        </where>
+        ORDER BY datetime DESC
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+
+    <select id="selectCompanyByIds" parameterType="java.util.List" resultMap="CompanyResult">
+        <include refid="selectCompanyVo"/>
+        where cid in
+        <foreach collection="list" item="cid" open="(" close=")" separator=",">
+            #{cid}
+        </foreach>
+    </select>
+
+</mapper>

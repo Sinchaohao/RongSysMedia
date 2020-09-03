@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.PersonpushMapper">
+
+    <resultMap type="com.sixin.broad.domain.BroadPersonpush" id="MessageResult">
+        <result property="phone" column="phone"/>
+        <result property="uid" column="uid"/>
+        <result property="allowid" column="allowid"/>
+        <result property="uname" column="uname"/>
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.PersonpushExample" id="MessageExampleResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="details" column="details"/>
+    </resultMap>
+
+    <select id="selectPersonpushExampleList"  resultMap="MessageExampleResult">
+        select
+          id,
+          name,
+          details
+        from
+          message_example
+    </select>
+
+    <select id="selectPersonpushList" parameterType="com.sixin.broad.domain.BroadPersonpush" resultMap="MessageResult">
+        select
+        phone,
+        uid,
+        allowid,
+        uname
+        from
+        sys_phonemanage
+    </select>
+
+
+</mapper>

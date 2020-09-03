@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.StatisticsMapper">
+
+    <resultMap type="com.sixin.village.domain.Statistics" id="StatisticsResult">
+        <result property="valueid"    column="valueid"    />
+        <result property="valuename"    column="valuename"    />
+        <result property="issingleselection"    column="issingleselection"    />
+    </resultMap>
+
+    <sql id="selectStatisticsVo">
+        select valueid,valuename,issingleselection from tb_baseset
+    </sql>
+
+    <select id="selectStatisticsList" parameterType="Statistics" resultMap="StatisticsResult">
+        <include refid="selectStatisticsVo"/>
+        <where>
+            <if test="valueid != null  and valueid != '' "> and valueid LIKE CONCAT(CONCAT('%', #{valueid}),'%')</if>
+            <if test="valuename != null  and valuename != '' "> and valuename LIKE CONCAT(CONCAT('%', #{valuename}),'%')</if>
+            <if test="issingleselection !=null and issingleselection!='' "> and issingleselection = #{issingleselection}</if>
+        </where>
+    </select>
+
+    <select id="selectStatisticsById" parameterType="String" resultMap="StatisticsResult">
+        <include refid="selectStatisticsVo"/>
+        where valueid like CONCAT(CONCAT('%', #{valueid}),'%')
+    </select>
+
+    <select id="selectStatisticsByIds" parameterType="java.util.List" resultMap="StatisticsResult">
+        <include refid="selectStatisticsVo"/>
+        where valueid in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <insert id="insertStatistics" parameterType="com.sixin.village.domain.Statistics">
+        insert into tb_baseset
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="valueid != null  ">valueid,</if>
+            <if test="valuename != null  and valuename != ''  ">valuename,</if>
+            <if test="issingleselection != null  and issingleselection != ''  ">issingleselection,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="valueid != null  ">#{valueid},</if>
+            <if test="valuename != null  and valuename != ''  ">#{valuename},</if>
+            <if test="issingleselection != null  and issingleselection != ''  ">#{issingleselection},</if>
+        </trim>
+    </insert>
+
+    <update id="updateStatistics" parameterType="com.sixin.village.domain.Statistics">
+        update tb_baseset
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="valuename != null  and valuename != ''  ">valuename = #{valuename},</if>
+            <if test="issingleselection != null  and issingleselection != ''  ">issingleselection = #{issingleselection},</if>
+        </trim>
+        where valueid like CONCAT(CONCAT('%', #{valueid}),'%')
+    </update>
+
+    <delete id="deleteStatisticsByIds" parameterType="String">
+        delete from tb_baseset where valueid in
+        <foreach item="valueid" collection="array" open="(" separator="," close=")">
+            #{valueid}
+        </foreach>
+    </delete>
+
+</mapper>

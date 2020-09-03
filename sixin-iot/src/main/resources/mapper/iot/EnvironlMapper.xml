@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.EnvironlMapper">
+    <resultMap type="com.sixin.iot.domain.Environl" id="EnvironlResult">
+        <id property="id"    column="id"    />
+        <result property="imei"    column="imei"    />
+        <result property="deptid"    column="deptid"    />
+        <result property="conip" column="conip" />
+        <result property="ambient_temp" column="ambient_temp" />
+        <result property="ambient_hum" column="ambient_hum" />
+        <result property="ambient_light" column="ambient_light" />
+        <result property="soil_temp"    column="soil_temp"    />
+        <result property="soil_hum" column="soil_hum" />
+        <result property="atmo_pressure" column="atmo_pressure" />
+        <result property="wind_speed" column="wind_speed" />
+        <result property="wind_direction" column="wind_direction" />
+        <result property="snow_rain"    column="snow_rain"    />
+        <result property="pm25" column="pm25" />
+        <result property="co2" column="co2" />
+        <result property="startdate" column="startdate" />
+        <result property="exdate" column="exdate" />
+        <result property="co" column="co" />
+        <result property="co2" column="co2" />
+        <result property="delflag" column="delflag" />
+        <result property="uid" column="uid" />
+        <result property="user_name" column="user_name" />
+        <result property="colltime" column="colltime" />
+    </resultMap>
+
+    <sql id="selectEnvironl">
+    select distinct(a.id),a.imei,ambient_temp,ambient_hum,ambient_light,soil_temp,soil_hum,atmo_pressure,wind_speed,wind_direction,snow_rain,pm25,co2,co,so2,colltime,b.deptid,u.user_name,b.status
+    from iotdata.tb_environment a
+    inner join iotdata.tb_ioterminal b on a.imei=b.imei
+    inner join ry.sys_dept d on b.deptid=d.dept_id
+    inner join ry.sys_user u on b.uid=u.user_id
+
+    </sql>
+
+    <!--    模糊查询-->
+    <select id="selectEnvironlList" parameterType="com.sixin.iot.domain.Environl" resultMap="EnvironlResult">
+        <include refid="selectEnvironl"/>
+        <where>
+            <if test="id != null and id != ''">
+                AND a.id like concat('%', #{id}, '%')
+            </if>
+            <if test="imei != null and imei != ''">
+                AND a.imei like concat('%', #{imei}, '%')
+            </if>
+            <if test="deptid != null and deptid != ''">
+                AND b.deptid like concat('%', #{deptid}, '%')
+            </if>
+            <if test="username != null and username != ''">
+                AND u.user_name like concat('%', #{username}, '%')
+            </if>
+            <if test="ambient_temp != null ">
+                AND ABS(ambient_temp- #{ambient_temp}) &lt;1e-5
+            </if>
+            <if test="ambient_hum != null">
+                AND  ABS(ambient_hum- #{ambient_hum}) &lt;1e-5
+            </if>
+            <if test="ambient_light != null ">
+                AND  ABS(ambient_light- #{ambient_light}) &lt;1e-5
+            </if>
+            <if test="soil_temp != null">
+                AND  ABS(soil_temp- #{soil_temp}) &lt;1e-5
+            </if>
+            <if test="soil_hum != null">
+                AND  ABS(soil_hum- #{soil_hum}) &lt;1e-5
+            </if>
+            <if test="atmo_pressure != null">
+                AND  ABS(atmo_pressure- #{atmo_pressure}) &lt;1e-5
+            </if>
+            <if test="wind_speed != null">
+                AND  ABS(wind_speed- #{wind_speed}) &lt;1e-5
+            </if>
+            <if test="wind_direction != null and wind_direction != ''">
+                AND wind_direction like concat('%', #{wind_direction}, '%')
+            </if>
+            <if test="snow_rain != null and snow_rain != ''">
+                AND snow_rain like concat('%', #{snow_rain}, '%')
+            </if>
+            <if test="pm25 != null ">
+                AND  ABS(pm25- #{pm25}) &lt;1e-5
+            </if>
+            <if test="co2 != null ">
+                AND  ABS(co2- #{co2}) &lt;1e-5
+            </if>
+            <if test="co != null">
+                AND  ABS(co- #{co}) &lt;1e-5
+            </if>
+            <if test="so2 != null">
+                AND  ABS(so2- #{so2}) &lt;1e-5
+            </if>
+            <if test="colltime != null and colltime != ''">
+                and date_format(colltime,'%y%m%d') >= date_format(#{colltime},'%y%m%d')
+            </if>
+            <if test="endtime != null and endtime != ''">
+                and date_format(colltime,'%y%m%d') &lt;= date_format(#{endtime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+
+
+    <!--根据id查询信息-->
+    <select id="selectByid" parameterType="Long" resultMap="EnvironlResult">
+        <include refid="selectEnvironl"/>
+        where a.id=#{id}
+    </select>
+    <!--批量导出-->
+    <select id="selecEnvironlListByids" parameterType="java.util.List" resultMap="EnvironlResult">
+        <include refid="selectEnvironl"/>
+
+        where a.id in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+    </select>
+
+    <!--向表中插入新数据-->
+    <insert id="insertEnvironl" parameterType="com.sixin.iot.domain.Environl">
+        insert into tb_environment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id!='' ">id,</if>
+            <if test="imei != null  and imei != ''  ">imei,</if>
+            <if test="ambient_temp != null  and ambient_temp != ''  ">ambient_temp,</if>
+            <if test="ambient_hum != null and ambient_hum != ''">ambient_hum,</if>
+            <if test="ambient_light != null  and ambient_light != ''  ">ambient_light,</if>
+            <if test="soil_temp != null  and soil_temp != ''  ">soil_temp,</if>
+            <if test="soil_hum != null  and soil_hum != ''  ">soil_hum,</if>
+            <if test="atmo_pressure != null  and atmo_pressure != ''  ">atmo_pressure,</if>
+            <if test="wind_speed != null  and wind_speed != '' ">wind_speed,</if>
+            <if test="wind_direction != null and wind_direction != ''">wind_direction,</if>
+            <if test="snow_rain != null  and snow_rain != ''  ">snow_rain,</if>
+            <if test="pm25 != null  and pm25 != ''  ">pm25,</if>
+            <if test="co2 != null  and co2 != ''  ">co2,</if>
+            <if test="co != null  and co != ''  ">co,</if>
+            <if test="so2 != null  and so2 != ''  ">so2,</if>
+            <if test="colltime != null  and colltime != ''  ">colltime,</if>
+            <if test="deptid != null  and deptid != ''  ">deptid</if>
+        </trim>
+        values<trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null and id!='' ">#{id},</if>
+        <if test="imei != null  and imei != ''  ">#{imei},</if>
+        <if test="ambient_temp != null  and ambient_temp != ''  ">#{ambient_temp},</if>
+        <if test="ambient_hum != null  and ambient_hum != ''  ">#{ambient_hum},</if>
+        <if test="ambient_light != null  and ambient_light != ''  ">#{ambient_light},</if>
+        <if test="soil_temp != null  and soil_temp != ''  ">#{soil_temp},</if>
+        <if test="soil_hum != null and soil_hum != ''">#{soil_hum},</if>
+        <if test="atmo_pressure != null  and atmo_pressure != ''  ">#{atmo_pressure},</if>
+        <if test="wind_speed != null   and wind_speed != ''">#{wind_speed},</if>
+        <if test="wind_direction != null and wind_direction != ''">#{wind_direction},</if>
+        <if test="snow_rain != null  and snow_rain != ''  ">#{snow_rain},</if>
+        <if test="pm25 != null  and pm25 != ''  ">#{pm25},</if>
+        <if test="co2 != null  and co2 != ''  ">#{co2},</if>
+        <if test="co != null  and co != ''  ">#{co},</if>
+        <if test="so2 != null  and so2 != ''  ">#{so2},</if>
+        <if test="colltime != null  and colltime != ''  ">#{colltime},</if>
+        <if test="deptid != null  and deptid != ''  ">#{deptid}</if>
+    </trim>
+    </insert>
+    <!--更新数据-->
+    <update id="updateEnvironl" parameterType="com.sixin.iot.domain.Environl">
+        update tb_environment
+        <set>
+            <if test="imei != null  and imei != ''  ">imei = #{imei},</if>
+            <if test="ambient_temp != null  and ambient_temp != ''  ">ambient_temp = #{ambient_temp},</if>
+            <if test="ambient_hum != null  and ambient_hum != ''  ">ambient_hum = #{ambient_hum},</if>
+            <if test="ambient_light != null  and ambient_light != ''  ">ambient_light = #{ambient_light},</if>
+            <if test="soil_temp != null  and soil_temp != ''  ">soil_temp = #{soil_temp},</if>
+            <if test="soil_hum !=null and soil_hum != ''">soil_hum = #{soil_hum},</if>
+            <if test="atmo_pressure != null and atmo_pressure != ''">atmo_pressure = #{atmo_pressure},</if>
+            <if test="wind_speed != null and wind_speed !=''">wind_speed = #{wind_speed},</if>
+            <if test="wind_direction !=null and wind_direction !='' ">wind_direction = #{wind_direction},</if>
+            <if test="snow_rain !=null and snow_rain !='' ">snow_rain = #{snow_rain},</if>
+            <if test="co2 !=null and co2 !='' ">co2 = #{co2},</if>
+            <if test="pm25 !=null and pm25 !='' ">pm25 = #{pm25},</if>
+            <if test="co !=null and co !='' ">co = #{co},</if>
+            <if test="so2 !=null and so2 !='' ">so2 = #{so2},</if>
+            <if test="colltime !=null and colltime !='' ">colltime = #{colltime},</if>
+            <if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+            <if test="deptid != null  and deptid != ''  ">deptid = #{deptid},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryList" parameterType="com.sixin.iot.domain.Torrent" resultType="com.sixin.iot.domain.Torrent">
+        select a.id,a.imei,a.ctype,a.deptid from iotdata.tb_ioterminal a inner join ry.sys_dept d on a.deptid=d.dept_id
+        where ctype='环境'
+        <if test="deptid != null and deptid != ''">
+            AND a.deptid like concat('%', #{deptid}, '%')
+        </if>
+    </select>
+
+    <!--批量删除-->
+    <delete id="deleteEnvironlByids" parameterType="String">
+        delete from tb_environment where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--    更新控制表的状态-->
+    <update id="updateEnvironl1" parameterType="com.sixin.iot.domain.Environl">
+        update iotdata.tb_ioterminal
+        <set>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+        </set>
+        where imei = #{imei}
+    </update>
+
+    <!--    下拉终端编号-->
+    <select id="selectimei" parameterType="com.sixin.iot.domain.Ioterminal" resultType="Ioterminal">
+        select id,imei from tb_ioterminal
+        where ctype='环境'
+    </select>
+
+    <!--    下拉录入人姓名-->
+    <select id="selectuser" parameterType="com.sixin.iot.domain.User" resultType="User">
+        select user_id,user_name from ry.sys_user
+    </select>
+
+    <select id="selectEnvironlListOnControl" parameterType="String" resultMap="EnvironlResult">
+        select a.id,a.imei,ambient_temp,ambient_hum,ambient_light,soil_temp,soil_hum,atmo_pressure,wind_speed,wind_direction,snow_rain,pm25,co2,co,so2,colltime,deptid
+        from iotdata.tb_environment a
+        where 1=1
+        <if test="deptid!=null and deptid != ''">
+            AND (deptid = #{deptid} OR deptid IN ( SELECT t.dept_id FROM ry.sys_dept t WHERE FIND_IN_SET (#{deptid},ancestors) ))
+        </if>
+    </select>
+</mapper>

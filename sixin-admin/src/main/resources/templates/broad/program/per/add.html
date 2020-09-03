@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="multipart/form-data;         charset=utf-8" />
+<link th:href="@{/css/plugins/dropzone/basic.css}" rel="stylesheet">
+<link th:href="@{/css/plugins/dropzone/dropzone.css}" rel="stylesheet">
+
+<head th:include="include :: header"></head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-filemanager-add" enctype="multipart/form-data" th:action="@{add}" method="post">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">用户：</label>
+			<div class="col-sm-8">
+				<input id="userid" name="username" class="form-control" type="text" th:value="${username}" disabled>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">文件上传：</label>
+			<div class="col-sm-8">
+				<input id="test" name="files" class="form-control" type="file" accept="audio/mpeg" multiple="multiple"><audio id="audio" ></audio>
+			</div>
+		</div>
+		<div class="form-group" hidden>
+			<label class="col-sm-3 control-label">文件时长：</label>
+			<div class="col-sm-8">
+				<input id="flenth" name="flenth" class="form-control" type="text"  readonly value="">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+    var prefix = ctx + "broad/per";
+    function checkFile(){
+        var fileList = $('#test')[0].files;
+        if (fileList.length === 0) {
+            console.log('没选择文件');
+            return false;
+        };
+        return fileList[0];
+    };
+
+	function submitHandler() {
+        $.modal.loading("正在处理中，请稍后...");
+        if (!checkFile()) {
+            alert('请先选择文件');
+            return false;
+        }
+        else{
+            $(function(){
+                $("#form-filemanager-add").ajaxSubmit(function (data) {
+                    $.operate.successCallback({"code":data.code,"msg":data.msg});
+                });
+                return false;
+            });
+        }
+    }
+
+
+	$(function () {
+		$("#test").change(function () {
+			var objUrl = getObjectURL(this.files[0]);
+			$("#audio").attr("src", objUrl);
+			let  file = checkFile();
+			let size = file.size;
+        	console.log("文件大小",size);
+			$("#fsize").attr("value",size);
+			getTime();
+		});
+	});
+
+	function getTime() {
+		setTimeout(function () {
+			var duration = $("#audio")[0].duration;
+			if(isNaN(duration)){
+				getTime();
+			}
+			else{
+				var time = formateSeconds($("#audio")[0].duration)
+				$("#flenth").attr("value",time);
+			}
+		}, 10);
+	}
+
+	function formateSeconds(endTime){
+		let secondTime = parseInt(endTime)
+		let min = 0
+		let h =0
+		let result=''
+		if(secondTime>60){
+			min=parseInt(secondTime/60)
+			secondTime=parseInt(secondTime%60)
+			if(min>60){
+				h=parseInt(min/60)
+				min=parseInt(min%60)
+			}
+		}
+		result=`${h.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}:${secondTime.toString().padStart(2,'0')}`
+		return result
+	}
+
+	function getObjectURL(file) {
+		var url = null;
+		if (window.createObjectURL != undefined) { // basic
+			url = window.createObjectURL(file);
+		} else if (window.URL != undefined) { // mozilla(firefox)
+			url = window.URL.createObjectURL(file);
+		} else if (window.webkitURL != undefined) { // webkit or chrome
+			url = window.webkitURL.createObjectURL(file);
+		}
+		return url;
+	}
+</script>
+<script>
+    $(document).ready(function(){Dropzone.options.myAwesomeDropzone={autoProcessQueue:false,uploadMultiple:true,parallelUploads:100,maxFiles:100,init:function(){var myDropzone=this;this.element.querySelector("button[type=submit]").addEventListener("click",function(e){e.preventDefault();e.stopPropagation();myDropzone.processQueue()});this.on("sendingmultiple",function(){});this.on("successmultiple",function(files,response){});this.on("errormultiple",function(files,response){})}}});
+</script>
+<script th:src="@{/js/plugins/dropzone/dropzone.js}"></script>
+<script th:src="@{/js/jquery-form.js}"></script>
+</body>
+</html>

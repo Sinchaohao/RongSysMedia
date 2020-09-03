@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="sixin-broadStreamSocket" />
+        <module name="sixin-check" />
+        <module name="sixin-common" />
+        <module name="sixin-village" />
+        <module name="sixin-generator" />
+        <module name="sixin-socket" />
+        <module name="sixin-quartz" />
+        <module name="RongSystem" />
+        <module name="sixin-iot" />
+        <module name="sixin-broad" />
+        <module name="sixin-framework" />
+        <module name="sixin-system" />
+        <module name="sixin-api" />
+        <module name="sixin-admin" />
+        <module name="sixin-rivervis" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="sixin-check" options="" />
+    </option>
+  </component>
+</project>

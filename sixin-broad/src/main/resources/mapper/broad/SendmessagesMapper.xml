@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.SendmessagesMapper">
+
+    <resultMap type="com.sixin.broad.domain.Sendmessages" id="SendmessagesResult">
+        <result property="smid"    column="smid"    />
+        <result property="smobile"    column="smobile"    />
+        <result property="scontent"    column="scontent"    />
+        <result property="issend"    column="issend"    />
+        <result property="sendtime"    column="sendtime"    />
+        <result property="remark"    column="remark"    />
+        <result property="tid"      column="tid"    />
+        <result property="spelanguage"    column="spelanguage"    />
+        <result property="sendtimes"    column="sendtimes"    />
+        <result property="senderid"    column="senderid"    />
+    </resultMap>
+
+    <resultMap type="com.sixin.broad.domain.BroadMessage" id="MessageResult">
+        <result property="aid" column="aid"/>
+        <result property="parentaid" column="parentaid"/>
+        <result property="aname" column="aname"/>
+        <result property="note" column="note"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+
+    <sql id="selectSendmessagesVo">
+        select smid, smobile, scontent, issend, sendtime, remark, tid, spelanguage, sendtimes from sendmessages
+    </sql>
+
+    <select id="selectSendmessagesList" parameterType="com.sixin.broad.domain.Sendmessages" resultMap="SendmessagesResult">
+        <include refid="selectSendmessagesVo"/>
+        <where>
+            <if test="smid != null "> and smid = #{smid}</if>
+            <if test="smobile != null  and smobile != '' "> and smobile = #{smobile}</if>
+            <if test="scontent != null  and scontent != '' "> and scontent = #{scontent}</if>
+            <if test="issend != null "> and issend = #{issend}</if>
+            <if test="sendtime != null  and endtime != '' "> and sendtime between #{sendtime} and #{endtime}</if>
+            <if test="remark != null  and remark != '' "> and remark = #{remark}</if>
+            <if test="tid != null  and tid != '' "> and tid = #{tid}</if>
+            <if test="spelanguage != null  and spelanguage != '' "> and spelanguage = #{spelanguage}</if>
+        </where>
+    </select>
+
+    <select id="selectSendmessagesList1" parameterType="com.sixin.broad.domain.Sendmessages" resultMap="SendmessagesResult">
+        select SQL_CALC_FOUND_ROWS distinct sendmessages.smid, sendmessages.smobile, sendmessages.scontent, sendmessages.issend,
+        sendmessages.sendtime, sendmessages.remark, sendmessages.tid, sendmessages.spelanguage, sendmessages.sendtimes
+        ,userinfo.userid,userinfo.uphone
+        from sendmessages left join userinfo on sendmessages.smobile= userinfo.uphone
+        <where>
+            <if test="userid != null "> and userid = #{userid}</if>
+            <if test="tids != null "> and tid in
+                <foreach item="tids" collection="tids" open="(" separator="," close=")">
+                    #{tids}
+                </foreach>
+            </if>
+        </where>
+        order by  sendtime desc,smid desc
+        limit #{pageSize} offset #{pageIndex}
+    </select>
+
+    <select id="selectSendmessagesById" parameterType="Integer" resultMap="SendmessagesResult">
+        <include refid="selectSendmessagesVo"/>
+        where smid = #{smid}
+    </select>
+
+    <insert id="insertSendmessages" parameterType="com.sixin.broad.domain.Sendmessages">
+        insert into sendmessages
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="smid != null  ">smid,</if>
+            <if test="smobile != null  and smobile != ''  ">smobile,</if>
+            <if test="scontent != null  and scontent != ''  ">scontent,</if>
+            <if test="issend != null  ">issend,</if>
+            <if test="remark != null  and remark != ''  ">remark,</if>
+            <if test="tid != null  and tid != ''  ">tid,</if>
+            <if test="spelanguage != null  and spelanguage != ''  ">spelanguage,</if>
+            <if test="sendtimes != null  ">sendtimes,</if>
+            <if test="senderid != null  and senderid != ''  ">senderid,</if>
+            sendtime
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="smid != null  ">#{smid},</if>
+            <if test="smobile != null  and smobile != ''  ">#{smobile},</if>
+            <if test="scontent != null  and scontent != ''  ">#{scontent},</if>
+            <if test="issend != null  ">#{issend},</if>
+            <if test="sendtime != null  and sendtime != ''  ">#{sendtime},</if>
+            <if test="remark != null  and remark != ''  ">#{remark},</if>
+            <if test="tid != null  and tid != ''  ">#{tid},</if>
+            <if test="spelanguage != null  and spelanguage != ''  ">#{spelanguage},</if>
+            <if test="sendtimes != null  ">#{sendtimes},</if>
+            <if test="senderid != null  and senderid != ''  ">#{senderid},</if>
+            sysdate()
+        </trim>
+    </insert>
+
+    <update id="updateSendmessages" parameterType="com.sixin.broad.domain.Sendmessages">
+        update sendmessages
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="smobile != null  and smobile != ''  ">smobile = #{smobile},</if>
+            <if test="scontent != null  and scontent != ''  ">scontent = #{scontent},</if>
+            <if test="issend != null  ">issend = #{issend},</if>
+            <if test="sendtime != null  and sendtime != ''  ">sendtime = #{sendtime},</if>
+            <if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+            <if test="tid != null  and tid != ''  ">tid = #{tid},</if>
+            <if test="spelanguage != null  and spelanguage != ''  ">spelanguage = #{spelanguage},</if>
+            <if test="sendtimes != null  ">sendtimes = #{sendtimes},</if>
+        </trim>
+        where smid = #{smid}
+    </update>
+
+    <delete id="deleteSendmessagesById" parameterType="Integer">
+        delete from sendmessages where smid = #{smid}
+    </delete>
+
+    <delete id="deleteSendmessagesByIds" parameterType="String">
+        delete from sendmessages where smid in
+        <foreach item="smid" collection="array" open="(" separator="," close=")">
+            #{smid}
+        </foreach>
+    </delete>
+
+    <select id="selectSendmessagesBytid" parameterType="com.sixin.broad.domain.Sendmessages" resultMap="SendmessagesResult">
+        select sendmessages.*,userinfo.userid,userinfo.uphone,recivedmessages.rmobile,recivedmessages.recivedtime
+        from sendmessages left join userinfo on sendmessages.smobile= userinfo.uphone
+        left join recivedmessages on sendmessages.smobile= recivedmessages.rmobile
+        <where>
+            <if test="userid != null "> and userid = #{userid}</if>
+            <if test="recivedtime != null "> and recivedtime = #{recivedtime}</if>
+            <if test="tids != null "> and tid in
+                <foreach item="tids" collection="tids" open="(" separator="," close=")">
+                    #{tids}
+                </foreach>
+            </if>
+            <if test="scontent != null "> and scontent = #{scontent}</if>
+        </where>
+        order by recivedtime desc,smid desc
+    </select>
+
+    <select id="selectDeptUserList" resultMap="MessageResult">
+		select
+            dept_id as aid,
+            dept_name as aname,
+            parent_id as parentaid,
+            null as phone,
+            null as note
+		from
+			ry.sys_dept
+		union
+		select
+			p.uid as aid,
+			uname as aname,
+			p.deptid as parentaid,
+			p.phone,
+			null as note
+		from
+			ry.sys_dept as d,
+			ry.sys_phonemanage as p
+		where
+			d.dept_id = p.deptid
+	</select>
+
+</mapper>

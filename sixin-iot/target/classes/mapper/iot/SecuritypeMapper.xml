@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.SecuritypeMapper">
+    <resultMap type="com.sixin.iot.domain.Securitype" id="SecuritypeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="demo"    column="demo"    />
+        <result property="delflag"    column="delflag"    />
+    </resultMap>
+
+    <sql id="selectSecuritypeVo">
+        select distinct id,name,demo,delflag from iotdata.tb_securitype
+    </sql>
+
+    <select id="getAllSecuritype" resultMap="SecuritypeResult">
+        <include refid="selectSecuritypeVo"/>
+    </select>
+
+    <select id="getSecuritypeByDelflag" parameterType="java.lang.Character"  resultMap="SecuritypeResult">
+        <include refid="selectSecuritypeVo"/>
+        where 1=1
+        <if test="_parameter!= null  and _parameter != '' "> and delflag = #{delflag,jdbcType=CHAR}</if>
+    </select>
+
+    <select id="getSecuritypeById" parameterType="integer"  resultMap="SecuritypeResult">
+        <include refid="selectSecuritypeVo"/>
+        where 1=1
+        <if test="id != null  and id != '' "> and id = #{id}</if>
+    </select>
+
+    <select id="getSecurityByName" parameterType="String"  resultMap="SecuritypeResult">
+        <include refid="selectSecuritypeVo"/>
+         where remark='1'
+        <if test="name != null  and name != '' "> and name like concat('%', #{name}, '%')</if>
+    </select>
+
+    <insert id="insertSecuritype" parameterType="com.sixin.iot.domain.Securitype" useGeneratedKeys="true" keyProperty="name">
+        insert into tb_securitype(
+        <if test="name != null and name != 0">name,</if>
+        <if test="demo != null and demo != 0">demo,</if>
+        <if test="delflag != null and delflag != ''">delflag</if>
+        )values(
+        <if test="name != null and name != 0">#{name},</if>
+        <if test="demo != null and demo != 0">#{demo},</if>
+        <if test="delflag != null and delflag != ''">#{delflag}</if>
+        )
+    </insert>
+
+    <update id="updateSecurity" parameterType="com.sixin.iot.domain.Securitype">
+        update tb_securitype
+        <set>
+            <if test="name != null and name != 0">name = #{name},</if>
+            <if test="demo != null and demo != ''">demo = #{demo},</if>
+            <if test="delflag != null and delflag != ''">delflag = #{delflag,jdbcType=CHAR}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSecuritypeById" parameterType="integer">
+		delete from tb_securitype where id = #{id}
+	</delete>
+
+    <delete id="deleteSecuritype">
+		update  tb_securitype set delflag='1'
+	</delete>
+</mapper>

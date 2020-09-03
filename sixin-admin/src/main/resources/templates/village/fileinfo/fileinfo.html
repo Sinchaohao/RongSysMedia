@@ -1,0 +1,315 @@
+<!DOCTYPE HTML>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/jquery-ztree/3.5/css/metro/zTreeStyle.css}" rel="stylesheet"/>
+<body class="gray-bg">
+<div class="ui-layout-west">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa icon-grid"></i> 组织机构
+			</div>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+				<button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>
+				<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新部门"><i class="fa fa-refresh"></i></button>
+			</div>
+		</div>
+		<div class="ui-layout-content">
+			<div id="tree" class="ztree"></div>
+		</div>
+	</div>
+</div>
+<div class="ui-layout-center">
+<div class="container-div">
+	<div class="row">
+		<div class="col-sm-12 search-collapse">
+			<form id="formId">
+				<div class="select-list">
+					<ul>
+						<li>
+							文件名：<input type="text" name="filename"/>
+						</li>
+
+						<!--<li>
+							文件下载地址：<input type="text" name="furl"/>
+						</li>-->
+
+						<!--<li>
+							文件大小：<input type="text" name="filesize"/>
+						</li>-->
+
+						<li>
+							<input class="laydate-icon  layer-date"
+										name="pushdate"
+										id="pushdate"
+										value=""
+										readonly="readonly"
+										style="width:120px;"
+										placeholder="上传日期"
+										title="上传日期"/>
+						</li>
+
+						<!--<li>
+							文件名 去掉后缀：<input type="text" name="fsname"/>
+						</li>-->
+
+						<li>
+							文件格式：
+							<select style="width: 100px" id="suffix"name="suffix">
+								<option value="">全部</option>
+								<option value=0>图片</option>
+								<option value=1>视频</option>
+								<option value=2>文档</option>
+							</select>
+						</li>
+
+						<!--<li>
+							下载次数：<input type="text" name="downloadnum"/>
+						</li>-->
+
+						<!--<li>
+							用户编号：<input type="text" name="uid"/>
+						</li>-->
+
+						<!--<li>
+							用户名称：<input type="text" name="uname"/>
+						</li>-->
+
+						<!--<li>
+							地域编号：<input type="text" name="aid"/>
+						</li>-->
+
+						<!--<li>
+							是否有效：<input type="text" name="remark"/>
+						</li>-->
+
+						<li>
+							<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+							<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+
+		<div class="btn-group-sm hidden-xs" id="toolbar" role="group">
+			<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="village:fileinfo:add">
+				<i class="fa fa-plus"></i> 添加
+			</a>
+			<!--<a class="btn btn-primary btn-edit disabled" onclick="$.operate.edit()" shiro:hasPermission="village:fileinfo:edit">-->
+				<!--<i class="fa fa-edit"></i> 修改-->
+			<!--</a>-->
+			<a class="btn btn-danger btn-del btn-del disabled" onclick="$.operate.removeAll()" shiro:hasPermission="village:fileinfo:remove">
+				<i class="fa fa-remove"></i> 删除
+			</a>
+			<a id="box">
+			</a>
+		</div>
+		<div class="col-sm-12 select-table table-striped">
+			<table id="bootstrap-table" data-mobile-responsive="true"></table>
+		</div>
+	</div>
+</div>
+</div>
+<div th:include="include :: footer"></div>
+<script th:src="@{/ajax/libs/jquery-layout/jquery.layout-latest.js}"></script>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script th:inline="javascript">
+	var editFlag = [[${@permission.hasPermi('village:fileinfo:edit')}]];
+	var removeFlag = [[${@permission.hasPermi('village:fileinfo:remove')}]];
+	var prefix = ctx + "village/fileinfo";
+	$(function() {
+		var panehHidden = false;
+		if ($(this).width() < 769) {
+			panehHidden = true;
+		}
+		$('body').layout({ initClosed: panehHidden, west__size: 185 });
+		queryList();
+		queryAreaTree();
+	});
+	function queryList() {
+		var options = {
+			url: prefix + "/list",
+			createUrl: prefix + "/add",
+			updateUrl: prefix + "/edit/{id}",
+			removeUrl: prefix + "/remove",
+			exportUrl: prefix + "/export",
+			modalName: "文件夹管理",
+			search: false,
+			showExport: false,
+			columns: [{
+				checkbox: true
+			},
+				{
+					field : 'fileid',
+					title : '文件编号',
+					visible: false
+				},
+				{
+					field : 'fsname',
+					title : '文件名',
+					sortable: true
+				},
+				{
+					field : 'suffix',
+					title : '文件格式',
+					sortable: true
+				},
+				/*{
+					field : 'furl',
+					title : '文件下载地址',
+					sortable: true
+				},*/
+				{
+					field : 'filesize',
+					title : '文件大小',
+					sortable: true,
+					formatter:function(value){
+						var html = value + "MB";
+						return html;
+					}
+				},
+				{
+					field : 'pushdate',
+					title : '上传时间',
+					sortable: true
+				},
+
+				{
+					field : 'downloadnum',
+					title : '下载次数',
+					sortable: true
+				},
+				/*{
+					field : 'uid',
+					title : '用户编号',
+					sortable: true
+				},*/
+				/*{
+					field : 'uname',
+					title : '用户名称',
+					sortable: true
+				},*/
+				/*{
+					field : 'aid',
+					title : '地域编号',
+					sortable: true
+				},*/
+			/*	{
+					field : 'remark',
+					title : '是否有效',
+					sortable: true
+				},*/
+				{
+					title: '操作',
+					align: 'center',
+					formatter: function(value, row) {
+						var actions = [];
+						actions.push('<a class="btn btn-success btn-xs" onclick="down('+ row.fileid +')"><i class="fa fa-download"></i>下载</a> ');
+						return actions.join('');
+					}
+				}]
+		};
+		$.table.init(options);
+	}
+
+	function queryAreaTree()
+	{
+		var url = ctx + "system/dept/treeData";
+		var options = {
+			url: url,
+			expandLevel: 2,
+			onClick : zOnClick
+		};
+		$.tree.init(options);
+
+		function zOnClick(event, treeId, treeNode) {
+			$("#deptId").val(treeNode.id);
+			$("#parentId").val(treeNode.pId);
+			$.table.search();
+		}
+	}
+
+	$('#btnExpand').click(function() {
+		$._tree.expandAll(true);
+		$(this).hide();
+		$('#btnCollapse').show();
+	});
+
+	$('#btnCollapse').click(function() {
+		$._tree.expandAll(false);
+		$(this).hide();
+		$('#btnExpand').show();
+	});
+
+	$('#btnRefresh').click(function() {
+		queryAreaTree();
+	});
+</script>
+<script>
+	function down(fileid){
+		$.ajax(
+				{
+					url: prefix + "/query/"+fileid,
+					type: 'POST',   // 请求方式
+					success: function (result) {
+						window.location.href = result;
+						console.log(result); // 请求成功后的回调函数
+						console.log("success"); // 请求成功后的回调函数
+					},
+					error: function () {
+						console.log('Send Request Fail..'); // 请求失败时的回调函数
+					}
+				}
+		)
+	}
+</script>
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+	laydate({
+		elem:"#pushdate",
+		event:"focus"
+	});
+	layui.use('laydate', function(){
+		var laydate = layui.laydate;
+		//执行一个laydate实例
+		laydate.render({
+			elem:"#village",
+			type: 'time',
+		});
+	});
+</script>
+<script>
+	$.ajax(
+			{
+				url: prefix + '/filesizeSum',
+				type: 'POST',   // 请求方式
+				success: function (result) {
+					$("#sizenum").val(result);
+					var num = 300 - result;
+					var num2 = Math.floor(num * 100) / 100;
+					var oBox = document.getElementById('box');
+					var str = '';
+					if(num2 > 100){
+						str += '<a class="btn btn-primary" >剩余储存空间 ：'+ num2 +'MB</a>'
+					}
+					if(num2 < 100){
+						str += '<a class="btn btn-danger" >剩余储存空间 ：'+ num2 +'MB</a>'
+					}
+					oBox.innerHTML = str;
+				console.log(result); // 请求成功后的回调函数
+					console.log("success"); // 请求成功后的回调函数
+				},
+				error: function () {
+					console.log('Send Request Fail..'); // 请求失败时的回调函数
+				}
+			}
+	)
+</script>
+</body>
+</html>

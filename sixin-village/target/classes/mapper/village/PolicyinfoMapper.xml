@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.PolicyinfoMapper">
+	<resultMap type="com.sixin.village.domain.Policyinfo" id="PolicyinfoResult">
+		<id column="poinid" property="poinid"/>
+		<result column="title" property="title"/>
+		<result column="type" property="type"/>
+		<result column="adddate" property="adddate"/>
+		<result column="reldate" property="reldate"/>
+		<result column="content" property="content"/>
+		<result column="adduid" property="adduid"/>
+		<result column="adduname" property="adduname"/>
+		<result column="pic" property="pic"/>
+		<result column="courread" property="courread"/>
+		<result column="uid" property="uid"/>
+		<result column="uname" property="uname"/>
+		<result column="aid" property="aid"/>
+		<result column="remark" property="remark"/>
+	</resultMap>
+
+	<resultMap type="com.sixin.village.domain.Comment" id="CommentResult">
+		<result property="coid"    column="coid"    />
+		<result property="pcid"    column="pcid"    />
+		<result property="replyid"    column="replyid"    />
+		<result property="uid"    column="uid"    />
+		<result property="uname"    column="uname"    />
+		<result property="ccontent"    column="ccontent"    />
+		<result property="issensitive"    column="issensitive"    />
+		<result property="cdate"    column="cdate"    />
+		<result property="aid"    column="aid"    />
+		<result property="to_uid"    column="to_uid"    />
+		<result property="to_name"    column="to_name"    />
+	</resultMap>
+	<!-- 字段值 -->
+	<!--还有一个 aid 字段-->
+	<sql id="Field">
+		 poinid, title, type, adddate, reldate, content, adduid, adduname, pic, courread, uid, uname, remark
+	</sql>
+
+	<!--还有一个 #aid 字段-->
+	<sql id="FieldValue">
+		#{poinid}, #{title}, #{type}, #{adddate}, #{reldate}, #{content}, #{adduid}, #{adduname}, #{pic}, #{courread}, #{uid}, #{uname}, #{remark}
+	</sql>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		tb_policyinfo
+	</sql>
+	<sql id="CommenttableName">
+		tb_policyinfocomment
+	</sql>
+	<!--获取所有公告信息 -->
+	<select id="selectPolicyinfoList" parameterType="com.sixin.village.domain.Policyinfo" resultMap="PolicyinfoResult">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		<where>
+			<if test="title != null and title != ''"> and title like '%${title}%'</if>
+			<if test="type != null  and type != ''"> and type like '%${type}%'</if>
+			<if test="adddate != null  and adddate != ''"> and adddate like '%${adddate}%'</if>
+			<if test="reldate != null  and reldate != ''"> and reldate like '%${reldate}%'</if>
+			<if test="content != null  and content != ''"> and content like '%${content}%'</if>
+			<if test="adduid != null  and adduid != ''"> and adduid like '%${adduid}%'</if>
+			<if test="adduname != null  and adduname != '' "> and adduname like '%${adduname}%'</if>
+			<if test="pic != null  and pic != ''"> and pic like '%${pic}%'</if>
+			<if test="courread != null and courread != ''"> and courread like '%${courread}%'</if>
+			<if test="uid != null  and uid != ''"> and uid like '%${uid}%'</if>
+			<if test="uname != null  and uname != '' "> and uname like '%${unaem}%'</if>
+			<if test="remark != null  and remark != ''"> and remark like '%${remark}%'</if>
+		</where>
+		ORDER BY poinid desc
+	</select>
+
+	<select id="selectpoliclimitten" resultMap="PolicyinfoResult">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		ORDER BY adddate desc
+		limit 0,10
+	</select>
+
+	<insert id="insertpolicyinfo" parameterType="com.sixin.village.domain.Policyinfo">
+		insert into <include refid="tableName"/>
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+
+			<if test="title != null  and title != ''  ">title,</if>
+			<if test="type != null  and type != ''  ">type,</if>
+			<if test="adddate != null  and adddate != ''  ">adddate,</if>
+			<if test="reldate != null  and reldate != ''  ">reldate,</if>
+			<if test="content != null  and content != ''  ">content,</if>
+			<if test="adduid != null  and adduid != ''  ">adduid,</if>
+			<if test="adduname != null  and adduname != ''  ">adduname,</if>
+			<if test="pic != null  and pic != ''  ">pic,</if>
+			<if test="courread != null  and courread != ''  ">courread,</if>
+			<if test="uid != null  and uid != ''  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+
+			<if test="title != null  and title != ''  ">#{title},</if>
+			<if test="type != null  and type != ''  ">#{type},</if>
+			<if test="adddate != null  and adddate != '' ">#{adddate},</if>
+			<if test="reldate != null  and reldate != ''  ">#{reldate},</if>
+			<if test="content != null  and content != ''  ">#{content},</if>
+			<if test="adduid != null  and adduid != ''  ">#{adduid},</if>
+			<if test="adduname != null  and adduname != ''  ">#{adduname},</if>
+			<if test="pic != null  and pic != ''  ">#{pic},</if>
+			<if test="courread  != null  and courread  != ''  ">#{courread },</if>
+			<if test="uid != null  and uid != ''  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+		</trim>
+	</insert>
+	<!--根据fbid删除数据-->
+	<delete id="deletePolicyinfoByIds" parameterType="String">
+		delete from
+		<include refid="tableName"/>
+		where poinid= #{poinid}
+	</delete>
+	<!--批量删除-->
+	<delete id="deletePolicyinfoByids" parameterType="String">
+		delete from <include refid="tableName"/> where poinid in
+		<foreach item="poinid" collection="array" open="(" separator="," close=")">
+			#{poinid}
+		</foreach>
+	</delete>
+
+	<select id="selectBypoinid" resultMap="PolicyinfoResult" parameterType="Integer">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		where poinid= #{poinid}
+	</select>
+
+	<update id="updatePolicyinfo" parameterType="Integer">
+		update <include refid="tableName"/>
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="title != null  and title != ''  ">title = #{title},</if>
+			<if test="type != null  and type != ''  ">type = #{type},</if>
+			<if test="adddate != null  and adddate != '' ">adddate = #{adddate},</if>
+			<if test="reldate != null  and reldate != ''  ">reldate = #{reldate},</if>
+			<if test="content != null  and content != ''  ">content = #{content},</if>
+			<if test="adduid != null  and adduid != ''  ">adduid = #{adduid},</if>
+			<if test="adduname != null  and adduname != ''  ">adduname = #{adduname},</if>
+			<if test="pic != null  and pic != ''  ">pic = #{pic},</if>
+			<if test="courread != null  and courread != ''  ">courread = #{courread},</if>
+			<if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+			<if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+			<if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+		</trim>
+		where poinid = #{poinid}
+	</update>
+
+	<select id="selectinfocommentListlimit" parameterType="com.sixin.village.domain.pubObjApi" resultMap="CommentResult">
+		select coid,pcid,replyid,uid,uname,ccontent,cdate,to_uid,to_name,good
+		from tb_policyinfocomment
+		<where>
+			<if test="proid != null  and proid != '' "> pcid = #{proid}</if>
+			and replyid is null
+		</where>
+		ORDER BY cdate desc
+		limit #{pageSize} offset #{pageIndex}
+	</select>
+
+	<select id="selectinforecommentList" parameterType="int" resultMap="CommentResult">
+		select coid,pcid,replyid,uid,uname,ccontent,cdate,to_uid,to_name,good
+		from tb_policyinfocomment
+		<where>
+			replyid = #{coid}
+		</where>
+		ORDER BY cdate desc
+	</select>
+
+	<insert id="insertInfoCM" parameterType="com.sixin.village.domain.Comment">
+		insert into <include refid="CommenttableName"/>
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+
+			<if test="pcid != null  and pcid != ''  ">pcid,</if>
+			<if test="replyid != null  and replyid != ''  ">replyid,</if>
+			<if test="uid != null  and uid != ''  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="ccontent != null  and ccontent != ''  ">ccontent,</if>
+			<if test="cdate != null  and cdate != ''  ">cdate,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="to_uid != null  and to_uid != ''  ">to_uid,</if>
+			<if test="to_name != null  and to_name != ''  ">to_name,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+
+			<if test="pcid != null  and pcid != ''  ">#{pcid},</if>
+			<if test="replyid != null  and replyid != ''  ">#{replyid},</if>
+			<if test="uid != null  and uid != ''  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="ccontent != null  and ccontent != ''  ">#{ccontent},</if>
+			<if test="cdate != null  and cdate != ''  ">#{cdate},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="to_uid != null  and to_uid != ''  ">#{to_uid},</if>
+			<if test="to_name != null  and to_name != ''  ">#{to_name},</if>
+		</trim>
+	</insert>
+</mapper>

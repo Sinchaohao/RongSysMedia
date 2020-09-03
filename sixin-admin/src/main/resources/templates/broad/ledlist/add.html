@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head>
+    <th:block th:include="include :: header"/>
+    <th:block th:include="include :: select2-css"/>
+<body>
+<div class="main-content">
+    <form class="form-horizontal" id="form-ledlist-add">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label "><span style="color: red; ">*</span>存放位置编号：</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input class="form-control" type="text" id="treeId" onclick="selectDeptTree()"
+                                   readonly="true" name="deptid" value="1003044001">
+                            <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>终端编号：</label>
+                    <div class="col-sm-8">
+                        <select id="imei" name="imei" class="form-control">
+                            <option th:each="imei : ${imeiList}" th:text="${imei['imei']}" th:value="${imei['imei']}" th:field="*{imei.imei}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>录入编号：</label>
+                    <div class="col-sm-8">
+                        <select id="uid" name="uid" class="form-control m-b">
+                            <option  th:value="${user}" th:text="${user}">
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>设备状态：</label>
+                    <div class="col-sm-8">
+                        <div class="onoffswitch">
+                            <input type="checkbox" class="onoffswitch-checkbox" id="status1" name="status1"
+                                   onclick="changevalue();"/>
+                            <label class="onoffswitch-label" for="status1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input id="status" name="status" value="0" class="form-control" type="hidden">
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">开始时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="startdate"
+                               id="startdate"  value="" readonly="readonly"
+                               style="width:120px;" placeholder="开始时间"  title="开始时间"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">结束时间：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control laydate-icon  layer-date" name="enddate"
+                               id="enddate"  value="" readonly="readonly"
+                               style="width:120px;" placeholder="结束时间" title="结束时间"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>特效：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="effect" id="effect" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label "><span style="color: red; ">*</span>颜色：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="color" id="color"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>内容：</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="content" id="content">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label"><span style="color: red; ">*</span>是否有效：</label>
+                    <div class="col-sm-8">
+                        <div class="onoffswitch">
+                            <input type="checkbox" class="onoffswitch-checkbox" id="remark1" name="remark1"
+                                   onclick="changevalue2();"/>
+                            <label class="onoffswitch-label" for="remark1">
+                                <span class="onoffswitch-inner"></span>
+                                <span class="onoffswitch-switch"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <input id="remark" name="remark" value="0" class="form-control" type="hidden">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">备注：</label>
+                    <div class="col-xs-10">
+                        <textarea name="demo" maxlength="500" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>
+<div th:include="include::footer"></div>
+<script th:src="@{/ajax/libs/jquery-ztree/3.5/js/jquery.ztree.all-3.5.js}"></script>
+<script type="text/javascript">
+    var prefix = ctx + "broad/ledlist"
+    var prefix1 = ctx + "system/dept";
+
+    $("#form-ledlist-add").validate({
+        rules:{
+            xxxx:{
+                required:true,
+            },
+        }
+    });
+
+    function submitHandler() {
+        if ($.validate.form()) {
+            $.operate.save(prefix + "/add", $('#form-ledlist-add').serialize());
+        }
+    }
+
+    function changevalue() {
+        var status2 = document.getElementsByName("status1");
+        if (status2.checked == true) {
+            $("#status").val("0");
+        } else {
+            $("#status").val("1");
+        }
+
+    }
+
+    function changevalue2() {
+        var remark2 = document.getElementsByName("remark1");
+        if (remark2.checked == true) {
+            $("#remark").val("0");
+        } else {
+            $("#remark").val("1");
+        }
+
+    }
+</script>
+
+<script th:src="@{/js/plugins/layer/laydate/laydate.js}"></script>
+<script th:src="@{/js/plugins/layer/layui-v2.4.5/layui/layui.js}"></script>
+<!--时间插件-->
+<script>
+    laydate({
+        elem:"#startdate",
+        event:"focus"
+    });
+    laydate({
+        elem:"#enddate",
+        event:"focus"
+    });
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //执行一个laydate实例
+        laydate.render({
+            elem:"#ledlist",
+            type: 'time',
+        });
+    });
+
+    function selectDeptTree() {
+
+        var url = prefix1 + "/selectDeptTree/"
+        var options = {
+            title: '部门选择',
+            width: "380",
+            url: prefix1 + "/selectDeptTree/" + $("#treeId").val(),
+            callBack: doSubmit
+        };
+        $.modal.openOptions(options);
+
+    }
+
+    function doSubmit(index, layero) {
+        var tree = layero.find("iframe")[0].contentWindow.$._tree;
+        if ($.tree.notAllowParents(tree)) {
+            var body = layer.getChildFrame('body', index);
+            $("#treeId").val(body.find('#treeId').val());
+            layer.close(index);
+        }
+    }
+
+</script>
+
+</body>
+</html>

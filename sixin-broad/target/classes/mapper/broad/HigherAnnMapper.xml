@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.broad.mapper.HigherAnnMapper">
+
+    <resultMap type="com.sixin.broad.domain.HigherAnn" id="HigherAnnResult">
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="uname"    column="senduname"    />
+        <result property="sendtime"    column="sendtime"    />
+        <result property="isread"    column="isread"    />
+        <result property="mhid"    column="mhid"    />
+        <result property="aid"    column="aid"    />
+        <result property="senduserid"    column="senduserid"    />
+    </resultMap>
+
+    <!--表名 -->
+    <sql id="table">
+        ann_high
+    </sql>
+    <sql id="usertable">
+        user.userinfo
+    </sql>
+    <sql id="areatable">
+        user.area
+    </sql>
+
+    <!-- 获取公告列表(分页) -->
+    <select id="selectHigherAnnList" parameterType="com.sixin.broad.domain.HigherAnn" resultMap="HigherAnnResult" >
+        SELECT
+            mhid,
+            title,
+            content,
+            senduserid,
+            su.uname as senduname,
+            an.aid as aid,
+            sendtime,
+            isread
+        from (<include refid="table"/> an
+        LEFT JOIN <include refid="areatable"/> a on an.aid = a.aid)
+        LEFT JOIN <include refid="usertable"/> u on an.userid = u.userid
+        LEFT JOIN <include refid="usertable"/> su on an.senduserid = su.userid
+        <where>
+            <if test="mhid != null  and mhid != '' ">and mhid like CONCAT('%',#{mhid},'%')</if>
+            <if test="title != null  and title != '' ">and title like CONCAT('%',#{title},'%')</if>
+            <if test="content != null  and content != '' ">and content like CONCAT('%',#{content},'%')</if>
+        </where>
+        order by sendtime asc
+    </select>
+</mapper>

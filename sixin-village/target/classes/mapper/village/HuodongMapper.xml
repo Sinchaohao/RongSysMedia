@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.village.mapper.HuodongMapper">
+	<resultMap type="com.sixin.village.domain.Huodong" id="HuodongResult">
+		<id column="hdid" property="hdid"/>
+		<result column="hdtitle" property="hdtitle"/>
+		<result column="hdtype" property="hdtype"/>
+		<result column="hdloc" property="hdloc"/>
+		<result column="hdnum" property="hdnum"/>
+		<result column="hdbtime" property="hdbtime"/>
+		<result column="hdetime" property="hdetime"/>
+		<result column="hdpic" property="hdpic"/>
+		<result column="hdsum" property="hdsum"/>
+		<result column="hdadddate" property="hdadddate"/>
+		<result column="uid" property="uid"/>
+		<result column="uname" property="uname"/>
+		<result column="aid" property="aid"/>
+		<result column="remark" property="remark"/>
+	</resultMap>
+	<!-- 字段值 -->
+	<sql id="Field">
+		 hdid, hdtitle, hdtype, hdloc, hdnum, hdbtime, hdetime, hdpic, hdsum, hdadddate, uid, uname, aid, remark
+	</sql>
+
+	<sql id="FieldValue">
+		#{hdid}, #{hdtitle}, #{hdtype}, #{hdloc}, #{hdnum}, #{hdbtime}, #{hdetime}, #{hdpic}, #{hdsum}, #{hdadddate}, #{uid}, #{uname}, #{aid}, #{remark}
+	</sql>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		tb_huodong
+	</sql>
+	<!--获取所有公告信息 -->
+	<select id="selectHuodongList" parameterType="com.sixin.village.domain.Huodong" resultMap="HuodongResult">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		<where>
+			<if test="hdtitle != null and hdtitle != ''"> and hdtitle like '%${hdtitle}%'</if>
+			<if test="hdtype != null  and hdtype != ''"> and hdtype like '%${hdtype}%'</if>
+			<if test="hdloc != null  and hdloc != ''"> and hdloc like '%${hdloc}%'</if>
+			<if test="hdnum != null  and hdnum != ''"> and hdnum like '%${hdnum}%'</if>
+			<if test="hdbtime != null  and hdbtime != ''"> and hdbtime like '%${hdbtime}%'</if>
+			<if test="hdetime != null  and hdetime != ''"> and hdetime like '%${hdetime}%'</if>
+			<if test="hdpic != null  and hdpic != '' "> and hdpic like '%${hdpic}%'</if>
+			<if test="hdsum != null  and hdsum != ''"> and hdsum like '%${hdsum}%'</if>
+			<if test="hdadddate != null and hdadddate != ''"> and hdadddate like '%${hdadddate}%'</if>
+			<if test="uid != null  and uid != ''"> and uid like '%${uid}%'</if>
+			<if test="uname != null  and uname != '' "> and uname like '%${uname}%'</if>
+			<if test="aid != null  and aid != '' "> and aid like '%${aid}%'</if>
+			<if test="remark != null  and remark != ''"> and remark like '%${remark}%'</if>
+		</where>
+		ORDER BY hdid desc
+	</select>
+	<insert id="inserthuodong" parameterType="com.sixin.village.domain.Huodong">
+		insert into <include refid="tableName"/>
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+
+			<if test="hdtitle != null  and hdtitle != ''  ">hdtitle,</if>
+			<if test="hdtype != null  and hdtype != ''  ">hdtype,</if>
+			<if test="hdloc!= null  and hdloc != ''  ">hdloc,</if>
+			<if test="hdnum != null  and hdnum != ''  ">hdnum,</if>
+			<if test="hdbtime != null  and hdbtime != ''  ">hdbtime,</if>
+			<if test="hdetime != null  and hdetime != ''  ">hdetime,</if>
+			<if test="hdpic != null  and hdpic != ''  ">hdpic,</if>
+			<if test="hdsum != null  and hdsum != ''  ">hdsum,</if>
+			<if test="hdadddate != null  and hdadddate != ''  ">hdadddate,</if>
+			<if test="uid != null  and uid != ''  ">uid,</if>
+			<if test="uname != null  and uname != ''  ">uname,</if>
+			<if test="aid != null  and aid != ''  ">aid,</if>
+			<if test="remark != null  and remark != ''  ">remark,</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+
+			<if test="hdtitle != null  and hdtitle != ''  ">#{hdtitle},</if>
+			<if test="hdtype != null  and hdtype != ''  ">#{hdtype},</if>
+			<if test="hdloc != null  and hdloc != '' ">#{hdloc},</if>
+			<if test="hdnum != null  and hdnum != ''  ">#{hdnum},</if>
+			<if test="hdbtime != null  and hdbtime != ''  ">#{hdbtime},</if>
+			<if test="hdetime  != null  and  hdetime != ''  ">#{hdetime },</if>
+			<if test="hdpic != null  and hdpic != ''  ">#{hdpic},</if>
+			<if test="hdsum != null  and hdsum != ''  ">#{hdsum},</if>
+			<if test="hdadddate != null  and hdadddate != ''  ">#{hdadddate},</if>
+			<if test="uid != null  and uid != ''  ">#{uid},</if>
+			<if test="uname != null  and uname != ''  ">#{uname},</if>
+			<if test="aid != null  and aid != ''  ">#{aid},</if>
+			<if test="remark != null  and remark != ''  ">#{remark},</if>
+		</trim>
+	</insert>
+	<!--根据hdid删除数据-->
+	<delete id="deleteHuodongByIds" parameterType="String">
+		delete from
+		<include refid="tableName"/>
+		where hdid= #{hdid}
+	</delete>
+	<!--批量删除-->
+	<delete id="deleteHuodongByids" parameterType="String">
+		delete from <include refid="tableName"/> where hdid in
+		<foreach item="hdid" collection="array" open="(" separator="," close=")">
+			#{hdid}
+		</foreach>
+	</delete>
+
+	<select id="selectByhdid" resultMap="HuodongResult" parameterType="Integer">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		where hdid= #{hdid}
+	</select>
+
+	<update id="updateHuodong" parameterType="Integer">
+		update <include refid="tableName"/>
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="hdtitle != null  and hdtitle != ''  ">hdtitle = #{hdtitle},</if>
+			<if test="hdtype != null  and hdtype != ''  ">hdtype = #{hdtype},</if>
+			<if test="hdloc != null  and hdloc != '' ">hdloc = #{hdloc},</if>
+			<if test="hdnum != null  and hdnum != ''  ">hdnum = #{hdnum},</if>
+			<if test="hdbtime != null  and hdbtime != ''  ">hdbtime = #{hdbtime},</if>
+			<if test="hdetime != null  and hdetime != ''  ">hdetime = #{hdetime},</if>
+			<if test="hdpic != null  and hdpic != ''  ">hdpic = #{hdpic},</if>
+			<if test="hdsum != null  and hdsum != ''  ">hdsum = #{hdsum},</if>
+			<if test="hdadddate != null  and hdadddate != ''  ">hdadddate = #{hdadddate},</if>
+			<if test="uid != null  and uid != ''  ">uid = #{uid},</if>
+			<if test="uname != null  and uname != ''  ">uname = #{uname},</if>
+			<if test="aid != null  and aid != ''  ">aid = #{aid},</if>
+			<if test="remark != null  and remark != ''  ">remark = #{remark},</if>
+		</trim>
+		where hdid = #{hdid}
+	</update>
+
+	<select id="selectHuodongListById" parameterType="com.sixin.village.domain.pubObjApi" resultMap="HuodongResult">
+		select <include refid="Field"/>
+		from <include refid="tableName"/>
+		<where>
+			<if test="aid != null  and aid != '' ">aid in
+				<foreach collection="listaid" item="item" separator="," open="(" close=")">
+					#{item}
+				</foreach></if>
+			<if test="title != null  and title != ''  ">and hdtitle LIKE CONCAT(CONCAT('%', #{title}),'%')</if>
+		</where>
+		ORDER BY hdadddate desc
+		limit #{pageSize} offset #{pageIndex}
+	</select>
+</mapper>

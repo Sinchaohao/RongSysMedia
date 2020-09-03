@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sixin.iot.mapper.SecurityMapper">
+    <resultMap type="com.sixin.iot.domain.Security" id="SecurityResult">
+        <result property="id"    column="id"    />
+        <result property="stype"    column="stype"    />
+        <result property="dept_id"    column="dept_id"    />
+        <result property="sno"    column="sno"    />
+        <result property="sname"    column="sname"    />
+        <result property="producer"    column="producer"    />
+        <result property="prodtime"    column="prodtime"    />
+        <result property="price"    column="price"    />
+        <result property="endtime"  column="endtime"  />
+        <result property="installtime" column="installtime" />
+        <result property="installer" column="installer" />
+        <result property="demo" column="demo" />
+        <result property="delflag" column="delflag" />
+    </resultMap>
+    <!--定义selectLed为查询整表命令-->
+    <sql id="selectSecurity">
+        select id,stype,dept_id,sno,sname,producer,prodtime,price,endtime,installtime,installer,demo,delflag from tb_security
+    </sql>
+    <!--查询表的所有列表信息-->
+    <select id="selectSecurityList" parameterType="com.sixin.iot.domain.Security" resultMap="SecurityResult">
+        select id,stype,dept_id,sno,sname,producer,prodtime,price,endtime,installtime,installer,demo,delflag from tb_security
+        <where>
+            <if test="id != null and id !='' ">
+                AND id like concat('%', #{id},'%')
+            </if>
+            <if test="stype != null and stype !='' ">
+                AND stype like concat('%', #{stype},'%')
+            </if>
+            <if test="dept_id != null and dept_id !='' ">
+                AND dept_id like concat('%', #{dept_id},'%')
+            </if>
+            <if test="sno !=null and sno !='' ">
+                AND sno like concat('%', #{sno},'%')
+            </if>
+            <if test="sname !=null and sname !='' ">
+                AND sname like concat('%', #{sname},'%')
+            </if>
+            <if test="producer !=null and producer !='' ">
+                AND producer like concat('%', #{producer},'%')
+            </if>
+            <if test="prodtime !=null and prodtime !='' ">
+                AND prodtime like concat('%', #{prodtime},'%')
+            </if>
+            <if test="price !=null and price !='' ">
+                AND price like concat('%', #{price},'%')
+            </if>
+            <if test="endtime !=null and endtime !='' ">
+                AND endtime like concat('%', #{endtime},'%')
+            </if>
+            <if test="installtime !=null and installtime !='' ">
+                AND installtime like concat('%', #{installtime},'%')
+            </if>
+            <if test="installer !=null and installer !='' ">
+                AND installer like concat('%', #{installer},'%')
+            </if>
+            <if test="demo !=null and demo !='' ">
+                AND demo like concat('%', #{demo},'%')
+            </if>
+            <if test="delflag !=null and delflag !='' ">
+                AND delflag like concat('%', #{delflag},'%')
+            </if>
+
+        </where>
+
+    </select>
+
+    <select id="selectSecuritypeList" parameterType="com.sixin.iot.domain.Securitype" resultType="Securitype">
+        select id,name from iotdata.tb_securitype
+    </select>
+
+    <select id="selectUserList" parameterType="com.sixin.iot.domain.User" resultType="User">
+        select user_id,user_name from ry.sys_user
+    </select>
+
+    <select id="selectIoterminalList" parameterType="com.sixin.iot.domain.Ioterminal" resultType="Ioterminal">
+        select id,imei,ctype,deptid from iotdata.tb_ioterminal
+        <where>
+            ctype='安防'
+            <if test="deptid != null and deptid !='' ">
+                AND deptid like concat('%', #{deptid},'%')
+            </if>
+        </where>
+    </select>
+    <!--根据id查询信息-->
+    <select id="selectSecurityByid" parameterType="String" resultMap="SecurityResult">
+        <include refid="selectSecurity"/>
+        where id=#{id}
+
+    </select>
+
+    <select id="selectIoterminalBysno"  resultType="Ioterminal">
+        select imei,startdate,exdate,deptid,demo,delflag from iotdata.tb_ioterminal
+        where imei=#{sno}
+    </select>
+    <!--向表中插入新数据-->
+    <insert id="insertSecurity" parameterType="com.sixin.iot.domain.Security">
+        insert into tb_security
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id!='' ">id,</if>
+            <if test="stype != null  and stype != ''  ">stype,</if>
+            <if test="dept_id != null  and dept_id != ''  ">dept_id,</if>
+            <if test="sno != null  and sno != ''  ">sno,</if>
+            <if test="sname != null  and sname != ''  ">sname,</if>
+            <if test="producer != null  and producer != ''  ">producer,</if>
+            <if test="prodtime != null  and prodtime != ''  ">prodtime,</if>
+            <if test="price != null  and price != ''  ">price,</if>
+            <if test="endtime != null  and endtime != ''  ">endtime,</if>
+            <if test="installtime != null  and installtime != ''  ">installtime,</if>
+            <if test="installer != null  and installer != ''  ">installer,</if>
+            <if test="demo != null  and demo != ''  ">demo,</if>
+            <if test="delflag != null  and delflag != ''  ">delflag,</if>
+        </trim>
+        values<trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="id != null and id!='' ">#{id},</if>
+        <if test="stype != null  and stype != ''  ">#{stype},</if>
+        <if test="dept_id != null  and dept_id != ''  ">#{dept_id},</if>
+        <if test="sno != null  and sno != ''  ">#{sno},</if>
+        <if test="sname != null  and sname != ''  ">#{sname},</if>
+        <if test="producer != null  and producer != ''  ">#{producer},</if>
+        <if test="prodtime != null  and prodtime != ''  ">#{prodtime},</if>
+        <if test="price != null  and price != ''  ">#{price},</if>
+        <if test="endtime != null  and endtime != ''  ">#{endtime},</if>
+        <if test="installtime != null  and installtime != ''  ">#{installtime},</if>
+        <if test="installer != null  and installer != ''  ">#{installer},</if>
+        <if test="demo != null  and demo != ''  ">#{demo},</if>
+        <if test="delflag != null  and delflag != ''  ">#{delflag},</if>
+    </trim>
+    </insert>
+    <!--更新数据-->
+    <update id="updateSecurity" parameterType="com.sixin.iot.domain.Security">
+        update tb_security
+        <set>
+            <if test="dept_id != null  and dept_id != ''  ">dept_id = #{dept_id},</if>
+            <if test="stype != null  and stype != ''  ">stype = #{stype},</if>
+            <if test="sno != null  and sno != ''  ">sno = #{sno},</if>
+            <if test="sname != null  and sname != ''  ">sname = #{sname},</if>
+            <if test="producer != null  and producer != ''  ">producer = #{producer},</if>
+            <if test="prodtime !=null and prodtime !=''">prodtime = #{prodtime},</if>
+            <if test="price != null  and price != ''  ">price = #{price},</if>
+            <if test="endtime != null  and endtime != ''  ">endtime = #{endtime},</if>
+            <if test="installtime != null  and installtime != ''  ">installtime = #{installtime},</if>
+            <if test="installer != null  and installer != ''  ">installer = #{installer},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="updateSecurity1" parameterType="com.sixin.iot.domain.Security">
+        update iotdata.tb_ioterminal
+        <set>
+            <if test="sno != null  and sno != ''  ">imei = #{sno},</if>
+            <if test="installtime != null  and installtime != ''  ">startdate = #{installtime},</if>
+            <if test="endtime != null  and endtime != ''  ">exdate = #{endtime},</if>
+            <if test="dept_id != null  and dept_id != ''  ">deptid = #{dept_id},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+        </set>
+        where imei = #{sno}
+    </update>
+
+    <update id="updateSecurity2" parameterType="com.sixin.iot.domain.Security">
+        update tb_security
+        <set>
+            <if test="dept_id != null  and dept_id != ''  ">dept_id = #{dept_id},</if>
+            <if test="stype != null  and stype != ''  ">stype = #{stype},</if>
+            <if test="sno != null  and sno != ''  ">sno = #{sno},</if>
+            <if test="sname != null  and sname != ''  ">sname = #{sname},</if>
+            <if test="producer != null  and producer != ''  ">producer = #{producer},</if>
+            <if test="prodtime !=null and prodtime !=''">prodtime = #{prodtime},</if>
+            <if test="price != null  and price != ''  ">price = #{price},</if>
+            <if test="endtime != null  and endtime != ''  ">endtime = #{endtime},</if>
+            <if test="installtime != null  and installtime != ''  ">installtime = #{installtime},</if>
+            <if test="installer != null  and installer != ''  ">installer = #{installer},</if>
+            <if test="delflag != null  and delflag != ''  ">delflag = #{delflag},</if>
+            <if test="demo != null  and demo != ''  ">demo = #{demo},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--根据id删除-->
+    <delete id="deleteSecurityByid" parameterType="String">
+        delete from tb_security where info_id = #{info_id}
+    </delete>
+
+    <!--批量删除-->
+    <delete id="deleteSecurityByids" parameterType="String">
+        delete from tb_security where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSecurityByids" parameterType="java.util.List" resultMap="SecurityResult">
+        <include refid="selectSecurity"/>
+        where id in
+        <foreach collection="list" item="sfid" open="(" close=")" separator=",">
+            #{sfid}
+        </foreach>
+    </select>
+</mapper>

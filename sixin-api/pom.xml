@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>RongSys</artifactId>
+        <groupId>com.sixin</groupId>
+        <version>3.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>sixin-api</artifactId>
+
+    <dependencies>
+      <!-- 通用工具-->
+      <dependency>
+        <groupId>com.sixin</groupId>
+        <artifactId>sixin-common</artifactId>
+        <version>${sixin.version}</version>
+      </dependency>
+
+      <!-- 核心模块-->
+      <dependency>
+        <groupId>com.sixin</groupId>
+        <artifactId>sixin-framework</artifactId>
+        <version>${sixin.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+
+      <!-- swagger2-->
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        <version>${swagger.version}</version>
+      </dependency>
+
+      <!-- swagger2-UI-->
+      <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger-ui</artifactId>
+        <version>${swagger.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-annotations</artifactId>
+        <version>1.5.21</version>
+      </dependency>
+
+      <!-- 核心模块-->
+      <dependency>
+        <groupId>com.sixin</groupId>
+        <artifactId>sixin-broad</artifactId>
+        <version>${sixin.version}</version>
+      </dependency>
+
+      <!--村务模块-->
+      <dependency>
+        <groupId>com.sixin</groupId>
+        <artifactId>sixin-village</artifactId>
+        <version>${sixin.version}</version>
+      </dependency>
+
+      <!--物联网模块-->
+      <dependency>
+        <groupId>com.sixin</groupId>
+        <artifactId>sixin-iot</artifactId>
+        <version>${sixin.version}</version>
+      </dependency>
+
+      <!--山洪模块-->
+      <dependency>
+        <groupId>com.sixin</groupId>
+        <artifactId>sixin-rivervis</artifactId>
+        <version>${sixin.version}</version>
+      </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,248 @@
+<!DOCTYPE HTML>
+<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
+<meta charset="utf-8">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link th:href="@{favicon.ico}" rel="shortcut icon"/>
+	<link th:href="@{/css/bootstrap.min14ed.css?v=3.3.6}" rel="stylesheet"/>
+	<link th:href="@{/css/font-awesome.min93e3.css?v=4.4.0}" rel="stylesheet"/>
+	<link th:href="@{/css/animate.min.css}" rel="stylesheet"/>
+	<link th:href="@{/css/plugins/simditor/simditor.css}" rel="stylesheet" type="text/css"/>
+	<link th:href="@{/css/style.min862f.css?v=4.1.0}" rel="stylesheet"/>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+	<form class="form-horizontal m" id="form-tbStaff-edit" th:object="${tbStaff}">
+		<div class="form-group">
+			<label class="col-sm-3 control-label">工作人员编号：</label>
+			<div class="col-sm-8">
+				<input id="stid" name="stid" th:field="*{stid}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">用户编号：</label>
+			<div class="col-sm-8">
+				<input id="userid" name="userid" th:field="*{userid}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">地域编号：</label>
+			<div class="col-sm-8">
+				<input  class="form-control" type="text" id="aid" name="aid"  th:field="*{aid}" onclick="selectAidTree()" readonly="true" placeholder="点击选择区域">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">姓名：</label>
+			<div class="col-sm-8">
+				<input id="username" name="username" th:field="*{username}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">年龄：</label>
+			<div class="col-sm-8">
+				<input id="age" name="age" th:field="*{age}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">性别：</label>
+			<div class="col-sm-8">
+				<input id="sex" name="sex" th:field="*{sex}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">籍贯：</label>
+			<div class="col-sm-8">
+				<input id="nativeplace" name="nativeplace" th:field="*{nativeplace}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">家庭地址：</label>
+			<div class="col-sm-8">
+				<input id="address" name="address" th:field="*{address}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">民族：</label>
+			<div class="col-sm-8">
+				<input id="nation" name="nation" th:field="*{nation}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">政治面貌：</label>
+			<div class="col-sm-8">
+				<input id="politics" name="politics" th:field="*{politics}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">文化程度：</label>
+			<div class="col-sm-8">
+				<input id="edulevel" name="edulevel" th:field="*{edulevel}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">身份证号码：</label>
+			<div class="col-sm-8">
+				<input id="idcard" name="idcard" th:field="*{idcard}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">联系方式：</label>
+			<div class="col-sm-8">
+				<input id="phone" name="phone" th:field="*{phone}" class="form-control" type="text"οnchange="myverification()">
+				<span id="demo1"></span>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">职业：</label>
+			<div class="col-sm-8">
+				<input id="job" name="job" th:field="*{job}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">工作单位：</label>
+			<div class="col-sm-8">
+				<input id="employeeunit" name="employeeunit" th:field="*{employeeunit}" class="form-control" type="text">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">获奖情况：</label>
+			<div class="col-sm-8">
+				<textarea id="winaward" name="winaward" th:field="*{winaward}"  autofocus></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">处分情况：</label>
+			<div class="col-sm-8">
+				<textarea id="punish" name="punish" th:field="*{punish}"  autofocus></textarea>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label">身份证照片：</label>
+			<div class="col-sm-8">
+				<input id="idphoto" name="idphoto" th:field="*{idphoto}" class="form-control" type="text">
+			</div>
+		</div>
+	</form>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript">
+	var prefix = ctx + "village/tbStaff"
+	$("#form-tbStaff-edit").validate({
+		rules:{
+			xxxx:{
+				required:true,
+			},
+		}
+	});
+
+	/*用户管理-新增-选择用户所属区域树*/
+	function selectAidTree() {
+		var url = "/broad/organization/selectAidTree";
+		var options = {
+			title: '选择区域',
+			width: "380",
+			url: "/broad/organization/selectAidTree",
+			callBack: doSubmitAid
+		};
+		$.modal.openOptions(options);
+	}
+	function doSubmit(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#treeId").val(body.find('#treeId').val());
+			$("#treeName").val(body.find('#treeName').val());
+			layer.close(index);
+		}
+	}
+
+	/*该模块是选择用户所属区域树的提交功能模块，body.find()方法中该使用框架固定的treeId、treeName*/
+	function doSubmitAid(index, layero){
+		var tree = layero.find("iframe")[0].contentWindow.$._tree;
+		if ($.tree.notAllowParents(tree)) {
+			var body = layer.getChildFrame('body', index);
+			$("#aid").val(body.find('#treeId').val());
+			$("#aidName").val(body.find('#treeName').val());
+			layer.close(index);
+		}
+	}
+
+
+
+	function submitHandler() {
+		proinfo =$("#winaward").val();//获取当前编辑后的文本框的值
+		proinfo2=$("#punish").val();
+		//alert(proinfo);
+		$("#winaward").val(proinfo);
+		$("#punish").val(proinfo2);
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/edit", $('#form-tbStaff-edit').serialize());
+		}
+	}
+</script>
+<!--③引入需要的js文件-->
+<script th:src="@{/js/plugins/simditor/module.js}"></script>
+<script th:src="@{/js/plugins/simditor/uploader.js}"></script>
+<script th:src="@{/js/plugins/simditor/hotkeys.js}"></script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=9051096" charset="UTF-8"></script>
+<script th:src="@{/js/plugins/simditor/simditor.js}"></script>
+<!--④初始化文本框并且通过setValue方法传值给富文本编辑器-->
+<script>
+	$(document).ready(function() {
+		var editor = new Simditor({
+			placeholder: "", // 编辑器默认值（默认为’’）
+			toolbar: [
+				'title', 'bold', 'italic', 'underline',
+				'color', '|', 'ol', 'ul', 'table'
+			],
+			textarea: '#winaward',
+		});
+		// proinfo =$("#winaward").val();//将后台返回的content字段的值提取出来
+		// editor.setValue(proinfo);//赋值给UEditor
+		var editor2 = new Simditor({
+			placeholder: "", // 编辑器默认值（默认为’’）
+			toolbar: [
+				'title', 'bold', 'italic', 'underline',
+				'color', '|', 'ol', 'ul', 'table'
+			],
+			textarea: '#punish',
+		});
+		// proinfo2=$("#punish").val();
+		// editor2.setvalue(proinfo2)
+	});
+</script>
+
+
+<script>
+
+
+	function isPhoneNo(str) {
+
+		var reg=/^[0-9]{8}$/;   /*定义验证表达式*/
+
+		return reg.test(str);     /*进行验证*/
+
+	}
+
+
+
+	function myverification(){
+
+		if(!isPhoneNo(document.getElementById("phone").value)){
+
+			document.getElementById("demo1").innerHTML="学生编号是8位数字";
+
+			document.getElementById("phone").focus();//鼠标回到框中
+
+			return false;
+
+		}}
+
+
+
+</script>
+
+
+
+</body>
+</html>
